@@ -1,289 +1,138 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.View.Screens
 
-import SelectRegionViewModel
-import android.os.Build
-import android.util.Log
-import android.widget.Toast
-import androidx.annotation.RequiresApi
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ViewModel.DataStorePreferencesViewModel.SelectRegionViewModel
+import androidx.compose.animation.AnimatedContent
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.UIutils.textTransition
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.ui.Alignment
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.toLowerCase
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import kotlinx.coroutines.launch
-import uz.turgunboyevjurabek.muslimapp.feature.domein.madels.birHaftalik.BirhaftalikItem
-import uz.turgunboyevjurabek.muslimapp.feature.domein.madels.birOylk.BirOylik
-import uz.turgunboyevjurabek.muslimapp.feature.domein.madels.birOylk.BirOylikItem
-import uz.turgunboyevjurabek.muslimapp.core.utils.DateUtil
 import uz.turgunboyevjurabek.muslimapp.core.utils.Status
-import uz.turgunboyevjurabek.muslimapp.core.utils.Status.*
-import uz.turgunboyevjurabek.muslimapp.R
-import uz.turgunboyevjurabek.muslimapp.core.utils.coloredShadow
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.PrayerTimesError
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.PrayerScheduleRows
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.ScheduleRegion
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.scheduleDate
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.rememberPrayerTimes
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.rememberPrayerClock
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.ScheduleRefresh
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.SavedScheduleLabel
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.savedLabel
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ViewModel.PrayerScheduleViewModel
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ViewModel.ScheduleMonth
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.shimmers.ShimmerPlaceholder
+
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.UIutils.AnimatedValueText
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.saveable.rememberSaveable
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.Calendar.CalendarWidget
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ViewModel.Biroylik.BirOylikLogika
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ViewModel.Calendar.CalendarViewModel
-import java.time.LocalDate
-import java.util.Locale
+import uz.turgunboyevjurabek.muslimapp.feature.data.Calendar.CalendarDataSource
+import java.time.YearMonth
 
-
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DayOf30Screen(
-    selectRegionViewModel: SelectRegionViewModel
+    selectRegionViewModel: SelectRegionViewModel,
+    schedule: PrayerScheduleViewModel,
+    bottomPadding: Dp,
+    topPadding: Dp,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
+    val calendarViewModel: CalendarViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    val calendar by calendarViewModel.uiState.collectAsState()
+    val selection by selectRegionViewModel.selection.collectAsState()
+    val region = selection?.region
+    val requestedMonth = calendar.yearMonth
+    val connection by schedule.connection.collectAsState()
+    val key = region?.let { ScheduleMonth(it, requestedMonth) }
+    val load = rememberPrayerTimes(schedule.monthly, key, connection)
+    val savedLabel = load.savedLabel(connection, requestedMonth.toString())
+    val month = load.snapshot?.period?.let { runCatching { YearMonth.parse(it) }.getOrNull() } ?: requestedMonth
+    val calendarDates = if (month == requestedMonth) calendar.dates else remember(month) { CalendarDataSource().getDates(month) }
+    val refresh: () -> Unit = { key?.let { schedule.monthly.load(it, force = true) } }
+    val now by rememberPrayerClock()
+    val today = now.toLocalDate()
+    var selectedDay by rememberSaveable(month.toString()) {
+        mutableIntStateOf(if (YearMonth.from(today) == month) today.dayOfMonth else 1)
+    }
 
-        val context = LocalContext.current
-        val scope = rememberCoroutineScope()
-        val viewModel = hiltViewModel<BirOylikLogika>()
-        val monthList  = remember { mutableStateListOf<BirOylik>() }
-        var selectDay=remember{ mutableStateOf(BirOylikItem()) }
-        LaunchedEffect(key1 = true) {
-            viewModel.getMontData(selectRegionViewModel.region.value).observeForever {
-                when (it.status) {
-                    LOADING -> {
-
-                    }
-                    ERROR -> {
-                        Toast.makeText(context, "${it.message}", Toast.LENGTH_SHORT).show()
-                    }
-                    SUCCESS -> {
-                        monthList.add(it.data!!)
-                        selectDay.value=monthList[0][LocalDate.now().dayOfMonth-1]
+    val ovalShape = RoundedCornerShape(36.dp)
+    ScheduleRefresh(load, refresh, topPadding, bottomPadding) {
+        Column(
+            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+                .padding(start = 18.dp, end = 18.dp, top = topPadding + 14.dp, bottom = 14.dp + bottomPadding),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            if (region != null) {
+                Column {
+                    ScheduleRegion(region.nameRegion)
+                    SavedScheduleLabel(savedLabel)
+                }
+            } else {
+                ShimmerPlaceholder(Modifier.fillMaxWidth().height(44.dp), cornerRadius = 16.dp)
+            }
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = ovalShape,
+                color = MaterialTheme.colorScheme.surfaceContainerLow,
+            ) {
+                CalendarWidget(
+                    days = arrayOf("Du", "Se", "Ch", "Pa", "Ju", "Sh", "Ya"),
+                    yearMonth = month,
+                    dates = calendarDates.map { it.copy(isSelected = it.dayOfMonth.toIntOrNull() == selectedDay) },
+                    onPreviousMonthButtonClicked = calendarViewModel::toPreviousMonth,
+                    onNextMonthButtonClicked = calendarViewModel::toNextMonth,
+                    onDateClickListener = { date -> date.dayOfMonth.toIntOrNull()?.let { selectedDay = it } },
+                )
+            }
+            AnimatedContent(
+                targetState = load.result to selectedDay,
+                contentKey = { it.first.status },
+                transitionSpec = { textTransition() },
+                label = "Monthly prayer schedule",
+            ) { (current, day) ->
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    when (current.status) {
+                        Status.LOADING -> {
+                            ShimmerPlaceholder(Modifier.width(116.dp).height(25.dp), cornerRadius = 8.dp)
+                            ShimmerPlaceholder(
+                                Modifier.fillMaxWidth().height(230.dp),
+                                cornerRadius = 36.dp,
+                                description = "Namoz vaqtlari yuklanmoqda",
+                            )
+                        }
+                        Status.ERROR -> PrayerTimesError(current.message.orEmpty(), refresh)
+                        Status.SUCCESS -> {
+                            val entry = current.data?.firstOrNull { it.day == day }
+                            if (entry == null) {
+                                PrayerTimesError("Tanlangan kun uchun namoz vaqtlari topilmadi.", refresh)
+                            } else {
+                                AnimatedValueText(
+                                    scheduleDate(entry.date),
+                                    modifier = Modifier.padding(start = 8.dp),
+                                    style = MaterialTheme.typography.titleLarge,
+                                )
+                                Surface(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = ovalShape,
+                                    color = MaterialTheme.colorScheme.surfaceContainerLow,
+                                ) {
+                                    Column(Modifier.padding(horizontal = 10.dp, vertical = 10.dp)) {
+                                        val times = entry.times
+                                        PrayerScheduleRows(
+                                            times?.tongSaharlik, times?.quyosh, times?.peshin,
+                                            times?.asr, times?.shomIftor, times?.hufton,
+                                            rowHeight = 35.dp,
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
-        }
-        CalendarView(selectDay,monthList)
-        SelectDay(selectDay)
-    }
-}
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showSystemUi = true)
-@Composable
-private fun UI30() {
-//    DayOf30Screen()
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun SelectDay(selectDay: MutableState<BirOylikItem>) {
-    val elevatedCardShadowColor=if (isSystemInDarkTheme()) Color.Green else Color.Black
-    Spacer(modifier = Modifier.height(10.dp))
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 15.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(text = selectDay.value.day.toString(), fontWeight = FontWeight.ExtraBold, fontSize = 24.sp)
-        Text(text = "-", fontWeight = FontWeight.ExtraBold, fontSize = 24.sp)
-        Text(text = LocalDate.now().month.name.lowercase(Locale.ROOT), fontWeight = FontWeight.ExtraBold, fontSize = 24.sp,)
-    }
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .graphicsLayer {
-                shape = RoundedCornerShape(topStart = 80.dp, bottomEnd = 80.dp)
-                spotShadowColor = elevatedCardShadowColor
-                shadowElevation = 20f
-                clip = true
-            }
-
-            .clip(RoundedCornerShape(topStart = 80.dp, bottomEnd = 80.dp))
-            .wrapContentHeight(unbounded = true)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(15.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                Text(
-                    text = "Bomdod",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
-                )
-                Text(
-                    text = selectDay.value.times?.tongSaharlik.toString(),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(15.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                Text(
-                    text = "Peshin ",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
-                )
-                Text(
-                    text = selectDay.value.times?.peshin.toString(),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(15.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                Text(
-                    text = "Asr      ",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
-                )
-                Text(
-                    text = selectDay.value.times?.asr.toString(),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(15.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                Text(
-                    text = "Shom ",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
-                )
-                Text(
-                    text = selectDay.value.times?.shomIftor.toString(),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(15.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                Text(
-                    text = "Hufton",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
-                )
-                Text(
-                    text = selectDay.value.times?.hufton.toString(),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        }
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun CalendarView(
-    selectDay: MutableState<BirOylikItem>,
-    snapShotStaList: SnapshotStateList<BirOylik>,
-    viewModel: CalendarViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-) {
-    val uiState by viewModel.uiState.collectAsState()
-    val context = LocalContext.current
-    val elevatedCardShadowColor=if (isSystemInDarkTheme()) Color.Green else Color.Black
-
-    Card(
-        modifier = Modifier
-            .padding(vertical = 10.dp)
-            .graphicsLayer {
-                shape = RoundedCornerShape(topStart = 80.dp, bottomEnd = 80.dp)
-                spotShadowColor = elevatedCardShadowColor
-                shadowElevation = 40f
-                clip = true
-            }
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(topStart = 80.dp, bottomEnd = 80.dp))
-            .wrapContentHeight(unbounded = true)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Transparent)
-        ) {
-            CalendarWidget(
-                days = DateUtil.daysOfWeek,
-                yearMonth = uiState.yearMonth,
-                dates = uiState.dates,
-                onPreviousMonthButtonClicked = { prevMonth ->
-                    viewModel.toPreviousMonth(prevMonth)
-                },
-                onNextMonthButtonClicked = { nextMonth ->
-                    viewModel.toNextMonth(nextMonth)
-                },
-                onDateClickListener = {
-                    val select= snapShotStaList[0]
-                    val index= if(it.dayOfMonth != "" ){
-                        it.dayOfMonth.toInt()-1
-                    } else {
-                        LocalDate.now().dayOfMonth-1
-                    }
-
-                    selectDay.value =select[index.toString().toInt()]
-                }
-            )
         }
     }
 }

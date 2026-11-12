@@ -12,6 +12,7 @@ class CalendarDataSource {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getDates(yearMonth: YearMonth): List<CalendarUiState.Date> {
+        val today = LocalDate.now()
         return yearMonth.getDayOfMonthStartingFromMonday()
             .map { date ->
                 CalendarUiState.Date(
@@ -20,8 +21,8 @@ class CalendarDataSource {
                     } else {
                         "" // Fill with empty string for days outside the current month
                     },
-                    isSelected = date.isEqual(LocalDate.now()) && date.monthValue == yearMonth.monthValue,
-                    isToday = LocalDate.now().dayOfMonth,//date.isEqual(LocalDate.now())
+                    isSelected = false,
+                    isToday = date == today && YearMonth.from(date) == yearMonth,
 
                 )
             }

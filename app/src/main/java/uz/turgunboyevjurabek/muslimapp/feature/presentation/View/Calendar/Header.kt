@@ -1,27 +1,26 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.View.Calendar
 
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.UIutils.AnimatedValueText
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.PressIconButton
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import uz.turgunboyevjurabek.muslimapp.core.utils.getDisplayName
 import uz.turgunboyevjurabek.muslimapp.R
+import uz.turgunboyevjurabek.muslimapp.core.utils.getDisplayName
 import java.time.YearMonth
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -30,21 +29,20 @@ fun Header(
     onPreviousMonthButtonClicked: (YearMonth) -> Unit,
     onNextMonthButtonClicked: (YearMonth) -> Unit,
 ) {
+    val forwardRotation = if (LocalLayoutDirection.current == LayoutDirection.Ltr) -90f else 90f
+    val chevron = painterResource(R.drawable.ic_chevron_down)
     Row {
-        // Previous Month Button
-       /* IconButton(onClick = {
-            onPreviousMonthButtonClicked.invoke(yearMonth.minusMonths(1))
-        }) {
+        PressIconButton(onClick = { onPreviousMonthButtonClicked(yearMonth.minusMonths(1)) }) {
             Icon(
-                imageVector = Icons.Filled.KeyboardArrowLeft,
-                null
+                painter = chevron,
+                contentDescription = "Oldingi oy",
+                modifier = Modifier.size(22.dp).rotate(-forwardRotation),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-
-        */
-        Text(
+        AnimatedValueText(
             text = yearMonth.getDisplayName(),
-            textAlign = TextAlign.Center,
+            contentAlignment = Alignment.Center,
             fontSize = 15.sp,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.ExtraBold,
@@ -53,17 +51,13 @@ fun Header(
                 .weight(1f)
                 .align(Alignment.CenterVertically)
         )
-        // Next Month Button
-        /*IconButton(onClick = {
-            onNextMonthButtonClicked.invoke(yearMonth.plusMonths(1))
-        }) {
+        PressIconButton(onClick = { onNextMonthButtonClicked(yearMonth.plusMonths(1)) }) {
             Icon(
-                imageVector = Icons.Filled.KeyboardArrowRight,
-                null
+                painter = chevron,
+                contentDescription = "Keyingi oy",
+                modifier = Modifier.size(22.dp).rotate(forwardRotation),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-
-         */
-
     }
 }

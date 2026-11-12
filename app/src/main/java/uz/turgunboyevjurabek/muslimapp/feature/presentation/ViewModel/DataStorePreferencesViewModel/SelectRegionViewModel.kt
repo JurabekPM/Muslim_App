@@ -1,47 +1,42 @@
+package uz.turgunboyevjurabek.muslimapp.feature.presentation.ViewModel.DataStorePreferencesViewModel
+
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
-import javax.inject.Inject
+import kotlinx.coroutines.flow.stateIn
+import uz.turgunboyevjurabek.muslimapp.feature.domein.madels.Regions
+import java.io.IOException
 
+data class RegionSelection(val region: Regions, val fromGps: Boolean)
 
 class SelectRegionViewModel(
-    private val dataStoreRegion: DataStore<Preferences>
+    private val dataStoreRegion: DataStore<Preferences>,
 ) : ViewModel() {
+    private val regionKey = stringPreferencesKey("select_region")
+    private val fromGpsKey = booleanPreferencesKey("select_region_from_gps")
 
-    private val SELECT_REGION = stringPreferencesKey("select_region")
-    private val _region: MutableStateFlow<String> = MutableStateFlow("Farg'ona")
-
-    val region: StateFlow<String> = _region.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            loadRegion()
+    val selection: StateFlow<RegionSelection?> = dataStoreRegion.data
+        .catch { error ->
+            if (error is IOException) emit(emptyPreferences()) else throw error
         }
-    }
-
-    private suspend fun loadRegion() {
-        dataStoreRegion.data.map { preferences ->
-            preferences[SELECT_REGION] ?: ""
-        }.collect { savedRegion ->
-            _region.value = savedRegion
+        .map { preferences ->
+            RegionSelection(Regions.resolve(preferences[regionKey]), preferences[fromGpsKey] == true)
         }
-    }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    fun saveRegion(newRegion: String) {
-        viewModelScope.launch {
-            dataStoreRegion.edit { preferences ->
-                preferences[SELECT_REGION] = newRegion
-            }
-            _region.value = newRegion
+    suspend fun saveRegion(selection: RegionSelection) {
+        dataStoreRegion.edit { preferences ->
+            preferences[regionKey] = selection.region.slug
+            preferences[fromGpsKey] = selection.fromGps
         }
     }
 }

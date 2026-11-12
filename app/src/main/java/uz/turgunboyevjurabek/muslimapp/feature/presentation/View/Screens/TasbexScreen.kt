@@ -1,5 +1,9 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.View.Screens
 
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.UIutils.AnimatedValueText
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.pressScale
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.rememberPressScale
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.PressIconButton
 import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
@@ -13,6 +17,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,7 +27,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
@@ -64,12 +68,20 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.UIutils.Animate
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.shape.MorphPolygonShape
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ViewModel.DataStorePreferencesViewModel.CounterViewModel
 import uz.turgunboyevjurabek.muslimapp.core.utils.coloredShadow
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.shimmers.ShimmerPlaceholder
 
 @OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TasbexScreen(navController: NavController, viewModel: CounterViewModel) {
-    val counterViewModel by viewModel.counter.collectAsState()
+    val savedCount by viewModel.counter.collectAsState()
+    val initialCount = savedCount
+    if (initialCount == null) {
+        Box(Modifier.fillMaxSize().padding(top = 50.dp), contentAlignment = Alignment.TopCenter) {
+            ShimmerPlaceholder(Modifier.size(width = 88.dp, height = 56.dp), description = "Tasbeh hisobi yuklanmoqda")
+        }
+        return
+    }
     val context = LocalContext.current
     val zikrList=ArrayList<Tasbeh>()
     zikrList.addAll(
@@ -84,7 +96,7 @@ fun TasbexScreen(navController: NavController, viewModel: CounterViewModel) {
         )
     )
     var count by rememberSaveable {
-        mutableIntStateOf(counterViewModel)
+        mutableIntStateOf(initialCount)
     }
     ConstraintLayout(
         modifier = Modifier.fillMaxSize(),
@@ -127,25 +139,25 @@ fun TasbexScreen(navController: NavController, viewModel: CounterViewModel) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = {
-                    Toast.makeText(context, "Story icon clicked", Toast.LENGTH_SHORT).show()
+                PressIconButton(onClick = {
+                    Toast.makeText(context, "Zikr tarixi hozircha mavjud emas", Toast.LENGTH_SHORT).show()
                 }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_story2),
-                        contentDescription = "story icon",
-                        modifier = Modifier
-                            .size(40.dp)
+                        painter = painterResource(R.drawable.ic_tasbex_history),
+                        contentDescription = "Zikr tarixi",
+                        modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                IconButton(onClick = {
+                PressIconButton(onClick = {
                     count=0
                     viewModel.clearCounter()
                 }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_restart),
-                        contentDescription = "restart icon",
-                        modifier = Modifier
-                            .size(40.dp)
+                        painter = painterResource(R.drawable.ic_tasbex_reset),
+                        contentDescription = "Hisobni nolga tushirish",
+                        modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
 
@@ -189,7 +201,7 @@ fun MessageText(viewModel: CounterViewModel, modifier: Modifier) {
             targetOffsetX = { fullWidth -> fullWidth }, animationSpec = tween(durationMillis = 3000)
         )
     ) {
-        Text(
+        AnimatedValueText(
             text = if (counterViewModel.value == 0) "Yangi zikr" else "Avvalgi zikrni davom ettiring",
             fontSize = 15.sp,
             textAlign = TextAlign.Center,
@@ -197,7 +209,7 @@ fun MessageText(viewModel: CounterViewModel, modifier: Modifier) {
             modifier = modifier
                 .fillMaxWidth()
                 .coloredShadow(
-                    Color.Red,
+                    MaterialTheme.colorScheme.primary,
                     borderRadius = 20.dp,
                     shadowRadius = 30.dp,
                 )
@@ -253,7 +265,7 @@ fun ShapeCount(
     Card(
         modifier = modifier
             .coloredShadow(
-                Color.Yellow,
+                MaterialTheme.colorScheme.primary,
                 borderRadius = 150.dp,
                 alpha = alphaForShadow,
                 shadowRadius = 50.dp,
@@ -266,7 +278,8 @@ fun ShapeCount(
             .size(200.dp)
             .clickable(interactionSource = interactionSource, indication = null) {
                 onClick()
-            },
+            }
+            .pressScale(rememberPressScale(interactionSource)),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(10.dp)
         )

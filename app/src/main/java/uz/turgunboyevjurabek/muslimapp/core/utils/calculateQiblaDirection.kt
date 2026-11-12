@@ -16,7 +16,6 @@ fun calculateQiblaDirection(latitude: Double, longitude: Double): Double {
     val kaabaLatitude = 21.422788
     val kaabaLongitude = 39.826361
 
-    val latDifference = Math.toRadians(kaabaLatitude - latitude)
     val lonDifference = Math.toRadians(kaabaLongitude - longitude)
     val y = sin(lonDifference) * cos(Math.toRadians(kaabaLatitude))
     val x = cos(Math.toRadians(latitude)) * sin(Math.toRadians(kaabaLatitude)) -

@@ -24,7 +24,7 @@ fun DayItem(day: String, modifier: Modifier = Modifier) {
             fontSize = 13.sp,
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(10.dp),
+                .padding(vertical = 4.dp),
             maxLines = 1
         )
     }

@@ -13,5 +13,8 @@ data class Bugungi(
     @SerializedName("times")
     var times: Times?=null,
     @SerializedName("weekday")
-    var weekday: String?=null
+    var weekday: String?=null,
+    val featuredPrayer: String? = null,
+    val featuredTime: String? = null,
+    val featuredIsCurrent: Boolean = false,
 )

@@ -2,17 +2,13 @@ package uz.turgunboyevjurabek.muslimapp.feature.presentation.View.Calendar
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 
 import uz.turgunboyevjurabek.muslimapp.feature.data.Calendar.CalendarUiState
@@ -30,18 +26,17 @@ fun CalendarWidget(
 ) {
     Column(
         modifier = Modifier
-            .padding(10.dp)
+            .padding(horizontal = 14.dp, vertical = 10.dp)
     ) {
         Header(
             yearMonth = yearMonth,
             onPreviousMonthButtonClicked = onPreviousMonthButtonClicked,
             onNextMonthButtonClicked = onNextMonthButtonClicked
         )
-        Divider(
+        HorizontalDivider(
             modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .alpha(0.2f),
-            color = Color.Black
+                .padding(horizontal = 6.dp),
+            color = androidx.compose.material3.MaterialTheme.colorScheme.outlineVariant
         )
         Row {
             repeat(days.size) {
