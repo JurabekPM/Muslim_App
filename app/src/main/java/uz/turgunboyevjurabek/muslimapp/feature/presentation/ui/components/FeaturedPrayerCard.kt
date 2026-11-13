@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -89,6 +90,12 @@ internal fun FeaturedPrayerCard(
     val cardColor = Color(0xFF142331)
     val dark = MaterialTheme.colorScheme.background.luminance() < 0.3f
     val shadowColor = if (dark) Color(0xFF597CA4) else ScheduleCardColor
+    val footerScrim = remember(cardColor) {
+        Brush.verticalGradient(
+            0.52f to Color.Transparent,
+            1f to cardColor.copy(alpha = 0.88f),
+        )
+    }
     val scrim = remember(cardColor) {
         Brush.horizontalGradient(
             0f to cardColor,
@@ -129,6 +136,9 @@ internal fun FeaturedPrayerCard(
             }
         }
         Box(Modifier.matchParentSize().background(scrim))
+        if (interval != null && nextName != null) {
+            Box(Modifier.matchParentSize().background(footerScrim))
+        }
 
         Column(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp),
@@ -150,7 +160,7 @@ internal fun FeaturedPrayerCard(
                 )
             }
             if (interval != null && nextName != null) {
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(5.dp))
                 PrayerCardProgress(interval, nextName)
             }
         }
@@ -168,10 +178,8 @@ private fun PrayerCardProgress(interval: PrayerInterval, nextName: String) {
         label = "Light position",
     )
     Column(
-        modifier = Modifier.fillMaxWidth()
-            .background(Color(0xD9101C28), RoundedCornerShape(12.dp))
-            .padding(horizontal = 10.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp),
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         AnimatedValueText(
             interval.caption(nextName),
@@ -180,14 +188,14 @@ private fun PrayerCardProgress(interval: PrayerInterval, nextName: String) {
             fontWeight = FontWeight.Medium,
         )
         Box(
-            Modifier.fillMaxWidth().height(6.dp).clipToBounds()
+            Modifier.fillMaxWidth().height(4.dp).clipToBounds()
                 .semantics { progressBarRangeInfo = ProgressBarRangeInfo(interval.fraction, 0f..1f) }
                 .drawWithCache {
                     val corners = CornerRadius(size.height / 2f)
-                    val trackColor = Color(0xFF556272)
-                    val fillColor = Color(0xFFD19A39)
-                    val lightColor = Color(0xFFFFF3CD)
-                    val band = 30.dp.toPx()
+                    val trackColor = Color(0xFF657282)
+                    val fillColor = Color(0xFFD39936)
+                    val lightColor = Color(0xFFFFF9E8)
+                    val band = 25.dp.toPx()
                     onDrawBehind {
                         drawRoundRect(trackColor, cornerRadius = corners)
                         val filled = size.width * fraction.value
@@ -203,7 +211,7 @@ private fun PrayerCardProgress(interval: PrayerInterval, nextName: String) {
                                     startX = x - band,
                                     endX = x + band,
                                 ),
-                                topLeft = androidx.compose.ui.geometry.Offset(left, 0f),
+                                topLeft = Offset(left, 0f),
                                 size = Size(filled, size.height),
                                 cornerRadius = corners,
                             )
