@@ -1,6 +1,5 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens
 
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedValueText
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.SelectRegionViewModel
 import androidx.compose.animation.AnimatedContent
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -8,23 +7,21 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.textTra
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import uz.turgunboyevjurabek.muslimapp.core.utils.Status
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.daily.Bugungi
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.PrayerTimesError
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.FeaturedPrayerCard
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.TimeListCard
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.PrayerTimeline
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.PrayerLocationDate
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.rememberPrayerTimes
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.rememberPrayerClock
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.ScheduleRefresh
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.SavedScheduleLabel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.savedLabel
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.scheduleDate
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.PrayerScheduleViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.ScheduleDay
 import java.time.LocalTime
@@ -69,22 +66,24 @@ fun MainScreen(
                         Status.ERROR -> PrayerTimesError(current.message.orEmpty(), refresh)
                         Status.SUCCESS -> current.data?.let { today ->
                             val currentDay = period == requestedPeriod
-                            val featured = remember(today, now, currentDay) {
-                                if (currentDay) today.withFeaturedPrayerAt(now.toLocalTime()) else today
-                            }
+                            val slots = remember(today.times) { today.prayerSlots() }
+                            val clock = now.toLocalTime().toString().take(5)
+                            val currentIndex = if (currentDay) {
+                                slots.indexOfLast { (_, time) -> time != null && time <= clock }
+                            } else -1
+                            val nextIndex = if (currentDay) {
+                                slots.indexOfFirst { (_, time) -> time != null && time > clock }
+                            } else -1
+                            val featured = slots.getOrNull(if (currentIndex >= 0) currentIndex else nextIndex)
+                                ?.let { (name, time) -> today.copy(featuredPrayer = name, featuredTime = time) }
+                                ?: today
                             Column {
                                 FeaturedPrayerCard(featured)
+                                Spacer(Modifier.height(12.dp))
+                                PrayerLocationDate(today.region, today.date)
                                 SavedScheduleLabel(savedLabel)
                             }
-                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                AnimatedValueText(
-                                    if (currentDay) "Bugungi jadval" else "Namoz jadvali · ${scheduleDate(today.date)}",
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.SemiBold,
-                                )
-                                val rows = if (currentDay) featured else today.copy(featuredTime = null)
-                                TimeListCard(todayData = rows)
-                            }
+                            PrayerTimeline(slots, currentIndex, nextIndex)
                         }
                     }
                 }
@@ -93,17 +92,11 @@ fun MainScreen(
     }
 }
 
-private fun Bugungi.withFeaturedPrayerAt(now: LocalTime): Bugungi {
-    val schedule = times ?: return this
-    val slots = listOf(
-        "Bomdod" to schedule.tongSaharlik,
-        "Quyosh" to schedule.quyosh,
-        "Peshin" to schedule.peshin,
-        "Asr" to schedule.asr,
-        "Shom" to schedule.shomIftor,
-        "Xufton" to schedule.hufton,
-    ).mapNotNull { (name, time) -> time?.let { name to LocalTime.parse(it) } }
-    val current = slots.lastOrNull { (_, time) -> time <= now }
-    val (name, time) = current ?: slots.firstOrNull() ?: return this
-    return copy(featuredPrayer = name, featuredTime = time.toString(), featuredIsCurrent = current != null)
-}
+private fun Bugungi.prayerSlots(): List<Pair<String, String?>> = listOf(
+    "Bomdod" to times?.tongSaharlik,
+    "Quyosh" to times?.quyosh,
+    "Peshin" to times?.peshin,
+    "Asr" to times?.asr,
+    "Shom" to times?.shomIftor,
+    "Xufton" to times?.hufton,
+)

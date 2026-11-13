@@ -29,7 +29,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.daily.Bugungi
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.ScheduleCardColor
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.ScheduleCardContent
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedValueText
 import java.util.Locale
@@ -56,18 +55,18 @@ private fun artworkFor(prayer: String?): PrayerArtwork = when (prayer?.trim()?.l
 @Composable
 internal fun FeaturedPrayerCard(today: Bugungi, modifier: Modifier = Modifier) {
     val artwork = remember(today.featuredPrayer) { artworkFor(today.featuredPrayer) }
-    val cardColor = ScheduleCardColor
+    val cardColor = Color(0xFF142331)
     val scrim = remember(cardColor) {
         Brush.horizontalGradient(
             0f to cardColor,
-            0.48f to cardColor,
-            0.70f to cardColor.copy(alpha = 0.83f),
-            1f to cardColor.copy(alpha = 0.24f),
+            0.35f to cardColor,
+            0.58f to cardColor.copy(alpha = 0.86f),
+            1f to cardColor.copy(alpha = 0.12f),
         )
     }
 
     Box(
-        modifier = modifier.fillMaxWidth().heightIn(min = 120.dp)
+        modifier = modifier.fillMaxWidth().heightIn(min = 136.dp)
             .clip(RoundedCornerShape(20.dp)).background(cardColor),
         contentAlignment = Alignment.CenterStart,
     ) {
@@ -90,28 +89,23 @@ internal fun FeaturedPrayerCard(today: Bugungi, modifier: Modifier = Modifier) {
         Box(Modifier.matchParentSize().background(scrim))
 
         Column(
-            modifier = Modifier.fillMaxWidth(0.69f).padding(horizontal = 18.dp, vertical = 14.dp),
+            modifier = Modifier.fillMaxWidth(0.58f).padding(horizontal = 18.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
             AnimatedValueText(
                 text = today.featuredPrayer?.takeIf { it.isNotBlank() } ?: "Namoz vaqti",
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.SemiBold,
                 color = ScheduleCardContent,
             )
             today.featuredTime?.takeIf { it.isNotBlank() }?.let { time ->
                 AnimatedValueText(
                     time,
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White,
+                    style = MaterialTheme.typography.displaySmall,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFFF2D27C),
                 )
             }
-            AnimatedValueText(
-                text = listOfNotNull(today.region, today.date).joinToString(" · "),
-                style = MaterialTheme.typography.bodySmall,
-                color = ScheduleCardContent,
-            )
         }
     }
 }
