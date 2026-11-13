@@ -24,7 +24,7 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.SavedS
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.savedLabel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.PrayerScheduleViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.ScheduleDay
-import java.time.LocalTime
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.prayerInterval
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.shimmers.MainCardShimmer
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.shimmers.TimeListCardShimmer
 
@@ -83,7 +83,12 @@ fun MainScreen(
                                 PrayerLocationDate(today.region, today.date)
                                 SavedScheduleLabel(savedLabel)
                             }
-                            PrayerTimeline(slots, currentIndex, nextIndex)
+                            val interval = prayerInterval(
+                                slots.getOrNull(currentIndex)?.second,
+                                slots.getOrNull(nextIndex)?.second,
+                                now.toLocalTime(),
+                            )
+                            PrayerTimeline(slots, currentIndex, nextIndex, interval)
                         }
                     }
                 }
