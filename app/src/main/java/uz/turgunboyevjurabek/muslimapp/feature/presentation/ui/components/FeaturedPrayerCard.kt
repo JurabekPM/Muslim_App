@@ -186,7 +186,7 @@ private fun PrayerCardProgress(interval: PrayerInterval, modifier: Modifier = Mo
         label = "Light position",
     )
     Box(
-        modifier.fillMaxWidth().height(6.dp).clipToBounds()
+        modifier.fillMaxWidth().height(12.dp).clipToBounds()
             .semantics { progressBarRangeInfo = ProgressBarRangeInfo(interval.fraction, 0f..1f) }
             .drawWithCache {
                 val corners = CornerRadius(size.height / 2f)
