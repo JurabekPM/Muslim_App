@@ -1,5 +1,6 @@
 package uz.turgunboyevjurabek.muslimapp
 
+import uz.turgunboyevjurabek.muslimapp.core.utils.AppLanguage
 import android.app.AlertDialog
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
@@ -47,6 +48,10 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var permissionsManager: PermissionsManager
 
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLanguage.load(newBase).localize(newBase))
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +92,13 @@ class MainActivity : ComponentActivity() {
                 compassSensorManager = compassSensorManager,
                 permissionsManager = permissionsManager,
                 displayRotation = ::displayRotation,
+                language = AppLanguage.load(this),
+                onLanguageChange = { selected ->
+                    if (selected != AppLanguage.load(this)) {
+                        selected.save(this)
+                        recreate()
+                    }
+                },
             )
         }
 
@@ -98,14 +110,14 @@ class MainActivity : ComponentActivity() {
     // Lokatsiya xizmatlari o'chirilgan bo'lsa, foydalanuvchiga uni yoqishni so'rash uchun dialog
     private fun showLocationDialog() {
         val dialog = AlertDialog.Builder(this).apply {
-            setTitle("Location Services Disabled")
-            setMessage("Please enable location services to continue using the app.")
+            setTitle(R.string.location_services_off)
+            setMessage(R.string.location_services_hint)
             setCancelable(false)
-            setPositiveButton("Enable") { _, _ ->
+            setPositiveButton(R.string.enable) { _, _ ->
                 // Lokatsiya sozlamalarini ochish
                 startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
             }
-            setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
+            setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
         }.show()
         for (action in listOf(DialogInterface.BUTTON_POSITIVE, DialogInterface.BUTTON_NEGATIVE)) {
             val button = dialog.getButton(action)

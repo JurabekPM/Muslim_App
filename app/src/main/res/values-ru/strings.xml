@@ -1,0 +1,104 @@
+<resources>
+    <string name="home">Главная</string>
+    <string name="tasbih">Тасбих</string>
+    <string name="weekly">7 дней</string>
+    <string name="monthly">30 дней</string>
+    <string name="qibla">Кибла</string>
+    <string name="prayer_times">Время намаза</string>
+    <string name="prayer_time">Время намаза</string>
+    <string name="regions">Выбор региона</string>
+    <string name="back">Назад</string>
+    <string name="close">Закрыть</string>
+    <string name="connecting">Подключение…</string>
+    <string name="offline">Нет интернета</string>
+    <string name="online">Связь восстановлена</string>
+    <string name="refreshing">Обновление…</string>
+    <string name="fajr">Фаджр</string>
+    <string name="sunrise">Восход</string>
+    <string name="dhuhr">Зухр</string>
+    <string name="asr">Аср</string>
+    <string name="maghrib">Магриб</string>
+    <string name="isha">Иша</string>
+    <string name="prayer_schedule">Расписание намазов</string>
+    <string name="retry">Повторить</string>
+    <string name="previous_month">Предыдущий месяц</string>
+    <string name="next_month">Следующий месяц</string>
+    <string name="loading_prayers">Загрузка времени намаза</string>
+    <string name="no_day">На эту дату нет расписания.</string>
+    <string name="saved_schedule">Сохранённое расписание · %1$s</string>
+    <string name="remaining_minutes">%1$d мин</string>
+    <string name="remaining_hours">%1$d ч</string>
+    <string name="remaining_hours_minutes">%1$d ч %2$d мин</string>
+    <string name="until_prayer">До %1$s — %2$s</string>
+    <string name="location_permission">Разрешите точное местоположение или выберите регион из списка.</string>
+    <string name="region_save_failed">Не удалось сохранить регион. Выберите его снова.</string>
+    <string name="location_off">Включите геолокацию в настройках телефона.</string>
+    <string name="location_no_fix">Не удалось определить местоположение. Повторите попытку.</string>
+    <string name="location_no_address">Не удалось определить адрес. Проверьте интернет или выберите регион.</string>
+    <string name="location_no_match">Город или район не найден. Выберите регион из списка.</string>
+    <string name="main_regions">Основные регионы</string>
+    <string name="region_not_found">Регионы не найдены</string>
+    <string name="current_location">Текущее местоположение</string>
+    <string name="search_region">Поиск регионов</string>
+    <string name="clear_search">Очистить поиск</string>
+    <string name="finding_location">Определяем местоположение…</string>
+    <string name="use_location">Моё местоположение</string>
+    <string name="whole_region">Расписание: %1$s</string>
+    <string name="city_name">город %1$s</string>
+    <string name="district_name">район %1$s</string>
+    <string name="province_name">%1$s, область</string>
+    <string name="karakalpakstan">Республика Каракалпакстан</string>
+    <string name="qibla_direction">Направление киблы %1$s</string>
+    <string name="no_compass">Компас недоступен</string>
+    <string name="location_unavailable">Местоположение недоступно</string>
+    <string name="locating">Определяем местоположение</string>
+    <string name="qibla_found">Кибла найдена</string>
+    <string name="qibla_approx">Примерное направление</string>
+    <string name="hold_still">Держите телефон неподвижно</string>
+    <string name="near_qibla">Кибла близко</string>
+    <string name="low_accuracy">Низкая точность компаса</string>
+    <string name="turn_left">Поверните влево</string>
+    <string name="turn_right">Поверните вправо</string>
+    <string name="calibrate">Калибровать</string>
+    <string name="calibrate_compass">Калибровка компаса</string>
+    <string name="calibrate_metal">Снимите магнитный чехол и отойдите от металлических предметов.</string>
+    <string name="calibrate_motion">Несколько раз опишите телефоном восьмёрку, затем ненадолго удержите его неподвижно.</string>
+    <string name="accuracy_ready">Точность компаса достаточная</string>
+    <string name="accuracy_still_low">Точность компаса всё ещё низкая</string>
+    <string name="north">Север</string>
+    <string name="east">Восток</string>
+    <string name="south">Юг</string>
+    <string name="west">Запад</string>
+    <string name="qibla_compass">Компас киблы</string>
+    <string name="loading_tasbih">Загрузка счётчика тасбиха</string>
+    <string name="no_dhikr_history">История зикра пока недоступна</string>
+    <string name="dhikr_history">История зикра</string>
+    <string name="reset_count">Сбросить счётчик</string>
+    <string name="new_dhikr">Новый зикр</string>
+    <string name="continue_dhikr">Продолжите предыдущий зикр</string>
+    <string name="dhikr">Зикр</string>
+    <string name="location_services_off">Геолокация отключена</string>
+    <string name="location_services_hint">Включите геолокацию в настройках телефона.</string>
+    <string name="enable">Включить</string>
+    <string name="cancel">Отмена</string>
+    <string name="language">Язык приложения</string>
+    <string name="schedule_offline">Нет интернета. Расписание этого региона ещё не сохранено.</string>
+    <string name="schedule_save_failed">Не удалось сохранить расписание на устройстве.</string>
+    <string name="schedule_http_error">Не удалось загрузить время намаза (HTTP %1$s).</string>
+    <string name="schedule_network_error">Проверьте интернет и повторите попытку.</string>
+    <string name="schedule_read_error">Не удалось прочитать расписание намазов.</string>
+    <string-array name="date_month_names">
+        <item>января</item>
+        <item>февраля</item>
+        <item>марта</item>
+        <item>апреля</item>
+        <item>мая</item>
+        <item>июня</item>
+        <item>июля</item>
+        <item>августа</item>
+        <item>сентября</item>
+        <item>октября</item>
+        <item>ноября</item>
+        <item>декабря</item>
+    </string-array>
+</resources>

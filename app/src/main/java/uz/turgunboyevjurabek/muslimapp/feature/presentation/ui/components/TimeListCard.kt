@@ -1,5 +1,7 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components
 
+import uz.turgunboyevjurabek.muslimapp.R
+import androidx.compose.ui.res.stringResource
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedValueText
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.HorizontalDivider
@@ -24,12 +26,12 @@ internal fun PrayerScheduleRows(
     rowHeight: Dp = 47.dp,
 ) {
     val rows = listOf(
-        "Bomdod" to bomdod,
-        "Quyosh" to quyosh,
-        "Peshin" to peshin,
-        "Asr" to asr,
-        "Shom" to shom,
-        "Xufton" to xufton,
+        stringResource(R.string.fajr) to bomdod,
+        stringResource(R.string.sunrise) to quyosh,
+        stringResource(R.string.dhuhr) to peshin,
+        stringResource(R.string.asr) to asr,
+        stringResource(R.string.maghrib) to shom,
+        stringResource(R.string.isha) to xufton,
     )
     val colors = MaterialTheme.colorScheme
     Column {

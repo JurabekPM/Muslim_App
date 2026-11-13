@@ -1,5 +1,7 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.calendar
 
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.appLocale
+import androidx.compose.ui.res.stringResource
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedValueText
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.PressIconButton
 import android.os.Build
@@ -35,13 +37,13 @@ fun Header(
         PressIconButton(onClick = { onPreviousMonthButtonClicked(yearMonth.minusMonths(1)) }) {
             Icon(
                 painter = chevron,
-                contentDescription = "Oldingi oy",
+                contentDescription = stringResource(R.string.previous_month),
                 modifier = Modifier.size(22.dp).rotate(-forwardRotation),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
         AnimatedValueText(
-            text = yearMonth.getDisplayName(),
+            text = yearMonth.getDisplayName(appLocale()),
             contentAlignment = Alignment.Center,
             fontSize = 15.sp,
             style = MaterialTheme.typography.bodyLarge,
@@ -54,7 +56,7 @@ fun Header(
         PressIconButton(onClick = { onNextMonthButtonClicked(yearMonth.plusMonths(1)) }) {
             Icon(
                 painter = chevron,
-                contentDescription = "Keyingi oy",
+                contentDescription = stringResource(R.string.next_month),
                 modifier = Modifier.size(22.dp).rotate(forwardRotation),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )

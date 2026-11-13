@@ -1,3 +1,105 @@
 <resources>
     <string name="app_name">Muslim App</string>
+    <string name="home">Asosiy</string>
+    <string name="tasbih">Tasbex</string>
+    <string name="weekly">7 Kunlik</string>
+    <string name="monthly">30 Kunlik</string>
+    <string name="qibla">Qibla</string>
+    <string name="prayer_times">Namoz vaqtlari</string>
+    <string name="prayer_time">Namoz vaqti</string>
+    <string name="regions">Hududni tanlash</string>
+    <string name="back">Orqaga</string>
+    <string name="close">Yopish</string>
+    <string name="connecting">Ulanmoqda…</string>
+    <string name="offline">Internet yo‘q</string>
+    <string name="online">Internet ulandi</string>
+    <string name="refreshing">Yangilanmoqda…</string>
+    <string name="fajr">Bomdod</string>
+    <string name="sunrise">Quyosh</string>
+    <string name="dhuhr">Peshin</string>
+    <string name="asr">Asr</string>
+    <string name="maghrib">Shom</string>
+    <string name="isha">Xufton</string>
+    <string name="prayer_schedule">Namoz jadvali</string>
+    <string name="retry">Qayta urinish</string>
+    <string name="previous_month">Oldingi oy</string>
+    <string name="next_month">Keyingi oy</string>
+    <string name="loading_prayers">Namoz vaqtlari yuklanmoqda</string>
+    <string name="no_day">Tanlangan kun uchun namoz vaqtlari topilmadi.</string>
+    <string name="saved_schedule">Saqlangan jadval · %1$s</string>
+    <string name="remaining_minutes">%1$d daq</string>
+    <string name="remaining_hours">%1$d soat</string>
+    <string name="remaining_hours_minutes">%1$d soat %2$d daq</string>
+    <string name="until_prayer">%1$sgacha %2$s</string>
+    <string name="location_permission">Aniq joylashuvga ruxsat bering yoki hududni ro‘yxatdan tanlang.</string>
+    <string name="region_save_failed">Hududni saqlab bo‘lmadi. Qayta tanlang.</string>
+    <string name="location_off">Telefon sozlamalarida joylashuvni yoqing.</string>
+    <string name="location_no_fix">Joylashuv aniqlanmadi. Qayta urinib ko‘ring.</string>
+    <string name="location_no_address">Manzil aniqlanmadi. Internetni tekshiring yoki hududni tanlang.</string>
+    <string name="location_no_match">Mos shahar yoki tuman topilmadi. Hududni ro‘yxatdan tanlang.</string>
+    <string name="main_regions">Asosiy hududlar</string>
+    <string name="region_not_found">Hudud topilmadi</string>
+    <string name="current_location">Hozirgi joylashuv</string>
+    <string name="search_region">Hudud qidirish</string>
+    <string name="clear_search">Qidiruvni tozalash</string>
+    <string name="finding_location">Joylashuv aniqlanmoqda…</string>
+    <string name="use_location">Hozirgi joylashuvim</string>
+    <string name="whole_region">%1$s bo‘yicha</string>
+    <string name="city_name">%1$s shahri</string>
+    <string name="district_name">%1$s tumani</string>
+    <string name="province_name">%1$s viloyati</string>
+    <string name="karakalpakstan">Qoraqalpog‘iston Respublikasi</string>
+    <string name="qibla_direction">Qibla yo‘nalishi %1$s</string>
+    <string name="no_compass">Kompas mavjud emas</string>
+    <string name="location_unavailable">Joylashuv aniqlanmadi</string>
+    <string name="locating">Joylashuv aniqlanmoqda</string>
+    <string name="qibla_found">Qibla topildi</string>
+    <string name="qibla_approx">Qiblaga taxminan mos</string>
+    <string name="hold_still">Qimirlatmay turing</string>
+    <string name="near_qibla">Qiblaga yaqin</string>
+    <string name="low_accuracy">Kompas aniqligi past</string>
+    <string name="turn_left">Chapga buriling</string>
+    <string name="turn_right">O‘ngga buriling</string>
+    <string name="calibrate">Kalibrlash</string>
+    <string name="calibrate_compass">Kompasni kalibrlash</string>
+    <string name="calibrate_metal">Magnitli g‘ilofni yeching va metall buyumlardan uzoqlashing.</string>
+    <string name="calibrate_motion">Telefon bilan havoda bir necha marta 8 shaklini chizing. Keyin telefonni bir zum qimirlatmay tuting.</string>
+    <string name="accuracy_ready">Kompas aniqligi yetarli</string>
+    <string name="accuracy_still_low">Kompas aniqligi hali past</string>
+    <string name="north">Shimol</string>
+    <string name="east">Sharq</string>
+    <string name="south">Janub</string>
+    <string name="west">G‘arb</string>
+    <string name="qibla_compass">Qibla kompasi</string>
+    <string name="loading_tasbih">Tasbeh hisobi yuklanmoqda</string>
+    <string name="no_dhikr_history">Zikr tarixi hozircha mavjud emas</string>
+    <string name="dhikr_history">Zikr tarixi</string>
+    <string name="reset_count">Hisobni nolga tushirish</string>
+    <string name="new_dhikr">Yangi zikr</string>
+    <string name="continue_dhikr">Avvalgi zikrni davom ettiring</string>
+    <string name="dhikr">Zikr</string>
+    <string name="location_services_off">Joylashuv xizmatlari o‘chiq</string>
+    <string name="location_services_hint">Telefon sozlamalarida joylashuvni yoqing.</string>
+    <string name="enable">Yoqish</string>
+    <string name="cancel">Bekor qilish</string>
+    <string name="language">Ilova tili</string>
+    <string name="schedule_offline">Internet yo‘q. Bu hududning jadvali hali saqlanmagan.</string>
+    <string name="schedule_save_failed">Jadvalni telefonga saqlab bo‘lmadi.</string>
+    <string name="schedule_http_error">Namoz vaqtlarini yuklab bo‘lmadi (HTTP %1$s).</string>
+    <string name="schedule_network_error">Internet aloqasini tekshiring va qayta urining.</string>
+    <string name="schedule_read_error">Namoz vaqtlari ma’lumotini o‘qib bo‘lmadi.</string>
+    <string-array name="date_month_names">
+        <item>yanvar</item>
+        <item>fevral</item>
+        <item>mart</item>
+        <item>aprel</item>
+        <item>may</item>
+        <item>iyun</item>
+        <item>iyul</item>
+        <item>avgust</item>
+        <item>sentabr</item>
+        <item>oktabr</item>
+        <item>noyabr</item>
+        <item>dekabr</item>
+    </string-array>
 </resources>

@@ -1,5 +1,6 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components
 
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -49,7 +50,7 @@ internal fun PrayerLocationDate(region: String?, date: String?) {
             tint = color,
         )
         AnimatedValueText(
-            listOfNotNull(region, date?.let(::scheduleDate)).joinToString(" · "),
+            listOfNotNull(region, date?.let { scheduleDate(it) }).joinToString(" · "),
             color = color,
             style = MaterialTheme.typography.bodyMedium,
         )
@@ -62,10 +63,11 @@ internal fun PrayerTimeline(
     currentIndex: Int,
 ) {
     val colors = MaterialTheme.colorScheme
+    val scheduleDescription = stringResource(R.string.prayer_schedule)
     val markers = remember { mutableStateMapOf<Int, Float>() }
     Column(
         Modifier.fillMaxWidth()
-            .semantics { contentDescription = "Namoz jadvali" }
+            .semantics { contentDescription = scheduleDescription }
             .drawBehind {
                 val start = markers[0] ?: return@drawBehind
                 val end = markers[slots.lastIndex] ?: return@drawBehind
@@ -107,7 +109,7 @@ internal fun PrayerTimeline(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
-                                name,
+                                prayerName(name),
                                 modifier = Modifier.weight(1f),
                                 style = MaterialTheme.typography.bodyLarge,
                                 fontWeight = if (current) FontWeight.Bold else FontWeight.SemiBold,

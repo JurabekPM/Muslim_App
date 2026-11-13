@@ -1,5 +1,7 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens
 
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.messageText
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.displayName
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.SelectRegionViewModel
 import androidx.compose.animation.AnimatedContent
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -63,7 +65,7 @@ fun MainScreen(
                             MainCardShimmer()
                             TimeListCardShimmer()
                         }
-                        Status.ERROR -> PrayerTimesError(current.message.orEmpty(), refresh)
+                        Status.ERROR -> PrayerTimesError(messageText(current.message), refresh)
                         Status.SUCCESS -> current.data?.let { today ->
                             val currentDay = period == requestedPeriod
                             val slots = remember(today.times) { today.prayerSlots() }
@@ -85,7 +87,7 @@ fun MainScreen(
                             Column {
                                 FeaturedPrayerCard(featured, interval, slots.getOrNull(nextIndex)?.first)
                                 Spacer(Modifier.height(12.dp))
-                                PrayerLocationDate(today.region, today.date)
+                                PrayerLocationDate(region?.displayName() ?: today.region, today.date)
                                 SavedScheduleLabel(savedLabel)
                             }
                             PrayerTimeline(slots, currentIndex)

@@ -1,5 +1,12 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens
 
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.messageText
+import java.time.format.TextStyle
+import java.time.DayOfWeek
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.appLocale
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.displayName
+import uz.turgunboyevjurabek.muslimapp.R
+import androidx.compose.ui.res.stringResource
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.SelectRegionViewModel
 import androidx.compose.animation.AnimatedContent
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -60,6 +67,7 @@ fun DayOf30Screen(
     }
 
     val ovalShape = RoundedCornerShape(36.dp)
+    val locale = appLocale()
     ScheduleRefresh(load, refresh, topPadding, bottomPadding) {
         Column(
             modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
@@ -68,7 +76,7 @@ fun DayOf30Screen(
         ) {
             if (region != null) {
                 Column {
-                    ScheduleRegion(region.nameRegion)
+                    ScheduleRegion(region.displayName())
                     SavedScheduleLabel(savedLabel)
                 }
             } else {
@@ -80,7 +88,9 @@ fun DayOf30Screen(
                 color = MaterialTheme.colorScheme.surfaceContainerLow,
             ) {
                 CalendarWidget(
-                    days = arrayOf("Du", "Se", "Ch", "Pa", "Ju", "Sh", "Ya"),
+                    days = DayOfWeek.entries.map { day ->
+                        day.getDisplayName(TextStyle.SHORT, locale).replaceFirstChar { it.titlecase(locale) }
+                    }.toTypedArray(),
                     yearMonth = month,
                     dates = calendarDates.map { it.copy(isSelected = it.dayOfMonth.toIntOrNull() == selectedDay) },
                     onPreviousMonthButtonClicked = calendarViewModel::selectMonth,
@@ -101,14 +111,14 @@ fun DayOf30Screen(
                             ShimmerPlaceholder(
                                 Modifier.fillMaxWidth().height(230.dp),
                                 cornerRadius = 36.dp,
-                                description = "Namoz vaqtlari yuklanmoqda",
+                                description = stringResource(R.string.loading_prayers),
                             )
                         }
-                        Status.ERROR -> PrayerTimesError(current.message.orEmpty(), refresh)
+                        Status.ERROR -> PrayerTimesError(messageText(current.message), refresh)
                         Status.SUCCESS -> {
                             val entry = current.data?.firstOrNull { it.day == day }
                             if (entry == null) {
-                                PrayerTimesError("Tanlangan kun uchun namoz vaqtlari topilmadi.", refresh)
+                                PrayerTimesError(stringResource(R.string.no_day), refresh)
                             } else {
                                 AnimatedValueText(
                                     scheduleDate(entry.date),

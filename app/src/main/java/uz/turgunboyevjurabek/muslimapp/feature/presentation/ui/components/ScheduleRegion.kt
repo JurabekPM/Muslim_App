@@ -1,5 +1,8 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components
 
+import uz.turgunboyevjurabek.muslimapp.R
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -44,18 +47,30 @@ internal fun ScheduleRegion(region: String, dateRange: String = "") {
 }
 
 private val apiDate = DateTimeFormatter.ofPattern("dd.MM.uuuu", Locale.ROOT)
-private val displayDate = DateTimeFormatter.ofPattern("d MMMM", Locale.forLanguageTag("uz-Latn-UZ"))
+@Composable
+internal fun scheduleDate(value: String?): String {
+    val locale = appLocale()
+    val date = value?.let { LocalDate.parse(it, apiDate) } ?: return ""
+    if (locale.language == "ru") {
+        val month = stringArrayResource(R.array.date_month_names)[date.monthValue - 1]
+        return "${date.dayOfMonth} $month"
+    }
+    return date.format(DateTimeFormatter.ofPattern("d MMMM", locale))
+}
 
-internal fun scheduleDate(value: String?): String =
-    value?.let { LocalDate.parse(it, apiDate).format(displayDate) }.orEmpty()
+@Composable
+internal fun scheduleWeekday(value: String?): String {
+    val locale = appLocale()
+    return value?.let { LocalDate.parse(it, apiDate).dayOfWeek.getDisplayName(java.time.format.TextStyle.FULL, locale) }
+        ?.replaceFirstChar { it.titlecase(locale) }.orEmpty()
+}
 
-private val savedTime = DateTimeFormatter.ofPattern("d MMM, HH:mm", Locale.forLanguageTag("uz-Latn-UZ"))
-    .withZone(prayerZone)
-
+@Composable
 internal fun ScheduleLoad<*>.savedLabel(connection: InternetConnection, requestedPeriod: String): String? {
     val saved = snapshot ?: return null
     if (connection == InternetConnection.Online && saved.period == requestedPeriod && refreshError == null) return null
-    return "Saqlangan jadval · ${savedTime.format(Instant.ofEpochMilli(saved.savedAt))}"
+    val savedTime = DateTimeFormatter.ofPattern("d MMM, HH:mm", appLocale()).withZone(prayerZone)
+    return stringResource(R.string.saved_schedule, savedTime.format(Instant.ofEpochMilli(saved.savedAt)))
 }
 
 @Composable

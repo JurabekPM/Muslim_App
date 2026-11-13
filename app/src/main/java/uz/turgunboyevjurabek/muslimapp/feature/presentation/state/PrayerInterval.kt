@@ -20,14 +20,3 @@ private fun parsePrayerTime(time: String?): LocalTime? = try {
 } catch (_: DateTimeParseException) {
     null
 }
-
-internal fun PrayerInterval.caption(nextName: String): String {
-    val hours = minutesLeft / 60
-    val minutes = minutesLeft % 60
-    val remaining = when {
-        hours == 0L -> "$minutes daq"
-        minutes == 0L -> "$hours soat"
-        else -> "$hours soat $minutes daq"
-    }
-    return "${nextName}gacha $remaining"
-}

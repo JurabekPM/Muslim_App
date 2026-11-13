@@ -1,5 +1,8 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.state
 
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.navigation.AppRoute
+import uz.turgunboyevjurabek.muslimapp.core.utils.UiMessage
+import uz.turgunboyevjurabek.muslimapp.R
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -48,10 +51,10 @@ class PrayerScheduleViewModel @Inject constructor(
         "monthly", BirOylik::class.java, ScheduleMonth::region, { it.month.toString() },
     ) { repository.getMonthlySchedule(it.region, it.month) }
 
-    fun isRefreshing(screenName: String): Boolean = when (screenName) {
-        "Asosiy" -> daily.isRefreshing
-        "7 Kunlik" -> weekly.isRefreshing
-        "30 Kunlik" -> monthly.isRefreshing
+    fun isRefreshing(route: String?): Boolean = when (route) {
+        AppRoute.HOME, null -> daily.isRefreshing
+        AppRoute.WEEKLY -> weekly.isRefreshing
+        AppRoute.MONTHLY -> monthly.isRefreshing
         else -> false
     }
 
@@ -74,7 +77,7 @@ class PrayerScheduleViewModel @Inject constructor(
 internal data class ScheduleLoad<T>(
     val result: Resource<T> = Resource.loading(null),
     val requesting: Boolean = false,
-    val refreshError: String? = null,
+    val refreshError: UiMessage? = null,
     val snapshot: SavedSchedule<T>? = null,
     val attemptedOnline: Boolean = false,
 ) {
@@ -114,7 +117,7 @@ internal class ScheduleCache<K : Any, T : Any>(
                 if (retained == null) retained = restore(key)
                 if (!online() || !force && retained?.period == period) {
                     entries[key] = retained?.asLoad() ?: ScheduleLoad(
-                        Resource.error("Internet yo‘q. Bu hududning jadvali hali saqlanmagan."),
+                        Resource.error(UiMessage(R.string.schedule_offline)),
                     )
                     return@launch
                 }
@@ -126,7 +129,7 @@ internal class ScheduleCache<K : Any, T : Any>(
                     persist(key, saved)
                     null
                 } catch (_: IOException) {
-                    "Jadvalni telefonga saqlab bo‘lmadi."
+                    UiMessage(R.string.schedule_save_failed)
                 }
                 entries[key] = saved.asLoad(attemptedOnline = true).copy(refreshError = saveError)
             } catch (cancelled: CancellationException) {
@@ -139,9 +142,9 @@ internal class ScheduleCache<K : Any, T : Any>(
                 throw cancelled
             } catch (error: Exception) {
                 val message = when (error) {
-                    is HttpException -> "Namoz vaqtlarini yuklab bo‘lmadi (HTTP ${error.code()})."
-                    is IOException -> "Internet aloqasini tekshiring va qayta urining."
-                    else -> "Namoz vaqtlari ma’lumotini o‘qib bo‘lmadi."
+                    is HttpException -> UiMessage(R.string.schedule_http_error, error.code().toString())
+                    is IOException -> UiMessage(R.string.schedule_network_error)
+                    else -> UiMessage(R.string.schedule_read_error)
                 }
                 entries[key] = retained?.asLoad(attemptedOnline = attempted)?.copy(refreshError = message)
                     ?: ScheduleLoad(Resource.error(message), attemptedOnline = attempted)

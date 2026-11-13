@@ -1,5 +1,6 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.navigation
 
+import uz.turgunboyevjurabek.muslimapp.core.utils.AppLanguage
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -42,7 +43,6 @@ import uz.turgunboyevjurabek.muslimapp.feature.data.location.PermissionsManager
 import uz.turgunboyevjurabek.muslimapp.feature.data.location.RegionLocationLookup
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MyTopBar
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.myBottomNavigationBar
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.screenNameForRoute
 
 @Composable
 internal fun MuslimApp(
@@ -55,6 +55,8 @@ internal fun MuslimApp(
     compassSensorManager: CompassSensorManager,
     permissionsManager: PermissionsManager,
     displayRotation: () -> Int,
+    language: AppLanguage,
+    onLanguageChange: (AppLanguage) -> Unit,
 ) {
     MuslimAppTheme {
         Surface(
@@ -71,15 +73,15 @@ internal fun MuslimApp(
                     .fillMaxSize(),
                 topBar = {
                     if (!selectingRegion) {
-                        val screenName = screenNameForRoute(entry?.destination?.route)
+                        val route = entry?.destination?.route
                         val connection by scheduleViewModel.connection.collectAsStateWithLifecycle()
                         MyTopBar(
                             modifier = Modifier,
                             navController = navController,
-                            screenName = screenName,
+                            route = route,
                             backdrop = chromeBackdrop,
                             connection = connection,
-                            refreshing = scheduleViewModel.isRefreshing(screenName),
+                            refreshing = scheduleViewModel.isRefreshing(route),
                             onRegionClick = {
                                 navController.navigate(AppRoute.REGIONS) { launchSingleTop = true }
                             },
@@ -118,6 +120,8 @@ internal fun MuslimApp(
                             RegionSelectionScreen(
                                 selectRegionViewModel = regionViewModel,
                                 lookupLocation = regionLocationLookup::find,
+                                language = language,
+                                onLanguageChange = onLanguageChange,
                                 onClose = { navController.popBackStack() },
                             )
                         }

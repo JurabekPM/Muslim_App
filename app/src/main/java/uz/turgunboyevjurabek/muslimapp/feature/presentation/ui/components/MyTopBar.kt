@@ -2,6 +2,7 @@
 
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components
 
+import androidx.compose.ui.res.stringResource
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.Animatable
@@ -78,13 +79,13 @@ private val glassFadeAboveEdge = 24.dp
 fun MyTopBar(
     modifier: Modifier,
     navController: NavController,
-    screenName: String,
+    route: String?,
     backdrop: HazeState,
     connection: InternetConnection,
     refreshing: Boolean,
     onRegionClick: () -> Unit,
 ) {
-    val onQiblaScreen = screenName == "Qibla"
+    val onQiblaScreen = route == AppRoute.QIBLA
     val colors = MaterialTheme.colorScheme
     val glassColor = colors.surface
     val darkGlass = glassColor.luminance() < 0.35f
@@ -144,20 +145,20 @@ fun MyTopBar(
             ),
             title = {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    AppBarTitle(if (screenName == "Asosiy") "Namoz vaqtlari" else screenName)
+                    AppBarTitle(stringResource(titleForRoute(route)))
                     ConnectionSubtitle(connection, refreshing)
                 }
             },
             navigationIcon = {
                 if (onQiblaScreen) {
-                    AppBarIconButton(R.drawable.ic_qibla_back, "Orqaga") { navController.popBackStack() }
+                    AppBarIconButton(R.drawable.ic_qibla_back, stringResource(R.string.back)) { navController.popBackStack() }
                 } else {
-                    AppBarIconButton(R.drawable.ic_qibla_location, "Hududni tanlash", onRegionClick)
+                    AppBarIconButton(R.drawable.ic_qibla_location, stringResource(R.string.regions), onRegionClick)
                 }
             },
             actions = {
                 if (!onQiblaScreen) {
-                    AppBarIconButton(R.drawable.ic_qibla_kaaba, "Qibla") {
+                    AppBarIconButton(R.drawable.ic_qibla_kaaba, stringResource(R.string.qibla)) {
                         if (navController.currentDestination?.route != AppRoute.QIBLA) {
                             navController.navigate(AppRoute.QIBLA)
                         }
@@ -189,11 +190,11 @@ private fun AppBarTitle(title: String) {
     )
 }
 
-private enum class ConnectionNotice(val title: String, val busy: Boolean = false) {
-    Connecting("Ulanmoqda…", busy = true),
-    Offline("Internet yo‘q"),
-    Restored("Internet ulandi"),
-    Refreshing("Yangilanmoqda…", busy = true),
+private enum class ConnectionNotice(val title: Int, val busy: Boolean = false) {
+    Connecting(R.string.connecting, busy = true),
+    Offline(R.string.offline),
+    Restored(R.string.online),
+    Refreshing(R.string.refreshing, busy = true),
 }
 
 @Composable
@@ -246,7 +247,7 @@ private fun ConnectionSubtitle(connection: InternetConnection, refreshing: Boole
                     Box(Modifier.size(5.dp).background(colors.tertiary, CircleShape))
                 }
                 Text(
-                    current.title,
+                    stringResource(current.title),
                     style = MaterialTheme.typography.labelSmall,
                     color = colors.onSurfaceVariant,
                     maxLines = 1,

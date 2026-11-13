@@ -20,6 +20,6 @@ fun YearMonth.getDayOfMonthStartingFromMonday(): List<LocalDate> {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun YearMonth.getDisplayName(): String {
-    return "${month.getDisplayName(TextStyle.FULL, Locale.getDefault())} $year"
+fun YearMonth.getDisplayName(locale: Locale): String {
+    return "${month.getDisplayName(TextStyle.FULL, locale)} $year"
 }

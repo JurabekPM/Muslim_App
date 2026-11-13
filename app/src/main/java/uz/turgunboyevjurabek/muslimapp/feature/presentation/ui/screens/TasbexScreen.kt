@@ -1,5 +1,6 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens
 
+import androidx.compose.ui.res.stringResource
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedValueText
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.pressScale
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.rememberPressScale
@@ -74,7 +75,7 @@ fun TasbexScreen(viewModel: CounterViewModel) {
     val initialCount = savedCount
     if (initialCount == null) {
         Box(Modifier.fillMaxSize().padding(top = 50.dp), contentAlignment = Alignment.TopCenter) {
-            ShimmerPlaceholder(Modifier.size(width = 88.dp, height = 56.dp), description = "Tasbeh hisobi yuklanmoqda")
+            ShimmerPlaceholder(Modifier.size(width = 88.dp, height = 56.dp), description = stringResource(R.string.loading_tasbih))
         }
         return
     }
@@ -124,11 +125,11 @@ fun TasbexScreen(viewModel: CounterViewModel) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 PressIconButton(onClick = {
-                    Toast.makeText(context, "Zikr tarixi hozircha mavjud emas", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.no_dhikr_history, Toast.LENGTH_SHORT).show()
                 }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_tasbex_history),
-                        contentDescription = "Zikr tarixi",
+                        contentDescription = stringResource(R.string.dhikr_history),
                         modifier = Modifier.size(24.dp),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -139,7 +140,7 @@ fun TasbexScreen(viewModel: CounterViewModel) {
                 }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_tasbex_reset),
-                        contentDescription = "Hisobni nolga tushirish",
+                        contentDescription = stringResource(R.string.reset_count),
                         modifier = Modifier.size(24.dp),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -186,7 +187,7 @@ fun MessageText(viewModel: CounterViewModel, modifier: Modifier) {
         )
     ) {
         AnimatedValueText(
-            text = if (counterViewModel.value == 0) "Yangi zikr" else "Avvalgi zikrni davom ettiring",
+            text = if (counterViewModel.value == 0) stringResource(R.string.new_dhikr) else stringResource(R.string.continue_dhikr),
             fontSize = 15.sp,
             textAlign = TextAlign.Center,
             fontFamily = FontFamily.Serif,
@@ -274,7 +275,7 @@ fun ShapeCount(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                "Zikr",
+                stringResource(R.string.dhikr),
                 fontSize = 25.sp,
                 fontFamily = FontFamily.Serif,
                 fontWeight = FontWeight.ExtraBold

@@ -1,5 +1,6 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components
 
+import androidx.compose.ui.res.stringResource
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.LinearEasing
@@ -51,7 +52,6 @@ import androidx.compose.ui.unit.dp
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.daily.Bugungi
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.PrayerInterval
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.caption
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.ScheduleCardContent
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.ScheduleCardColor
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedValueText
@@ -155,7 +155,8 @@ internal fun FeaturedPrayerCard(
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
             AnimatedValueText(
-                text = today.featuredPrayer?.takeIf { it.isNotBlank() } ?: "Namoz vaqti",
+                text = today.featuredPrayer?.takeIf { it.isNotBlank() }?.let { prayerName(it) }
+                    ?: stringResource(R.string.prayer_time),
                 modifier = Modifier.fillMaxWidth(0.58f),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.SemiBold,
@@ -172,7 +173,7 @@ internal fun FeaturedPrayerCard(
             if (interval != null && nextName != null) {
                 Spacer(Modifier.height(5.dp))
                 AnimatedValueText(
-                    interval.caption(nextName),
+                    interval.remainingCaption(nextName),
                     style = MaterialTheme.typography.bodySmall,
                     color = Color(0xFFFFE4A5),
                     fontWeight = FontWeight.Medium,

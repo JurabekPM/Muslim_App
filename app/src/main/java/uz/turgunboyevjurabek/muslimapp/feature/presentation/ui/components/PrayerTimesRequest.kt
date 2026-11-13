@@ -1,5 +1,8 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components
 
+import uz.turgunboyevjurabek.muslimapp.core.utils.UiMessage
+import uz.turgunboyevjurabek.muslimapp.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -61,8 +64,9 @@ internal fun ScheduleRefresh(
 ) {
     val pullState = rememberPullToRefreshState()
     val snackbar = remember { SnackbarHostState() }
-    LaunchedEffect(state.refreshError) {
-        state.refreshError?.let { snackbar.showSnackbar(it) }
+    val refreshError = state.refreshError?.let { messageText(it) }
+    LaunchedEffect(refreshError) {
+        refreshError?.let { snackbar.showSnackbar(it) }
     }
     Box(Modifier.fillMaxSize()) {
         PullToRefreshBox(
@@ -104,7 +108,14 @@ internal fun PrayerTimesError(message: String, onRetry: () -> Unit) {
             interactionSource = interactionSource,
             modifier = Modifier.pressScale(rememberPressScale(interactionSource)),
         ) {
-            Text("Qayta urinish")
+            Text(stringResource(R.string.retry))
         }
     }
+}
+
+@Composable
+internal fun messageText(message: UiMessage?): String = when {
+    message == null -> stringResource(R.string.schedule_read_error)
+    message.argument == null -> stringResource(message.resource)
+    else -> stringResource(message.resource, message.argument)
 }

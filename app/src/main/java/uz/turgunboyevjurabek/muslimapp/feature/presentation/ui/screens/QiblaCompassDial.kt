@@ -1,5 +1,6 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens
 
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -58,13 +59,15 @@ internal fun QiblaCompassDial(state: State<QiblaState>, facingQibla: Boolean) {
     }
     val textMeasurer = rememberTextMeasurer()
     val labelStyle = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold)
-    val labels = remember(textMeasurer, labelStyle) {
-        listOf("Shimol", "Sharq", "Janub", "G‘arb").map { textMeasurer.measure(it, labelStyle) }
+    val directions = listOf(R.string.north, R.string.east, R.string.south, R.string.west).map { stringResource(it) }
+    val labels = remember(textMeasurer, labelStyle, directions) {
+        directions.map { textMeasurer.measure(it, labelStyle) }
     }
+    val compassDescription = stringResource(R.string.qibla_compass)
 
     Box(
         Modifier.widthIn(max = 360.dp).fillMaxWidth().aspectRatio(1f)
-            .semantics { contentDescription = "Qibla kompasi" }
+            .semantics { contentDescription = compassDescription }
             .drawWithCache {
                 val center = Offset(size.width / 2f, size.height / 2f)
                 val radius = size.minDimension * 0.42f

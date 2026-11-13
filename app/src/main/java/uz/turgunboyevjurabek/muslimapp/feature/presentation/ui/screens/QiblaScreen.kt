@@ -1,5 +1,6 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens
 
+import androidx.compose.ui.res.stringResource
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedValueText
 import androidx.annotation.DrawableRes
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -73,10 +74,11 @@ fun QiblaScreen(
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             QiblaCompassDial(state, facingQibla)
             val bearingText = bearing?.let { "${it.roundToInt().mod(360)}°" } ?: "—"
+            val bearingDescription = stringResource(R.string.qibla_direction, bearingText)
             AnimatedValueText(
                 text = bearingText,
                 modifier = Modifier.clearAndSetSemantics {
-                    contentDescription = "Qibla yo‘nalishi $bearingText"
+                    contentDescription = bearingDescription
                 },
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.labelMedium,
@@ -91,7 +93,7 @@ fun QiblaScreen(
 
 internal data class QiblaStatus(
     @DrawableRes val icon: Int,
-    val title: String,
+    val title: Int,
     val showCalibration: Boolean = false,
     val loading: Boolean = false,
 )
@@ -100,20 +102,20 @@ internal fun qiblaStatus(state: QiblaState, compassAvailable: Boolean): QiblaSta
     val turn = state.turn
     val degrees = turn?.let { abs(it).roundToInt() }
     return when {
-        !compassAvailable -> QiblaStatus(R.drawable.ic_qibla_warning, "Kompas mavjud emas")
-        state.locationUnavailable -> QiblaStatus(R.drawable.ic_qibla_warning, "Joylashuv aniqlanmadi")
-        state.qiblaDirection == null -> QiblaStatus(R.drawable.ic_qibla_location, "Joylashuv aniqlanmoqda", loading = true)
-        state.aligned -> QiblaStatus(R.drawable.ic_qibla_check, "Qibla topildi")
+        !compassAvailable -> QiblaStatus(R.drawable.ic_qibla_warning, R.string.no_compass)
+        state.locationUnavailable -> QiblaStatus(R.drawable.ic_qibla_warning, R.string.location_unavailable)
+        state.qiblaDirection == null -> QiblaStatus(R.drawable.ic_qibla_location, R.string.locating, loading = true)
+        state.aligned -> QiblaStatus(R.drawable.ic_qibla_check, R.string.qibla_found)
         state.approximatelyAligned && !state.compass.canConfirm ->
-            QiblaStatus(R.drawable.ic_qibla_target, "Qiblaga taxminan mos", showCalibration = true)
+            QiblaStatus(R.drawable.ic_qibla_target, R.string.qibla_approx, showCalibration = true)
         degrees != null && degrees <= 3 && state.rawTurn != null && state.compass.canConfirm ->
-            QiblaStatus(R.drawable.ic_qibla_target, "Qimirlatmay turing")
+            QiblaStatus(R.drawable.ic_qibla_target, R.string.hold_still)
         degrees != null && degrees <= 3 && state.rawTurn != null ->
-            QiblaStatus(R.drawable.ic_qibla_target, "Qiblaga yaqin", showCalibration = true)
+            QiblaStatus(R.drawable.ic_qibla_target, R.string.near_qibla, showCalibration = true)
         !state.compass.reliable || turn == null || degrees == null ->
-            QiblaStatus(R.drawable.ic_qibla_warning, "Kompas aniqligi past", showCalibration = true)
-        turn < 0f -> QiblaStatus(R.drawable.ic_qibla_turn_left, "Chapga buriling")
-        else -> QiblaStatus(R.drawable.ic_qibla_turn_right, "O‘ngga buriling")
+            QiblaStatus(R.drawable.ic_qibla_warning, R.string.low_accuracy, showCalibration = true)
+        turn < 0f -> QiblaStatus(R.drawable.ic_qibla_turn_left, R.string.turn_left)
+        else -> QiblaStatus(R.drawable.ic_qibla_turn_right, R.string.turn_right)
     }
 }
 
@@ -164,7 +166,7 @@ private fun QiblaStatusCard(status: QiblaStatus, facingQibla: Boolean, onCalibra
                     color = colors.outline.copy(alpha = 0.42f),
                 )
                 Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Text(current.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(current.title), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                     if (current.loading) {
                         ShimmerPlaceholder(Modifier.width(88.dp).height(4.dp), cornerRadius = 2.dp)
                     }
@@ -176,7 +178,7 @@ private fun QiblaStatusCard(status: QiblaStatus, facingQibla: Boolean, onCalibra
                             modifier = Modifier.pressScale(rememberPressScale(interaction)),
                             contentPadding = PaddingValues(horizontal = 0.dp),
                         ) {
-                            Text("Kalibrlash")
+                            Text(stringResource(R.string.calibrate))
                         }
                     }
                 }
@@ -193,13 +195,13 @@ private fun CompassCalibrationDialog(state: State<QiblaState>, onDismiss: () -> 
     val interaction = remember { MutableInteractionSource() }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Kompasni kalibrlash") },
+        title = { Text(stringResource(R.string.calibrate_compass)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text("Magnitli g‘ilofni yeching va metall buyumlardan uzoqlashing.")
-                Text("Telefon bilan havoda bir necha marta 8 shaklini chizing. Keyin telefonni bir zum qimirlatmay tuting.")
+                Text(stringResource(R.string.calibrate_metal))
+                Text(stringResource(R.string.calibrate_motion))
                 AnimatedValueText(
-                    if (ready) "Kompas aniqligi yetarli" else "Kompas aniqligi hali past",
+                    if (ready) stringResource(R.string.accuracy_ready) else stringResource(R.string.accuracy_still_low),
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.SemiBold,
                 )
@@ -211,7 +213,7 @@ private fun CompassCalibrationDialog(state: State<QiblaState>, onDismiss: () -> 
                 interactionSource = interaction,
                 modifier = Modifier.pressScale(rememberPressScale(interaction)),
             ) {
-                Text("Yopish")
+                Text(stringResource(R.string.close))
             }
         },
     )

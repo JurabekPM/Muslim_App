@@ -51,7 +51,7 @@ class QiblaHeadingTest {
         holdAt(63f, 1_000_000_000L)
         assertFalse(viewModel.qiblaState.value.aligned)
         holdAt(243f, 2_000_000_000L)
-        assertEquals("Qibla topildi", qiblaStatus(viewModel.qiblaState.value, compassAvailable = true).title)
+        assertEquals(R.string.qibla_found, qiblaStatus(viewModel.qiblaState.value, compassAvailable = true).title)
     }
 
     private fun displayMatrix(heading: Float, pitch: Int): FloatArray {
@@ -80,21 +80,21 @@ class QiblaHeadingTest {
         fun title() = qiblaStatus(viewModel.qiblaState.value, compassAvailable = true).title
 
         report(220f, 900_000_000L, reliable = false)
-        assertEquals("Kompas aniqligi past", title())
+        assertEquals(R.string.low_accuracy, title())
         report(243f, 1_000_000_000L, reliable = false)
-        assertEquals("Qiblaga yaqin", title())
+        assertEquals(R.string.near_qibla, title())
         for (time in 1_100_000_000L..1_400_000_000L step 100_000_000L) {
             report(243f, time, reliable = false)
         }
-        assertEquals("Qiblaga taxminan mos", title())
+        assertEquals(R.string.qibla_approx, title())
         assertFalse(viewModel.qiblaState.value.aligned)
 
         for (time in 1_500_000_000L..1_900_000_000L step 100_000_000L) {
             report(243f, time, reliable = true)
         }
-        assertEquals("Qibla topildi", title())
+        assertEquals(R.string.qibla_found, title())
         viewModel.updateCurrentDirection(CompassReading(243f))
-        assertEquals("Kompas aniqligi past", title())
+        assertEquals(R.string.low_accuracy, title())
         assertEquals(0f, viewModel.qiblaState.value.turn!!, 0f)
     }
 

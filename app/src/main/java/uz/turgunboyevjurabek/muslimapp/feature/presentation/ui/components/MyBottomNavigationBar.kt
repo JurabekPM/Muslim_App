@@ -1,5 +1,6 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components
 
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -56,15 +57,18 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.navigation.AppRoute
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.navigation.BottomNavigationItem
 
 private val dockItems = listOf(
-    BottomNavigationItem("Asosiy", R.drawable.ic_nav_home, R.drawable.ic_nav_home_filled, AppRoute.HOME),
-    BottomNavigationItem("Tasbex", R.drawable.ic_nav_tasbex, R.drawable.ic_nav_tasbex_filled, AppRoute.TASBEX),
-    BottomNavigationItem("7 Kunlik", R.drawable.ic_nav_week, R.drawable.ic_nav_week_filled, AppRoute.WEEKLY),
-    BottomNavigationItem("30 Kunlik", R.drawable.ic_nav_month, R.drawable.ic_nav_month_filled, AppRoute.MONTHLY),
+    BottomNavigationItem(R.string.home, R.drawable.ic_nav_home, R.drawable.ic_nav_home_filled, AppRoute.HOME),
+    BottomNavigationItem(R.string.tasbih, R.drawable.ic_nav_tasbex, R.drawable.ic_nav_tasbex_filled, AppRoute.TASBEX),
+    BottomNavigationItem(R.string.weekly, R.drawable.ic_nav_week, R.drawable.ic_nav_week_filled, AppRoute.WEEKLY),
+    BottomNavigationItem(R.string.monthly, R.drawable.ic_nav_month, R.drawable.ic_nav_month_filled, AppRoute.MONTHLY),
 )
 private val dockShape = RoundedCornerShape(30.dp)
 
-internal fun screenNameForRoute(route: String?): String =
-    if (route == AppRoute.QIBLA) "Qibla" else dockItems.firstOrNull { it.route == route }?.title ?: dockItems.first().title
+internal fun titleForRoute(route: String?): Int = when (route) {
+    AppRoute.QIBLA -> R.string.qibla
+    AppRoute.HOME, null -> R.string.prayer_times
+    else -> dockItems.firstOrNull { it.route == route }?.title ?: R.string.prayer_times
+}
 
 @Composable
 fun myBottomNavigationBar(
@@ -321,7 +325,7 @@ private fun DockTab(
             )
         }
         Text(
-            item.title,
+            stringResource(item.title),
             color = tint,
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight((500 + 100 * emphasis).roundToInt()),

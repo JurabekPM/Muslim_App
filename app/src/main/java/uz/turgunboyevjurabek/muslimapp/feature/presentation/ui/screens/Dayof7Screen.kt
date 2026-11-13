@@ -1,5 +1,8 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens
 
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.messageText
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.scheduleWeekday
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.displayName
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.SelectRegionViewModel
 import androidx.compose.animation.AnimatedContent
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -78,7 +81,7 @@ fun Dayof7Screen(
                     Modifier.padding(top = topPadding + 12.dp, start = 16.dp, end = 16.dp),
                 )
                 Status.ERROR -> Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(top = topPadding)) {
-                    PrayerTimesError(current.message.orEmpty(), refresh)
+                    PrayerTimesError(messageText(current.message), refresh)
                 }
                 Status.SUCCESS -> {
                     if (displayedRegion == null) return@AnimatedContent
@@ -98,8 +101,8 @@ fun Dayof7Screen(
                     ) {
                         item {
                             val range = listOfNotNull(days.firstOrNull()?.date, days.lastOrNull()?.date)
-                                .joinToString(" – ") { scheduleDate(it) }
-                            ScheduleRegion(displayedRegion.nameRegion, range)
+                                .map { scheduleDate(it) }.joinToString(" – ")
+                            ScheduleRegion(displayedRegion.displayName(), range)
                             SavedScheduleLabel(savedLabel)
                             Spacer(Modifier.height(4.dp))
                         }
@@ -138,7 +141,7 @@ private fun WeekDayCard(day: BirhaftalikItem, expanded: Boolean, onClick: () -> 
                 ) {
                     Column(Modifier.weight(1f)) {
                         AnimatedValueText(scheduleDate(day.date), style = MaterialTheme.typography.titleMedium)
-                        AnimatedValueText(day.weekday.orEmpty().replaceFirstChar { it.titlecase() }, style = MaterialTheme.typography.bodySmall)
+                        AnimatedValueText(scheduleWeekday(day.date), style = MaterialTheme.typography.bodySmall)
                     }
                     Icon(
                         painter = painterResource(R.drawable.ic_chevron_down),

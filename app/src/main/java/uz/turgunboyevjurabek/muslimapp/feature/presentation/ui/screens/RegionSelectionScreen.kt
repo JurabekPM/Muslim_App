@@ -1,5 +1,13 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens
 
+import androidx.compose.ui.semantics.Role
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.AlertDialog
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.displayName
+import uz.turgunboyevjurabek.muslimapp.core.utils.AppLanguage
+import androidx.compose.ui.res.stringResource
 import android.content.pm.PackageManager
 import android.Manifest
 import androidx.activity.compose.BackHandler
@@ -76,7 +84,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import uz.turgunboyevjurabek.muslimapp.feature.data.location.RegionLocationResult
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.RegionHierarchy
-import uz.turgunboyevjurabek.muslimapp.feature.domain.model.RegionKind
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.Regions
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.RegionSelection
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.SelectRegionViewModel
@@ -92,8 +99,11 @@ internal fun RegionSelectionScreen(
     selectRegionViewModel: SelectRegionViewModel,
     lookupLocation: suspend () -> RegionLocationResult,
     onClose: () -> Unit,
+    language: AppLanguage,
+    onLanguageChange: (AppLanguage) -> Unit,
 ) {
     val context = LocalContext.current
+    var choosingLanguage by rememberSaveable { mutableStateOf(false) }
     val colors = MaterialTheme.colorScheme
     val keyboard = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -103,7 +113,7 @@ internal fun RegionSelectionScreen(
     var groupSlug by rememberSaveable { mutableStateOf<String?>(null) }
     var query by rememberSaveable { mutableStateOf("") }
     var saving by remember { mutableStateOf(false) }
-    var message by remember { mutableStateOf<String?>(null) }
+    var message by remember { mutableStateOf<Int?>(null) }
     var findingLocation by remember { mutableStateOf(false) }
     var requestingPermission by rememberSaveable { mutableStateOf(false) }
     val requestLocationPermission = rememberLauncherForActivityResult(
@@ -113,7 +123,7 @@ internal fun RegionSelectionScreen(
         if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true) {
             findingLocation = true
         } else {
-            message = "Aniq joylashuvga ruxsat bering yoki hududni ro‘yxatdan tanlang."
+            message = R.string.location_permission
         }
     }
 
@@ -165,7 +175,7 @@ internal fun RegionSelectionScreen(
                 }
                 onClose()
             } catch (_: IOException) {
-                message = "Hududni saqlab bo‘lmadi. Qayta tanlang."
+                message = R.string.region_save_failed
             } finally {
                 outgoingSelection = null
                 saving = false
@@ -179,13 +189,14 @@ internal fun RegionSelectionScreen(
         findingLocation = false
         when (result) {
             is RegionLocationResult.Found -> saveSelection(RegionSelection(result.region, fromGps = true))
-            RegionLocationResult.LocationOff -> message = "Telefon sozlamalarida joylashuvni yoqing."
-            RegionLocationResult.NoFix -> message = "Joylashuv aniqlanmadi. Qayta urinib ko‘ring."
-            RegionLocationResult.AddressUnavailable -> message = "Manzil aniqlanmadi. Internetni tekshiring yoki hududni tanlang."
-            RegionLocationResult.NoMatch -> message = "Mos shahar yoki tuman topilmadi. Hududni ro‘yxatdan tanlang."
+            RegionLocationResult.LocationOff -> message = R.string.location_services_hint
+            RegionLocationResult.NoFix -> message = R.string.location_no_fix
+            RegionLocationResult.AddressUnavailable -> message = R.string.location_no_address
+            RegionLocationResult.NoMatch -> message = R.string.location_no_match
         }
     }
 
+    val languageDescription = stringResource(R.string.language)
     Column(
         Modifier.fillMaxSize().safeDrawingPadding().imePadding(),
     ) {
@@ -205,17 +216,21 @@ internal fun RegionSelectionScreen(
                     Box(Modifier.size(40.dp), contentAlignment = Alignment.Center) {
                         Icon(
                             painterResource(R.drawable.ic_qibla_back),
-                            contentDescription = "Orqaga",
+                            contentDescription = stringResource(R.string.back),
                             modifier = Modifier.size(21.dp),
                         )
                     }
                 }
             }
             Text(
-                "Hududni tanlash",
+                stringResource(R.string.regions),
+                modifier = Modifier.weight(1f),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.SemiBold,
             )
+            TextButton(onClick = { choosingLanguage = true }, enabled = !saving) {
+                Text(language.label, Modifier.semantics { contentDescription = languageDescription })
+            }
         }
 
         LazyColumn(
@@ -256,7 +271,7 @@ internal fun RegionSelectionScreen(
                         }
                         message?.let {
                             Text(
-                                it,
+                                stringResource(it),
                                 modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
                                 color = colors.error,
                                 style = MaterialTheme.typography.bodySmall,
@@ -272,7 +287,7 @@ internal fun RegionSelectionScreen(
             }
             item(key = "heading") {
                 Crossfade(
-                    targetState = group?.region?.nameRegion ?: "Asosiy hududlar",
+                    targetState = group?.region?.displayName() ?: stringResource(R.string.main_regions),
                     animationSpec = tween(160),
                     label = "Region group title",
                 ) { title ->
@@ -288,7 +303,7 @@ internal fun RegionSelectionScreen(
             if (matching.isEmpty()) {
                 item(key = "empty") {
                     Text(
-                        "Hudud topilmadi",
+                        stringResource(R.string.region_not_found),
                         modifier = Modifier.animateItem().fillMaxWidth().padding(vertical = 24.dp),
                         color = colors.onSurfaceVariant,
                         textAlign = TextAlign.Center,
@@ -301,7 +316,7 @@ internal fun RegionSelectionScreen(
                 val name = region.displayName()
                 Column(Modifier.animateItem(fadeInSpec = tween(170), fadeOutSpec = tween(120))) {
                     RegionRow(
-                        label = if (wholeGroup) "$name bo‘yicha" else name,
+                        label = if (wholeGroup) stringResource(R.string.whole_region, name) else name,
                         opensGroup = opensGroup,
                         selected = !opensGroup && region == selection?.region,
                         enabled = !saving,
@@ -316,6 +331,36 @@ internal fun RegionSelectionScreen(
                 }
             }
         }
+    }
+    if (choosingLanguage) {
+        AlertDialog(
+            onDismissRequest = { choosingLanguage = false },
+            title = { Text(stringResource(R.string.language)) },
+            text = {
+                Column {
+                    AppLanguage.entries.forEach { option ->
+                        Row(
+                            Modifier.fillMaxWidth().heightIn(min = 48.dp).selectable(
+                                selected = option == language,
+                                role = Role.RadioButton,
+                                onClick = {
+                                    choosingLanguage = false
+                                    onLanguageChange(option)
+                                },
+                            ),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            RadioButton(selected = option == language, onClick = null)
+                            Text(option.label)
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { choosingLanguage = false }) { Text(stringResource(R.string.close)) }
+            },
+        )
     }
 }
 
@@ -346,7 +391,7 @@ private fun SelectedRegion(region: Regions, showGpsBadge: Boolean) {
                     color = colors.surfaceContainerHighest,
                 ) {
                     Text(
-                        "Hozirgi joylashuv",
+                        stringResource(R.string.current_location),
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
                         style = MaterialTheme.typography.labelSmall,
                     )
@@ -396,21 +441,16 @@ private fun RegionRow(
     }
 }
 
-private fun Regions.displayName(): String = when {
-    kind == RegionKind.City && !nameRegion.endsWith(" shahri") -> "$nameRegion shahri"
-    kind == RegionKind.District && !nameRegion.endsWith(" tumani") -> "$nameRegion tumani"
-    else -> nameRegion
-}
-
 @Composable
 private fun RegionSearch(value: String, onValueChange: (String) -> Unit, onSearch: () -> Unit) {
     val colors = MaterialTheme.colorScheme
+    val searchLabel = stringResource(R.string.search_region)
     var focused by remember { mutableStateOf(false) }
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = Modifier.fillMaxWidth().onFocusChanged { focused = it.isFocused }
-            .semantics { contentDescription = "Hudud qidirish" },
+            .semantics { contentDescription = searchLabel },
         singleLine = true,
         textStyle = MaterialTheme.typography.bodyMedium.copy(color = colors.onSurface),
         cursorBrush = SolidColor(colors.tertiary),
@@ -435,13 +475,13 @@ private fun RegionSearch(value: String, onValueChange: (String) -> Unit, onSearc
                     )
                     Box(Modifier.weight(1f).padding(vertical = 8.dp)) {
                         if (value.isEmpty()) {
-                            Text("Hudud qidirish", color = colors.onSurfaceVariant, style = MaterialTheme.typography.bodyMedium)
+                            Text(searchLabel, color = colors.onSurfaceVariant, style = MaterialTheme.typography.bodyMedium)
                         }
                         input()
                     }
                     if (value.isNotEmpty()) {
                         IconButton(onClick = { onValueChange("") }, modifier = Modifier.size(40.dp)) {
-                            Icon(Icons.Default.Close, contentDescription = "Qidiruvni tozalash", modifier = Modifier.size(16.dp))
+                            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.clear_search), modifier = Modifier.size(16.dp))
                         }
                     }
                 }
@@ -481,7 +521,7 @@ private fun CurrentLocationButton(finding: Boolean, enabled: Boolean, onClick: (
                 )
             }
             Text(
-                text = if (finding) "Joylashuv aniqlanmoqda…" else "Hozirgi joylashuvim",
+                text = if (finding) stringResource(R.string.finding_location) else stringResource(R.string.use_location),
                 modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.SemiBold,
