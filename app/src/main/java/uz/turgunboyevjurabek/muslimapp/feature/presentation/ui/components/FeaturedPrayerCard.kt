@@ -35,6 +35,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.layout.ContentScale
@@ -55,9 +56,19 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.ScheduleCardCo
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.ScheduleCardColor
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedValueText
 import java.util.Locale
+import kotlin.math.PI
+import kotlin.math.sin
+import kotlin.random.Random
 
 private val featuredCardShape = RoundedCornerShape(20.dp)
 private val progressGold = Color(0xFFF2D27C)
+
+private data class ProgressSparkle(
+    val position: Float,
+    val height: Float,
+    val radius: Float,
+    val phase: Float,
+)
 
 private enum class PrayerArtwork(@param:DrawableRes val image: Int, val alignment: BiasAlignment) {
     Dawn(R.drawable.img_1, BiasAlignment(0f, 0.68f)),
@@ -178,39 +189,75 @@ internal fun FeaturedPrayerCard(
 private fun PrayerCardProgress(interval: PrayerInterval, modifier: Modifier = Modifier) {
     val fraction = animateFloatAsState(interval.fraction, tween(650), label = "Prayer progress")
     val duration = 950 + interval.minutesLeft.coerceIn(1L, 180L).toInt() * 15
-    val light = rememberInfiniteTransition(label = "Prayer progress light").animateFloat(
+    val motion = rememberInfiniteTransition(label = "Prayer progress sparkles").animateFloat(
         initialValue = 0f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(tween(duration, easing = LinearEasing)),
-        label = "Light position",
+        label = "Sparkle phase",
     )
     Box(
         modifier.fillMaxWidth().height(12.dp).clipToBounds()
             .semantics { progressBarRangeInfo = ProgressBarRangeInfo(interval.fraction, 0f..1f) }
             .drawWithCache {
-                val trackColor = Color(0xFF657282)
-                val fillColor = Color(0xFFD39936)
+                val trackColor = Color(0xFF46505C)
+                val fill = Brush.verticalGradient(
+                    listOf(progressGold, Color(0xFFDEAA4B), Color(0xFFBA812F)),
+                    endY = size.height,
+                )
                 val lightColor = Color(0xFFFFF9E8)
-                val band = 25.dp.toPx()
+                val glowRadius = size.height * 0.6f
+                val glow = Brush.radialGradient(
+                    listOf(lightColor, progressGold.copy(alpha = 0.72f), Color.Transparent),
+                    center = Offset.Zero,
+                    radius = glowRadius,
+                )
+                val random = Random(23)
+                val sparkles = List(26) { index ->
+                    ProgressSparkle(
+                        position = (index + random.nextFloat()) / 26f,
+                        height = 0.2f + random.nextFloat() * 0.6f,
+                        radius = (0.45f + random.nextFloat() * 0.65f).dp.toPx(),
+                        phase = random.nextFloat(),
+                    )
+                }
+                val drift = 17.dp.toPx()
                 onDrawBehind {
+                    val phase = motion.value
                     drawRect(trackColor)
                     val filled = size.width * fraction.value
-                    if (filled <= 0f) return@onDrawBehind
                     val rtl = layoutDirection == LayoutDirection.Rtl
                     val tipRadius = minOf(size.height / 2f, filled)
                     val left = if (rtl) size.width - filled else -tipRadius
-                    val center = (filled + 2 * band) * light.value - band
-                    val x = if (rtl) size.width - center else center
-                    drawRoundRect(
-                        brush = Brush.horizontalGradient(
-                            listOf(fillColor, progressGold, lightColor, progressGold, fillColor),
-                            startX = x - band,
-                            endX = x + band,
-                        ),
-                        topLeft = Offset(left, 0f),
-                        size = Size(filled + tipRadius, size.height),
-                        cornerRadius = CornerRadius(tipRadius),
-                    )
+                    val fillSize = Size(filled + tipRadius, size.height)
+                    if (filled > 0f) {
+                        drawRoundRect(fill, Offset(left, 0f), fillSize, CornerRadius(tipRadius))
+                    }
+                    for (sparkle in sparkles) {
+                        val age = (phase + sparkle.phase) % 1f
+                        val distance = (sparkle.position * size.width + age * drift) % size.width
+                        val twinkle = sin(PI * age).toFloat()
+                        val insideFill = distance < filled - tipRadius
+                        val x = if (rtl) size.width - distance else distance
+                        drawCircle(
+                            color = if (insideFill) lightColor else progressGold,
+                            radius = sparkle.radius,
+                            center = Offset(x, size.height * sparkle.height),
+                            alpha = twinkle * if (insideFill) 0.85f else 0.42f,
+                        )
+                    }
+                    if (filled >= size.height) {
+                        val tip = if (rtl) left + tipRadius else filled - tipRadius
+                        val pulse = 0.85f + 0.15f * sin(2 * PI * phase).toFloat()
+                        translate(tip, size.height / 2f) {
+                            drawRoundRect(
+                                brush = glow,
+                                topLeft = Offset(left - tip, -size.height / 2f),
+                                size = fillSize,
+                                cornerRadius = CornerRadius(tipRadius),
+                                alpha = pulse,
+                            )
+                        }
+                    }
                 }
             },
     )
