@@ -199,7 +199,7 @@ fun SheetDialogUI(
         }
 
         val selectManually: (Regions) -> Unit = { selectRegion(RegionSelection(it, fromGps = false)) }
-        Column(Modifier.fillMaxWidth().fillMaxHeight(0.80f)) {
+        Column(Modifier.fillMaxWidth().fillMaxHeight()) {
             Column(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
