@@ -5,31 +5,19 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.Se
 import androidx.compose.animation.AnimatedContent
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.textTransition
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ColorMatrix
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.core.utils.Status
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.daily.Bugungi
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.PrayerTimesError
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.FeaturedPrayerCard
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.TimeListCard
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.rememberPrayerTimes
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.rememberPrayerClock
@@ -42,19 +30,6 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.ScheduleDay
 import java.time.LocalTime
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.shimmers.MainCardShimmer
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.shimmers.TimeListCardShimmer
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.ScheduleCardColor
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.ScheduleCardContent
-
-private val navyHeroFilter = ColorFilter.colorMatrix(
-    ColorMatrix(
-        floatArrayOf(
-            0.92f, 0.04f, 0f, 0f, 0f,
-            0.08f, 0.69f, 0.15f, 0f, 0f,
-            0f, 0.37f, 0.65f, 0f, 3f,
-            0f, 0f, 0f, 1f, 0f,
-        )
-    )
-)
 
 @Composable
 fun MainScreen(
@@ -131,53 +106,4 @@ private fun Bugungi.withFeaturedPrayerAt(now: LocalTime): Bugungi {
     val current = slots.lastOrNull { (_, time) -> time <= now }
     val (name, time) = current ?: slots.firstOrNull() ?: return this
     return copy(featuredPrayer = name, featuredTime = time.toString(), featuredIsCurrent = current != null)
-}
-
-@Composable
-private fun FeaturedPrayerCard(today: Bugungi) {
-    val cardColor = ScheduleCardColor
-    val cardContent = ScheduleCardContent
-    Box(
-        modifier = Modifier.fillMaxWidth().heightIn(min = 120.dp)
-            .clip(RoundedCornerShape(20.dp)).background(cardColor),
-        contentAlignment = Alignment.CenterStart,
-    ) {
-        Image(
-            painter = painterResource(R.drawable.img_4),
-            contentDescription = null,
-            modifier = Modifier.matchParentSize(),
-            contentScale = ContentScale.Crop,
-            alignment = Alignment.BottomCenter,
-            colorFilter = navyHeroFilter,
-        )
-        Box(
-            Modifier.matchParentSize().background(
-                Brush.horizontalGradient(
-                    0f to cardColor,
-                    0.43f to cardColor,
-                    0.76f to cardColor.copy(alpha = 0.76f),
-                    1f to cardColor.copy(alpha = 0.26f),
-                )
-            )
-        )
-        Column(
-            modifier = Modifier.fillMaxWidth(0.74f).padding(horizontal = 18.dp, vertical = 14.dp),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
-        ) {
-            AnimatedValueText(
-                text = today.featuredPrayer?.takeIf { it.isNotBlank() } ?: "Namoz vaqti",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = cardContent,
-            )
-            today.featuredTime?.takeIf { it.isNotBlank() }?.let { time ->
-                AnimatedValueText(time, style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.SemiBold, color = Color.White)
-            }
-            AnimatedValueText(
-                text = listOfNotNull(today.region, today.date).joinToString(" · "),
-                style = MaterialTheme.typography.bodySmall,
-                color = cardContent,
-            )
-        }
-    }
 }
