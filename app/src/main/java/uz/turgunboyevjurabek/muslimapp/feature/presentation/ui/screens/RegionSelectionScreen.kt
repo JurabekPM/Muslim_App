@@ -298,10 +298,10 @@ internal fun RegionSelectionScreen(
             items(matching, key = { "${groupSlug.orEmpty()}/${it.slug}" }) { region ->
                 val opensGroup = group == null && region.slug in RegionHierarchy.groupsBySlug
                 val wholeGroup = group?.region == region
+                val name = region.displayName()
                 Column(Modifier.animateItem(fadeInSpec = tween(170), fadeOutSpec = tween(120))) {
                     RegionRow(
-                        region = region,
-                        label = if (wholeGroup) "${region.nameRegion} bo‘yicha" else region.nameRegion,
+                        label = if (wholeGroup) "$name bo‘yicha" else name,
                         opensGroup = opensGroup,
                         selected = !opensGroup && region == selection?.region,
                         enabled = !saving,
@@ -329,7 +329,11 @@ private fun SelectedRegion(region: Regions, showGpsBadge: Boolean) {
     ) {
         Icon(painterResource(R.drawable.ic_qibla_location), null, Modifier.size(22.dp))
         Column(Modifier.weight(1f)) {
-            RegionName(region, region.nameRegion, isFeatured = true)
+            Text(
+                region.displayName(),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
             AnimatedVisibility(
                 visible = showGpsBadge,
                 enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
@@ -359,7 +363,6 @@ private fun SelectedRegion(region: Regions, showGpsBadge: Boolean) {
 
 @Composable
 private fun RegionRow(
-    region: Regions,
     label: String,
     opensGroup: Boolean,
     selected: Boolean,
@@ -383,7 +386,7 @@ private fun RegionRow(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(painterResource(R.drawable.ic_qibla_location), null, Modifier.size(18.dp), tint = colors.onSurfaceVariant)
-            RegionName(region, label, modifier = Modifier.weight(1f))
+            Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
             if (opensGroup) {
                 Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, Modifier.size(20.dp), tint = colors.onSurfaceVariant)
             } else if (selected) {
@@ -393,42 +396,10 @@ private fun RegionRow(
     }
 }
 
-@Composable
-private fun RegionName(
-    region: Regions,
-    label: String,
-    modifier: Modifier = Modifier,
-    isFeatured: Boolean = false,
-) {
-    val colors = MaterialTheme.colorScheme
-    val type = when (region.kind) {
-        RegionKind.City -> "Shahar"
-        RegionKind.District -> "Tuman"
-        RegionKind.Province -> if (region.slug == "qoraqalpogiston") "Respublika" else "Viloyat"
-    }
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Surface(
-            shape = CircleShape,
-            color = if (isFeatured) colors.surfaceContainerHighest else colors.surfaceContainerLow,
-            contentColor = colors.onSurfaceVariant,
-        ) {
-            Text(
-                type,
-                modifier = Modifier.padding(horizontal = 7.dp, vertical = 2.dp),
-                style = MaterialTheme.typography.labelSmall,
-            )
-        }
-        Text(
-            label,
-            modifier = Modifier.weight(1f),
-            style = if (isFeatured) MaterialTheme.typography.titleMedium else MaterialTheme.typography.bodyMedium,
-            fontWeight = if (isFeatured) FontWeight.SemiBold else FontWeight.Medium,
-        )
-    }
+private fun Regions.displayName(): String = when {
+    kind == RegionKind.City && !nameRegion.endsWith(" shahri") -> "$nameRegion shahri"
+    kind == RegionKind.District && !nameRegion.endsWith(" tumani") -> "$nameRegion tumani"
+    else -> nameRegion
 }
 
 @Composable
