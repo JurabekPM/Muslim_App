@@ -100,14 +100,14 @@ internal fun PrayerTimeline(
                 val end = markers[slots.lastIndex] ?: return@drawBehind
                 val inset = 12.dp.toPx()
                 val x = if (layoutDirection == LayoutDirection.Ltr) inset else size.width - inset
-                drawLine(colors.outlineVariant, Offset(x, start), Offset(x, end), strokeWidth = 1.dp.toPx())
+                drawLine(colors.outlineVariant, Offset(x, start), Offset(x, end), strokeWidth = 2.dp.toPx())
 
                 val from = markers[currentIndex]
                 val until = markers[nextIndex]
                 if (interval != null && from != null && until != null && until > from && fraction.value > 0f) {
                     val filledLength = (until - from) * fraction.value
                     val tip = Offset(x, from + filledLength)
-                    val stroke = 4.dp.toPx()
+                    val stroke = 5.5.dp.toPx()
                     drawLine(colors.tertiary, Offset(x, from), tip, stroke, StrokeCap.Round)
                     val phase = shimmer?.value ?: 0f
                     val light = Color(0xFFFFE9A9)
@@ -135,12 +135,12 @@ internal fun PrayerTimeline(
 
                 slots.indices.forEach { index ->
                     val center = Offset(x, markers[index] ?: return@forEach)
-                    val radius = 4.dp.toPx()
+                    val radius = if (index == currentIndex) 6.5.dp.toPx() else 5.5.dp.toPx()
                     if (index == currentIndex) {
                         drawCircle(colors.tertiary, radius, center)
                     } else {
                         drawCircle(colors.background, radius, center)
-                        drawCircle(colors.outline, radius, center, style = Stroke(1.dp.toPx()))
+                        drawCircle(colors.outline, radius, center, style = Stroke(1.5.dp.toPx()))
                     }
                 }
             },
@@ -171,12 +171,12 @@ internal fun PrayerTimeline(
                                 name,
                                 modifier = Modifier.weight(1f),
                                 style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = if (current) FontWeight.SemiBold else FontWeight.Medium,
+                                fontWeight = if (current) FontWeight.Bold else FontWeight.SemiBold,
                             )
                             AnimatedValueText(
                                 time ?: "—",
                                 style = MaterialTheme.typography.titleMedium,
-                                fontWeight = if (current) FontWeight.SemiBold else FontWeight.Medium,
+                                fontWeight = if (current) FontWeight.Bold else FontWeight.SemiBold,
                             )
                         }
                         if (current && interval != null && nextName != null) {
@@ -185,6 +185,7 @@ internal fun PrayerTimeline(
                                 modifier = Modifier.padding(bottom = 8.dp),
                                 color = colors.tertiary,
                                 style = MaterialTheme.typography.bodySmall,
+                                fontWeight = FontWeight.Medium,
                             )
                         }
                     }

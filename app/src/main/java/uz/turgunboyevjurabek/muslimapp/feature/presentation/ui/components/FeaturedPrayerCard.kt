@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -30,8 +31,11 @@ import androidx.compose.ui.unit.dp
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.daily.Bugungi
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.ScheduleCardContent
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.ScheduleCardColor
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedValueText
 import java.util.Locale
+
+private val featuredCardShape = RoundedCornerShape(20.dp)
 
 private enum class PrayerArtwork(@param:DrawableRes val image: Int, val alignment: BiasAlignment) {
     Dawn(R.drawable.img_1, BiasAlignment(0f, 0.68f)),
@@ -67,7 +71,15 @@ internal fun FeaturedPrayerCard(today: Bugungi, modifier: Modifier = Modifier) {
 
     Box(
         modifier = modifier.fillMaxWidth().heightIn(min = 136.dp)
-            .clip(RoundedCornerShape(20.dp)).background(cardColor),
+            .shadow(
+                elevation = 5.dp,
+                shape = featuredCardShape,
+                clip = false,
+                ambientColor = ScheduleCardColor,
+                spotColor = ScheduleCardColor,
+            )
+            .clip(featuredCardShape)
+            .background(cardColor),
         contentAlignment = Alignment.CenterStart,
     ) {
         Box(Modifier.matchParentSize(), contentAlignment = Alignment.CenterEnd) {
