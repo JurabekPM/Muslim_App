@@ -161,14 +161,22 @@ internal fun FeaturedPrayerCard(
             }
             if (interval != null && nextName != null) {
                 Spacer(Modifier.height(5.dp))
-                PrayerCardProgress(interval, nextName)
+                AnimatedValueText(
+                    interval.caption(nextName),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color(0xFFFFE4A5),
+                    fontWeight = FontWeight.Medium,
+                )
             }
+        }
+        if (interval != null && nextName != null) {
+            PrayerCardProgress(interval, Modifier.align(Alignment.BottomCenter))
         }
     }
 }
 
 @Composable
-private fun PrayerCardProgress(interval: PrayerInterval, nextName: String) {
+private fun PrayerCardProgress(interval: PrayerInterval, modifier: Modifier = Modifier) {
     val fraction = animateFloatAsState(interval.fraction, tween(650), label = "Prayer progress")
     val duration = 950 + interval.minutesLeft.coerceIn(1L, 180L).toInt() * 15
     val light = rememberInfiniteTransition(label = "Prayer progress light").animateFloat(
@@ -177,47 +185,36 @@ private fun PrayerCardProgress(interval: PrayerInterval, nextName: String) {
         animationSpec = infiniteRepeatable(tween(duration, easing = LinearEasing)),
         label = "Light position",
     )
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        AnimatedValueText(
-            interval.caption(nextName),
-            style = MaterialTheme.typography.bodySmall,
-            color = Color(0xFFFFE4A5),
-            fontWeight = FontWeight.Medium,
-        )
-        Box(
-            Modifier.fillMaxWidth().height(4.dp).clipToBounds()
-                .semantics { progressBarRangeInfo = ProgressBarRangeInfo(interval.fraction, 0f..1f) }
-                .drawWithCache {
-                    val corners = CornerRadius(size.height / 2f)
-                    val trackColor = Color(0xFF657282)
-                    val fillColor = Color(0xFFD39936)
-                    val lightColor = Color(0xFFFFF9E8)
-                    val band = 25.dp.toPx()
-                    onDrawBehind {
-                        drawRoundRect(trackColor, cornerRadius = corners)
-                        val filled = size.width * fraction.value
-                        if (filled <= 0f) return@onDrawBehind
-                        val rtl = layoutDirection == LayoutDirection.Rtl
-                        val left = if (rtl) size.width - filled else 0f
-                        val center = (filled + 2 * band) * light.value - band
-                        val x = if (rtl) size.width - center else center
-                        clipRect(left = left, right = left + filled) {
-                            drawRoundRect(
-                                brush = Brush.horizontalGradient(
-                                    listOf(fillColor, progressGold, lightColor, progressGold, fillColor),
-                                    startX = x - band,
-                                    endX = x + band,
-                                ),
-                                topLeft = Offset(left, 0f),
-                                size = Size(filled, size.height),
-                                cornerRadius = corners,
-                            )
-                        }
+    Box(
+        modifier.fillMaxWidth().height(6.dp).clipToBounds()
+            .semantics { progressBarRangeInfo = ProgressBarRangeInfo(interval.fraction, 0f..1f) }
+            .drawWithCache {
+                val corners = CornerRadius(size.height / 2f)
+                val trackColor = Color(0xFF657282)
+                val fillColor = Color(0xFFD39936)
+                val lightColor = Color(0xFFFFF9E8)
+                val band = 25.dp.toPx()
+                onDrawBehind {
+                    drawRect(trackColor)
+                    val filled = size.width * fraction.value
+                    if (filled <= 0f) return@onDrawBehind
+                    val rtl = layoutDirection == LayoutDirection.Rtl
+                    val left = if (rtl) size.width - filled else 0f
+                    val center = (filled + 2 * band) * light.value - band
+                    val x = if (rtl) size.width - center else center
+                    clipRect(left = left, right = left + filled) {
+                        drawRoundRect(
+                            brush = Brush.horizontalGradient(
+                                listOf(fillColor, progressGold, lightColor, progressGold, fillColor),
+                                startX = x - band,
+                                endX = x + band,
+                            ),
+                            topLeft = Offset(left, 0f),
+                            size = Size(filled, size.height),
+                            cornerRadius = corners,
+                        )
                     }
-                },
-        )
-    }
+                }
+            },
+    )
 }
