@@ -43,7 +43,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
@@ -189,7 +188,6 @@ private fun PrayerCardProgress(interval: PrayerInterval, modifier: Modifier = Mo
         modifier.fillMaxWidth().height(12.dp).clipToBounds()
             .semantics { progressBarRangeInfo = ProgressBarRangeInfo(interval.fraction, 0f..1f) }
             .drawWithCache {
-                val corners = CornerRadius(size.height / 2f)
                 val trackColor = Color(0xFF657282)
                 val fillColor = Color(0xFFD39936)
                 val lightColor = Color(0xFFFFF9E8)
@@ -199,21 +197,20 @@ private fun PrayerCardProgress(interval: PrayerInterval, modifier: Modifier = Mo
                     val filled = size.width * fraction.value
                     if (filled <= 0f) return@onDrawBehind
                     val rtl = layoutDirection == LayoutDirection.Rtl
-                    val left = if (rtl) size.width - filled else 0f
+                    val tipRadius = minOf(size.height / 2f, filled)
+                    val left = if (rtl) size.width - filled else -tipRadius
                     val center = (filled + 2 * band) * light.value - band
                     val x = if (rtl) size.width - center else center
-                    clipRect(left = left, right = left + filled) {
-                        drawRoundRect(
-                            brush = Brush.horizontalGradient(
-                                listOf(fillColor, progressGold, lightColor, progressGold, fillColor),
-                                startX = x - band,
-                                endX = x + band,
-                            ),
-                            topLeft = Offset(left, 0f),
-                            size = Size(filled, size.height),
-                            cornerRadius = corners,
-                        )
-                    }
+                    drawRoundRect(
+                        brush = Brush.horizontalGradient(
+                            listOf(fillColor, progressGold, lightColor, progressGold, fillColor),
+                            startX = x - band,
+                            endX = x + band,
+                        ),
+                        topLeft = Offset(left, 0f),
+                        size = Size(filled + tipRadius, size.height),
+                        cornerRadius = CornerRadius(tipRadius),
+                    )
                 }
             },
     )
