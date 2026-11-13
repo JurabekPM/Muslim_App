@@ -116,7 +116,7 @@ internal fun FeaturedPrayerCard(
     }
 
     Box(
-        modifier = modifier.fillMaxWidth().heightIn(min = 136.dp)
+        modifier = modifier.fillMaxWidth().heightIn(min = 150.dp)
             .dropShadow(
                 shape = featuredCardShape,
                 shadow = Shadow(
