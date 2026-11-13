@@ -8,25 +8,6 @@ import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
 
-@OptIn(ExperimentalStdlibApi::class)
-object DateUtil {
-    var selectRegion=""
-    @RequiresApi(Build.VERSION_CODES.O)
-    var presentMonth=LocalDate.now().monthValue
-    val daysOfWeek: Array<String>
-        @RequiresApi(Build.VERSION_CODES.O)
-        get() {
-            val daysOfWeek = Array(7) { "" }
-
-            for (dayOfWeek in DayOfWeek.entries) {
-                val localizedDayName = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
-                daysOfWeek[dayOfWeek.value - 1] = localizedDayName
-            }
-
-            return daysOfWeek
-        }
-}
-
 @RequiresApi(Build.VERSION_CODES.O)
 fun YearMonth.getDayOfMonthStartingFromMonday(): List<LocalDate> {
     val firstDayOfMonth = LocalDate.of(year, month, 1)

@@ -11,13 +11,13 @@ import org.junit.Assert.assertNull
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
-import uz.turgunboyevjurabek.muslimapp.feature.data.network.PrayerScheduleStore
-import uz.turgunboyevjurabek.muslimapp.feature.data.network.SavedSchedule
-import uz.turgunboyevjurabek.muslimapp.feature.domein.madels.birHaftalik.Birhaftalik
-import uz.turgunboyevjurabek.muslimapp.feature.domein.madels.birHaftalik.BirhaftalikItem
-import uz.turgunboyevjurabek.muslimapp.feature.domein.madels.birOylk.BirOylik
-import uz.turgunboyevjurabek.muslimapp.feature.domein.madels.birOylk.BirOylikItem
-import uz.turgunboyevjurabek.muslimapp.feature.domein.madels.bugungilik.Bugungi
+import uz.turgunboyevjurabek.muslimapp.feature.data.local.PrayerScheduleStore
+import uz.turgunboyevjurabek.muslimapp.feature.data.local.SavedSchedule
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.weekly.Birhaftalik
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.weekly.BirhaftalikItem
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.monthly.BirOylik
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.monthly.BirOylikItem
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.daily.Bugungi
 import java.io.File
 
 class PrayerScheduleStoreTest {

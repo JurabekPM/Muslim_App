@@ -4,9 +4,9 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import uz.turgunboyevjurabek.muslimapp.feature.domein.madels.Regions
-import uz.turgunboyevjurabek.muslimapp.feature.domein.madels.RegionKind
-import uz.turgunboyevjurabek.muslimapp.feature.domein.madels.RegionAddressMatcher
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.Regions
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.RegionKind
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.RegionAddressMatcher
 
 class RegionCatalogTest {
     @Test

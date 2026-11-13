@@ -1,5 +1,6 @@
 package uz.turgunboyevjurabek.muslimapp.feature.data.di
 
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -8,45 +9,35 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import uz.turgunboyevjurabek.muslimapp.feature.data.network.ApiService
-import uz.turgunboyevjurabek.muslimapp.core.utils.ConsItem
+import uz.turgunboyevjurabek.muslimapp.feature.data.repository.RemotePrayerScheduleRepository
+import uz.turgunboyevjurabek.muslimapp.feature.domain.repository.PrayerScheduleRepository
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object NetworkModule {
+internal abstract class NetworkModule {
+    @Binds
+    abstract fun bindPrayerScheduleRepository(implementation: RemotePrayerScheduleRepository): PrayerScheduleRepository
 
-    @Singleton
-    @Provides
-    fun provideBaseUrl():String = ConsItem.BASE_URL
+    companion object {
+        private const val BASE_URL = "https://namoz-vaqti.uz/"
 
-    @Singleton
-    @Provides
-    fun provideGetRetrofit(string: String): Retrofit {
+        @Provides
+        @Singleton
+        fun provideApiService(): ApiService {
+            val client = OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .build()
 
-        val okHttpClient=OkHttpClient().newBuilder()
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout( 30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .build()
-
-        return Retrofit.Builder()
-            .baseUrl(string)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+            return Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(ApiService::class.java)
+        }
     }
-
-    @Singleton
-    @Provides
-    fun getApiService(retrofit: Retrofit): ApiService {
-        return retrofit.create(ApiService::class.java)
-    }
-
-//    @Singleton
-//    @Provides
-//    fun provideRegion(selectRegionViewModel: SelectRegionViewModel):String{
-//        return selectRegionViewModel.region.value
-//    }
-
 }

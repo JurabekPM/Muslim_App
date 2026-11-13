@@ -36,4 +36,12 @@ Muslim App — O‘zbekiston hududlari uchun namoz vaqtlari, Qibla kompasi va ta
 
 Unit testlarni Windows’da `.gradlew.bat :app:testDebugUnitTest`, macOS va Linux’da `./gradlew :app:testDebugUnitTest` bilan ishga tushiring.
 
+## Kod tuzilishi
+
+- **`feature/domain`** — hudud va namoz jadvali modellari hamda jadvalni olish interfeysi.
+- **`feature/data`** — Retrofit so‘rovlari, DataStore keshi, internet holati va Android joylashuv xizmatlari.
+- **`feature/presentation`** — Compose ekranlari `ui` ichida, ekran holati va ViewModel’lar `state` ichida, ekranlar orasidagi o‘tishlar `navigation` ichida.
+
+Namoz jadvali ekranlari ViewModel orqali ishlaydi. ViewModel jadvalni domen interfeysi orqali oladi, Hilt esa Retrofit bilan ishlaydigan implementatsiyani ulaydi.
+
 Namoz vaqtlari [Namoz vaqti API](https://namoz-vaqti.uz/?format=docs&lang=lotin&region=toshkent-shahri) orqali olinadi.

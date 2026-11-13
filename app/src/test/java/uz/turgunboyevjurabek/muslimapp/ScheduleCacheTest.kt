@@ -9,8 +9,8 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import uz.turgunboyevjurabek.muslimapp.core.utils.Status
-import uz.turgunboyevjurabek.muslimapp.feature.data.network.SavedSchedule
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ViewModel.ScheduleCache
+import uz.turgunboyevjurabek.muslimapp.feature.data.local.SavedSchedule
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.ScheduleCache
 import java.io.IOException
 
 class ScheduleCacheTest {

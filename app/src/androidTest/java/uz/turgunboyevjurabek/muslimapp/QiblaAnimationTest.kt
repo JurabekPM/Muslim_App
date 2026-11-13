@@ -12,10 +12,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.Screens.QiblaScreen
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.UIutils.QiblaState
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.QiblaScreen
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.qibla.QiblaState
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.MuslimAppTheme
-import uz.turgunboyevjurabek.qiblafinderexample.service.CompassReading
+import uz.turgunboyevjurabek.muslimapp.feature.data.location.CompassReading
 import kotlin.math.roundToInt
 
 class QiblaAnimationTest {

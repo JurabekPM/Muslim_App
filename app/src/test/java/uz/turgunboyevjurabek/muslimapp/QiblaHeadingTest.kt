@@ -11,9 +11,9 @@ import uz.turgunboyevjurabek.muslimapp.core.utils.HeadingFilter
 import uz.turgunboyevjurabek.muslimapp.core.utils.CompassHeading
 import uz.turgunboyevjurabek.muslimapp.core.utils.calculateQiblaDirection
 import uz.turgunboyevjurabek.muslimapp.core.utils.signedAngle
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.Screens.qiblaStatus
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ViewModel.Qibla.MainViewModel
-import uz.turgunboyevjurabek.qiblafinderexample.service.CompassReading
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.qiblaStatus
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.qibla.QiblaViewModel
+import uz.turgunboyevjurabek.muslimapp.feature.data.location.CompassReading
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
@@ -36,7 +36,7 @@ class QiblaHeadingTest {
     @Test
     fun uprightPhoneConfirmsOnlyWhenItsBackFacesQibla() {
         val compass = CompassHeading()
-        val viewModel = MainViewModel()
+        val viewModel = QiblaViewModel()
         viewModel.updateQiblaDirection(243f)
 
         fun holdAt(heading: Float, startTime: Long) {
@@ -70,7 +70,7 @@ class QiblaHeadingTest {
 
     @Test
     fun qiblaStatusRespondsToAlignmentAtBothSensorAccuracyLevels() {
-        val viewModel = MainViewModel()
+        val viewModel = QiblaViewModel()
         viewModel.updateQiblaDirection(243f)
         fun report(heading: Float, timestamp: Long, reliable: Boolean) {
             viewModel.updateCurrentDirection(
