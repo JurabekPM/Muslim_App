@@ -7,4 +7,5 @@ internal object AppRoute {
     const val WEEKLY = "Dayof7Screen"
     const val MONTHLY = "Dayof30Screen"
     const val QIBLA = "QiblaScreen"
+    const val REGIONS = "RegionSelectionScreen"
 }

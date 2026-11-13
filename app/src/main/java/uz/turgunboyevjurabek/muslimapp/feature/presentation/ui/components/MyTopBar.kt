@@ -82,7 +82,7 @@ fun MyTopBar(
     backdrop: HazeState,
     connection: InternetConnection,
     refreshing: Boolean,
-    onSheetClick: () -> Unit,
+    onRegionClick: () -> Unit,
 ) {
     val onQiblaScreen = screenName == "Qibla"
     val colors = MaterialTheme.colorScheme
@@ -152,7 +152,7 @@ fun MyTopBar(
                 if (onQiblaScreen) {
                     AppBarIconButton(R.drawable.ic_qibla_back, "Orqaga") { navController.popBackStack() }
                 } else {
-                    AppBarIconButton(R.drawable.ic_qibla_location, "Hududni tanlash", onSheetClick)
+                    AppBarIconButton(R.drawable.ic_qibla_location, "Hududni tanlash", onRegionClick)
                 }
             },
             actions = {

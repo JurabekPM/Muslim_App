@@ -7,8 +7,21 @@ import org.junit.Test
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.Regions
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.RegionKind
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.RegionAddressMatcher
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.RegionHierarchy
 
 class RegionCatalogTest {
+    @Test
+    fun providerHierarchyCoversTheCatalogExactlyOnce() {
+        val groups = RegionHierarchy.groups
+        val listed = groups.flatMap { listOf(it.region) + it.children }
+        assertEquals(14, groups.size)
+        assertEquals(Regions.supported.size, listed.size)
+        assertEquals(Regions.supported.toSet(), listed.toSet())
+        assertTrue(RegionHierarchy.groupsBySlug.getValue("fargona-viloyati").children.any { it.slug == "qoqon-shahri" })
+        assertTrue(RegionHierarchy.groupsBySlug.getValue("toshkent-shahri").children.any { it.slug == "chilonzor" })
+        assertTrue(RegionHierarchy.groupsBySlug.getValue("toshkent-viloyati").children.any { it.slug == "toshkent-tumani" })
+    }
+
     @Test
     fun oldSavedNamesKeepTheirPrayerScheduleSlug() {
         assertEquals("qoqon-shahri", Regions.resolve("Qo'qon").slug)

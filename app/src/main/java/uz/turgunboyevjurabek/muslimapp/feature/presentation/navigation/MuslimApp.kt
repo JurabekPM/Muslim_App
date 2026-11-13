@@ -17,9 +17,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -33,7 +30,7 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.DayOf30Sc
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.Dayof7Screen
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.MainScreen
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.TasbexScreen
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.SheetDialogUI
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.RegionSelectionScreen
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.CounterViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.PrayerScheduleViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.SelectRegionViewModel
@@ -66,31 +63,31 @@ internal fun MuslimApp(
         ) {
             val navController = rememberNavController()
             val chromeBackdrop = rememberHazeState()
-            var isSheetOpen by rememberSaveable {
-                mutableStateOf(false)
-            }
+            val entry by navController.currentBackStackEntryAsState()
+            val selectingRegion = entry?.destination?.route == AppRoute.REGIONS
 
             Scaffold(
                 modifier = Modifier
                     .fillMaxSize(),
                 topBar = {
-                    val entry by navController.currentBackStackEntryAsState()
-                    val screenName = screenNameForRoute(entry?.destination?.route)
-                    val connection by scheduleViewModel.connection.collectAsStateWithLifecycle()
-                    MyTopBar(
-                        modifier = Modifier,
-                        navController = navController,
-                        screenName = screenName,
-                        backdrop = chromeBackdrop,
-                        connection = connection,
-                        refreshing = scheduleViewModel.isRefreshing(screenName),
-                        onSheetClick = {
-                            isSheetOpen = true
-                        }
-                    )
+                    if (!selectingRegion) {
+                        val screenName = screenNameForRoute(entry?.destination?.route)
+                        val connection by scheduleViewModel.connection.collectAsStateWithLifecycle()
+                        MyTopBar(
+                            modifier = Modifier,
+                            navController = navController,
+                            screenName = screenName,
+                            backdrop = chromeBackdrop,
+                            connection = connection,
+                            refreshing = scheduleViewModel.isRefreshing(screenName),
+                            onRegionClick = {
+                                navController.navigate(AppRoute.REGIONS) { launchSingleTop = true }
+                            },
+                        )
+                    }
                 },
                 bottomBar = {
-                    myBottomNavigationBar(
+                    if (!selectingRegion) myBottomNavigationBar(
                         navController = navController,
                         backdrop = chromeBackdrop,
                     )
@@ -106,13 +103,6 @@ internal fun MuslimApp(
                             end = innerPadding.calculateEndPadding(direction),
                         )
                 ) {
-                    if (isSheetOpen) {
-                        SheetDialogUI(
-                            selectRegionViewModel = regionViewModel,
-                            lookupLocation = regionLocationLookup::find,
-                            onDismiss = { isSheetOpen = false },
-                        )
-                    }
                     NavHost(
                         navController = navController,
                         startDestination = AppRoute.HOME,
@@ -124,6 +114,13 @@ internal fun MuslimApp(
                             .hazeSource(chromeBackdrop)
                             .background(MaterialTheme.colorScheme.background),
                     ) {
+                        composable(AppRoute.REGIONS) {
+                            RegionSelectionScreen(
+                                selectRegionViewModel = regionViewModel,
+                                lookupLocation = regionLocationLookup::find,
+                                onClose = { navController.popBackStack() },
+                            )
+                        }
                         composable(AppRoute.HOME) {
                             MainScreen(
                                 selectRegionViewModel = regionViewModel,
