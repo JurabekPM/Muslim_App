@@ -1,6 +1,10 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -18,8 +22,6 @@ import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInParent
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.PrayerInterval
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.caption
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -75,16 +77,18 @@ internal fun PrayerTimeline(
     val colors = MaterialTheme.colorScheme
     val markers = remember { mutableStateMapOf<Int, Float>() }
     val fraction = remember(currentIndex, nextIndex) { Animatable(0f) }
-    val glow = remember(currentIndex, nextIndex) { Animatable(0f) }
+    val shimmer = interval?.let {
+        val duration = 950 + it.minutesLeft.coerceIn(1L, 180L).toInt() * 15
+        rememberInfiniteTransition(label = "Prayer progress light").animateFloat(
+            initialValue = 0f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(tween(duration, easing = LinearEasing)),
+            label = "Light position",
+        )
+    }
     LaunchedEffect(interval?.fraction, fraction) {
         if (interval != null) {
-            coroutineScope {
-                launch { fraction.animateTo(interval.fraction, tween(650)) }
-                launch {
-                    glow.snapTo(0.72f)
-                    glow.animateTo(0f, tween(780))
-                }
-            }
+            fraction.animateTo(interval.fraction, tween(650))
         }
     }
 
@@ -101,21 +105,32 @@ internal fun PrayerTimeline(
                 val from = markers[currentIndex]
                 val until = markers[nextIndex]
                 if (interval != null && from != null && until != null && until > from && fraction.value > 0f) {
-                    val tip = Offset(x, from + (until - from) * fraction.value)
-                    drawLine(colors.tertiary, Offset(x, from), tip, 3.dp.toPx(), StrokeCap.Round)
-                    val radius = 8.dp.toPx()
-                    if (glow.value > 0f) {
-                        drawCircle(
-                            brush = Brush.radialGradient(
-                                listOf(colors.tertiary.copy(alpha = glow.value), colors.tertiary.copy(alpha = 0f)),
-                                center = tip,
-                                radius = radius,
+                    val filledLength = (until - from) * fraction.value
+                    val tip = Offset(x, from + filledLength)
+                    val stroke = 4.dp.toPx()
+                    drawLine(colors.tertiary, Offset(x, from), tip, stroke, StrokeCap.Round)
+                    val phase = shimmer?.value ?: 0f
+                    val light = Color(0xFFFFE9A9)
+                    val halfBand = minOf(9.dp.toPx(), filledLength * 0.45f)
+                    val center = from - halfBand + (filledLength + 2 * halfBand) * phase
+                    val top = maxOf(from, center - halfBand)
+                    val bottom = minOf(tip.y, center + halfBand)
+                    if (bottom > top) {
+                        val clear = light.copy(alpha = 0f)
+                        drawLine(
+                            brush = Brush.verticalGradient(
+                                listOf(clear, light.copy(alpha = 0.9f), clear),
+                                startY = center - halfBand,
+                                endY = center + halfBand,
                             ),
-                            radius = radius,
-                            center = tip,
+                            start = Offset(x, top),
+                            end = Offset(x, bottom),
+                            strokeWidth = stroke,
+                            cap = StrokeCap.Butt,
                         )
                     }
-                    drawCircle(colors.tertiary, 2.dp.toPx(), tip)
+                    val tipAlpha = 0.20f + 0.45f * (1f - kotlin.math.abs(2f * phase - 1f))
+                    drawCircle(light.copy(alpha = tipAlpha), stroke * 0.38f, tip)
                 }
 
                 slots.indices.forEach { index ->
