@@ -1,0 +1,123 @@
+<resources>
+    <string name="home">Басты</string>
+    <string name="tasbih">Тәсбих</string>
+    <string name="weekly">7 күн</string>
+    <string name="monthly">30 күн</string>
+    <string name="qibla">Құбыла</string>
+    <string name="prayer_times">Намаз уақыттары</string>
+    <string name="prayer_time">Намаз уақыты</string>
+    <string name="regions">Өңірді таңдау</string>
+    <string name="back">Артқа</string>
+    <string name="close">Жабу</string>
+    <string name="connecting">Қосылуда…</string>
+    <string name="offline">Интернет жоқ</string>
+    <string name="online">Байланыс қалпына келді</string>
+    <string name="refreshing">Жаңартылуда…</string>
+    <string name="fajr">Таң</string>
+    <string name="sunrise">Күн шығу</string>
+    <string name="dhuhr">Бесін</string>
+    <string name="asr">Екінті</string>
+    <string name="maghrib">Ақшам</string>
+    <string name="isha">Құптан</string>
+    <string name="prayer_schedule">Намаз кестесі</string>
+    <string name="retry">Қайталап көру</string>
+    <string name="previous_month">Алдыңғы ай</string>
+    <string name="next_month">Келесі ай</string>
+    <string name="loading_prayers">Намаз уақыттары жүктелуде</string>
+    <string name="no_day">Таңдалған күнге намаз уақыттары табылмады.</string>
+    <string name="saved_schedule">Сақталған кесте · %1$s</string>
+    <string name="remaining_minutes">%1$d мин</string>
+    <string name="remaining_hours">%1$d сағ</string>
+    <string name="remaining_hours_minutes">%1$d сағ %2$d мин</string>
+    <string name="until_prayer">%1$s намазына дейін %2$s</string>
+    <string name="location_permission">Нақты геолокацияға рұқсат беріңіз немесе өңірді тізімнен таңдаңыз.</string>
+    <string name="region_save_failed">Өңірді сақтау мүмкін болмады. Қайта таңдаңыз.</string>
+    <string name="location_off">Телефон баптауларында геолокацияны қосыңыз.</string>
+    <string name="location_no_fix">Орналасқан жер анықталмады. Қайталап көріңіз.</string>
+    <string name="location_no_address">Мекенжай анықталмады. Интернетті тексеріңіз немесе өңірді таңдаңыз.</string>
+    <string name="location_no_match">Сәйкес қала немесе аудан табылмады. Өңірді тізімнен таңдаңыз.</string>
+    <string name="main_regions">Негізгі өңірлер</string>
+    <string name="region_not_found">Өңір табылмады</string>
+    <string name="current_location">Ағымдағы орналасқан жер</string>
+    <string name="search_region">Өңірді іздеу</string>
+    <string name="clear_search">Іздеуді тазалау</string>
+    <string name="finding_location">Орналасқан жер анықталуда…</string>
+    <string name="use_location">Менің орналасқан жерім</string>
+    <string name="whole_region">Кесте: %1$s</string>
+    <string name="city_name">%1$s қаласы</string>
+    <string name="district_name">%1$s ауданы</string>
+    <string name="province_name">%1$s облысы</string>
+    <string name="karakalpakstan">Қарақалпақстан Республикасы</string>
+    <string name="qibla_direction">Құбыла бағыты %1$s</string>
+    <string name="no_compass">Компас қолжетімсіз</string>
+    <string name="location_unavailable">Орналасқан жер анықталмады</string>
+    <string name="locating">Орналасқан жер анықталуда</string>
+    <string name="qibla_found">Құбыла табылды</string>
+    <string name="qibla_approx">Құбылаға шамамен сәйкес</string>
+    <string name="hold_still">Телефонды қозғалтпай ұстаңыз</string>
+    <string name="near_qibla">Құбылаға жақын</string>
+    <string name="low_accuracy">Компас дәлдігі төмен</string>
+    <string name="turn_left">Солға бұрылыңыз</string>
+    <string name="turn_right">Оңға бұрылыңыз</string>
+    <string name="calibrate">Калибрлеу</string>
+    <string name="calibrate_compass">Компасты калибрлеу</string>
+    <string name="calibrate_metal">Магнитті қапты шешіп, металл заттардан алыстаңыз.</string>
+    <string name="calibrate_motion">Телефонмен ауада бірнеше рет сегіздік сызыңыз. Сосын оны сәл қозғалтпай ұстаңыз.</string>
+    <string name="accuracy_ready">Компас дәлдігі жеткілікті</string>
+    <string name="accuracy_still_low">Компас дәлдігі әлі де төмен</string>
+    <string name="north">Солтүстік</string>
+    <string name="east">Шығыс</string>
+    <string name="south">Оңтүстік</string>
+    <string name="west">Батыс</string>
+    <string name="qibla_compass">Құбыла компасы</string>
+    <string name="loading_tasbih">Тәсбих санағы жүктелуде</string>
+    <string name="no_dhikr_history">Зікір тарихы әзірге қолжетімсіз</string>
+    <string name="dhikr_history">Зікір тарихы</string>
+    <string name="reset_count">Санағышты нөлдеу</string>
+    <string name="new_dhikr">Жаңа зікір</string>
+    <string name="continue_dhikr">Алдыңғы зікірді жалғастырыңыз</string>
+    <string name="dhikr">Зікір</string>
+    <string name="location_services_off">Геолокация өшірулі</string>
+    <string name="location_services_hint">Телефон баптауларында геолокацияны қосыңыз.</string>
+    <string name="enable">Қосу</string>
+    <string name="cancel">Бас тарту</string>
+    <string name="language">Қолданба тілі</string>
+    <string name="schedule_offline">Интернет жоқ. Бұл өңірдің кестесі әлі сақталмаған.</string>
+    <string name="schedule_save_failed">Кестені телефонға сақтау мүмкін болмады.</string>
+    <string name="schedule_http_error">Намаз уақыттарын жүктеу мүмкін болмады (HTTP %1$s).</string>
+    <string name="schedule_network_error">Интернетті тексеріп, қайталап көріңіз.</string>
+    <string name="schedule_read_error">Намаз уақыттарын оқу мүмкін болмады.</string>
+    <string name="schedule_date">%1$d %2$s</string>
+    <string-array name="calendar_month_names">
+        <item>қаңтар</item>
+        <item>ақпан</item>
+        <item>наурыз</item>
+        <item>сәуір</item>
+        <item>мамыр</item>
+        <item>маусым</item>
+        <item>шілде</item>
+        <item>тамыз</item>
+        <item>қыркүйек</item>
+        <item>қазан</item>
+        <item>қараша</item>
+        <item>желтоқсан</item>
+    </string-array>
+    <string-array name="weekday_names">
+        <item>Дүйсенбі</item>
+        <item>Сейсенбі</item>
+        <item>Сәрсенбі</item>
+        <item>Бейсенбі</item>
+        <item>Жұма</item>
+        <item>Сенбі</item>
+        <item>Жексенбі</item>
+    </string-array>
+    <string-array name="weekday_short_names">
+        <item>Дс</item>
+        <item>Сс</item>
+        <item>Ср</item>
+        <item>Бс</item>
+        <item>Жм</item>
+        <item>Сб</item>
+        <item>Жс</item>
+    </string-array>
+</resources>

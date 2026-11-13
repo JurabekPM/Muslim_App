@@ -21,6 +21,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -229,7 +231,10 @@ internal fun RegionSelectionScreen(
                 fontWeight = FontWeight.SemiBold,
             )
             TextButton(onClick = { choosingLanguage = true }, enabled = !saving) {
-                Text(language.label, Modifier.semantics { contentDescription = languageDescription })
+                Text(
+                    language.label.substringBefore(" ("),
+                    Modifier.semantics { contentDescription = languageDescription },
+                )
             }
         }
 
@@ -337,7 +342,7 @@ internal fun RegionSelectionScreen(
             onDismissRequest = { choosingLanguage = false },
             title = { Text(stringResource(R.string.language)) },
             text = {
-                Column {
+                Column(Modifier.verticalScroll(rememberScrollState())) {
                     AppLanguage.entries.forEach { option ->
                         Row(
                             Modifier.fillMaxWidth().heightIn(min = 48.dp).selectable(

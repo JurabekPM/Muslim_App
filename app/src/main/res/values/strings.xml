@@ -102,4 +102,37 @@
         <item>noyabr</item>
         <item>dekabr</item>
     </string-array>
+    <string name="schedule_date">%1$d %2$s</string>
+    <string-array name="calendar_month_names">
+        <item>yanvar</item>
+        <item>fevral</item>
+        <item>mart</item>
+        <item>aprel</item>
+        <item>may</item>
+        <item>iyun</item>
+        <item>iyul</item>
+        <item>avgust</item>
+        <item>sentabr</item>
+        <item>oktabr</item>
+        <item>noyabr</item>
+        <item>dekabr</item>
+    </string-array>
+    <string-array name="weekday_names">
+        <item>Dushanba</item>
+        <item>Seshanba</item>
+        <item>Chorshanba</item>
+        <item>Payshanba</item>
+        <item>Juma</item>
+        <item>Shanba</item>
+        <item>Yakshanba</item>
+    </string-array>
+    <string-array name="weekday_short_names">
+        <item>Du</item>
+        <item>Se</item>
+        <item>Ch</item>
+        <item>Pa</item>
+        <item>Ju</item>
+        <item>Sh</item>
+        <item>Ya</item>
+    </string-array>
 </resources>

@@ -1,0 +1,123 @@
+<resources>
+    <string name="home">Baş sahypa</string>
+    <string name="tasbih">Tesbih</string>
+    <string name="weekly">7 gün</string>
+    <string name="monthly">30 gün</string>
+    <string name="qibla">Kybla</string>
+    <string name="prayer_times">Namaz wagtlary</string>
+    <string name="prayer_time">Namaz wagty</string>
+    <string name="regions">Sebit saýlamak</string>
+    <string name="back">Yza</string>
+    <string name="close">Ýapmak</string>
+    <string name="connecting">Baglanyşýar…</string>
+    <string name="offline">Internet ýok</string>
+    <string name="online">Internet birikdi</string>
+    <string name="refreshing">Täzelenýär…</string>
+    <string name="fajr">Fajr</string>
+    <string name="sunrise">Gün doguşy</string>
+    <string name="dhuhr">Peshin</string>
+    <string name="asr">Asr</string>
+    <string name="maghrib">Maghrib</string>
+    <string name="isha">Işa</string>
+    <string name="prayer_schedule">Namaz tertibi</string>
+    <string name="retry">Gaýtadan synanyşmak</string>
+    <string name="previous_month">Öňki aý</string>
+    <string name="next_month">Indiki aý</string>
+    <string name="loading_prayers">Namaz wagtlary ýüklenýär</string>
+    <string name="no_day">Saýlanan gün üçin namaz wagtlary tapylmady.</string>
+    <string name="saved_schedule">Ýatda saklanan tertip · %1$s</string>
+    <string name="remaining_minutes">%1$d min</string>
+    <string name="remaining_hours">%1$d sag</string>
+    <string name="remaining_hours_minutes">%1$d sag %2$d min</string>
+    <string name="until_prayer">%1$s namazyna çenli %2$s</string>
+    <string name="location_permission">Takyk ýerleşişe rugsat beriň ýa-da sanawdan sebit saýlaň.</string>
+    <string name="region_save_failed">Sebiti ýatda saklap bolmady. Täzeden saýlaň.</string>
+    <string name="location_off">Telefonyň sazlamalarynda ýerleşişi açyň.</string>
+    <string name="location_no_fix">Ýerleşiş kesgitlenmedi. Gaýtadan synanyşyň.</string>
+    <string name="location_no_address">Salgy kesgitlenmedi. Interneti barlaň ýa-da sebit saýlaň.</string>
+    <string name="location_no_match">Gabat gelýän şäher ýa-da etrap tapylmady. Sanawdan sebit saýlaň.</string>
+    <string name="main_regions">Esasy sebitler</string>
+    <string name="region_not_found">Sebit tapylmady</string>
+    <string name="current_location">Häzirki ýerleşiş</string>
+    <string name="search_region">Sebit gözlemek</string>
+    <string name="clear_search">Gözlegi arassalamak</string>
+    <string name="finding_location">Ýerleşiş kesgitlenýär…</string>
+    <string name="use_location">Meniň ýerleşişim</string>
+    <string name="whole_region">Tertip: %1$s</string>
+    <string name="city_name">%1$s şäheri</string>
+    <string name="district_name">%1$s etraby</string>
+    <string name="province_name">%1$s welaýaty</string>
+    <string name="karakalpakstan">Garagalpagystan Respublikasy</string>
+    <string name="qibla_direction">Kybla ugry %1$s</string>
+    <string name="no_compass">Kompas elýeterli däl</string>
+    <string name="location_unavailable">Ýerleşiş kesgitlenmedi</string>
+    <string name="locating">Ýerleşiş kesgitlenýär</string>
+    <string name="qibla_found">Kybla tapyldy</string>
+    <string name="qibla_approx">Takmynan kybla ugrunda</string>
+    <string name="hold_still">Telefony gymyldatman saklaň</string>
+    <string name="near_qibla">Kybla ýakyn</string>
+    <string name="low_accuracy">Kompasyň takyklygy pes</string>
+    <string name="turn_left">Çepe öwrüliň</string>
+    <string name="turn_right">Saga öwrüliň</string>
+    <string name="calibrate">Sazlamak</string>
+    <string name="calibrate_compass">Kompasy sazlamak</string>
+    <string name="calibrate_metal">Magnitli gaby aýryň we metal zatlardan daşlaşyň.</string>
+    <string name="calibrate_motion">Telefon bilen howada birnäçe gezek 8 şekilini çyzyň. Soňra ony biraz gymyldatman saklaň.</string>
+    <string name="accuracy_ready">Kompasyň takyklygy ýeterlik</string>
+    <string name="accuracy_still_low">Kompasyň takyklygy entek pes</string>
+    <string name="north">Demirgazyk</string>
+    <string name="east">Gündogar</string>
+    <string name="south">Günorta</string>
+    <string name="west">Günbatar</string>
+    <string name="qibla_compass">Kybla kompasy</string>
+    <string name="loading_tasbih">Tesbih sany ýüklenýär</string>
+    <string name="no_dhikr_history">Zikir taryhy häzir elýeterli däl</string>
+    <string name="dhikr_history">Zikir taryhy</string>
+    <string name="reset_count">Hasaby nola getirmek</string>
+    <string name="new_dhikr">Täze zikir</string>
+    <string name="continue_dhikr">Öňki zikiri dowam etdiriň</string>
+    <string name="dhikr">Zikir</string>
+    <string name="location_services_off">Ýerleşiş hyzmatlary öçük</string>
+    <string name="location_services_hint">Telefonyň sazlamalarynda ýerleşişi açyň.</string>
+    <string name="enable">Açmak</string>
+    <string name="cancel">Ýatyrmak</string>
+    <string name="language">Programmanyň dili</string>
+    <string name="schedule_offline">Internet ýok. Bu sebitiň tertibi entek ýatda saklanmady.</string>
+    <string name="schedule_save_failed">Tertibi telefonda ýatda saklap bolmady.</string>
+    <string name="schedule_http_error">Namaz wagtlaryny ýükläp bolmady (HTTP %1$s).</string>
+    <string name="schedule_network_error">Internet baglanyşygyny barlaň we gaýtadan synanyşyň.</string>
+    <string name="schedule_read_error">Namaz wagtlaryny okap bolmady.</string>
+    <string name="schedule_date">%1$d %2$s</string>
+    <string-array name="calendar_month_names">
+        <item>ýanwar</item>
+        <item>fewral</item>
+        <item>mart</item>
+        <item>aprel</item>
+        <item>maý</item>
+        <item>iýun</item>
+        <item>iýul</item>
+        <item>awgust</item>
+        <item>sentýabr</item>
+        <item>oktýabr</item>
+        <item>noýabr</item>
+        <item>dekabr</item>
+    </string-array>
+    <string-array name="weekday_names">
+        <item>Duşenbe</item>
+        <item>Sişenbe</item>
+        <item>Çarşenbe</item>
+        <item>Penşenbe</item>
+        <item>Anna</item>
+        <item>Şenbe</item>
+        <item>Ýekşenbe</item>
+    </string-array>
+    <string-array name="weekday_short_names">
+        <item>Du</item>
+        <item>Si</item>
+        <item>Ça</item>
+        <item>Pe</item>
+        <item>An</item>
+        <item>Şe</item>
+        <item>Ýe</item>
+    </string-array>
+</resources>

@@ -1,0 +1,123 @@
+<resources>
+    <string name="home">Асосий</string>
+    <string name="tasbih">Тасбеҳ</string>
+    <string name="weekly">7 кунлик</string>
+    <string name="monthly">30 кунлик</string>
+    <string name="qibla">Қибла</string>
+    <string name="prayer_times">Намоз вақтлари</string>
+    <string name="prayer_time">Намоз вақти</string>
+    <string name="regions">Ҳудудни танлаш</string>
+    <string name="back">Орқага</string>
+    <string name="close">Ёпиш</string>
+    <string name="connecting">Уланмоқда…</string>
+    <string name="offline">Интернет йўқ</string>
+    <string name="online">Интернет уланди</string>
+    <string name="refreshing">Янгиланмоқда…</string>
+    <string name="fajr">Бомдод</string>
+    <string name="sunrise">Қуёш</string>
+    <string name="dhuhr">Пешин</string>
+    <string name="asr">Аср</string>
+    <string name="maghrib">Шом</string>
+    <string name="isha">Хуфтон</string>
+    <string name="prayer_schedule">Намоз жадвали</string>
+    <string name="retry">Қайта уриниш</string>
+    <string name="previous_month">Олдинги ой</string>
+    <string name="next_month">Кейинги ой</string>
+    <string name="loading_prayers">Намоз вақтлари юкланмоқда</string>
+    <string name="no_day">Танланган кун учун намоз вақтлари топилмади.</string>
+    <string name="saved_schedule">Сақланган жадвал · %1$s</string>
+    <string name="remaining_minutes">%1$d дақ</string>
+    <string name="remaining_hours">%1$d соат</string>
+    <string name="remaining_hours_minutes">%1$d соат %2$d дақ</string>
+    <string name="until_prayer">%1$sгача %2$s</string>
+    <string name="location_permission">Аниқ жойлашувга рухсат беринг ёки ҳудудни рўйхатдан танланг.</string>
+    <string name="region_save_failed">Ҳудудни сақлаб бўлмади. Қайта танланг.</string>
+    <string name="location_off">Телефон созламаларида жойлашувни ёқинг.</string>
+    <string name="location_no_fix">Жойлашув аниқланмади. Қайта уриниб кўринг.</string>
+    <string name="location_no_address">Манзил аниқланмади. Интернетни текширинг ёки ҳудудни танланг.</string>
+    <string name="location_no_match">Мос шаҳар ёки туман топилмади. Ҳудудни рўйхатдан танланг.</string>
+    <string name="main_regions">Асосий ҳудудлар</string>
+    <string name="region_not_found">Ҳудуд топилмади</string>
+    <string name="current_location">Ҳозирги жойлашув</string>
+    <string name="search_region">Ҳудуд қидириш</string>
+    <string name="clear_search">Қидирувни тозалаш</string>
+    <string name="finding_location">Жойлашув аниқланмоқда…</string>
+    <string name="use_location">Ҳозирги жойлашувим</string>
+    <string name="whole_region">%1$s бўйича</string>
+    <string name="city_name">%1$s шаҳри</string>
+    <string name="district_name">%1$s тумани</string>
+    <string name="province_name">%1$s вилояти</string>
+    <string name="karakalpakstan">Қорақалпоғистон Республикаси</string>
+    <string name="qibla_direction">Қибла йўналиши %1$s</string>
+    <string name="no_compass">Компас мавжуд эмас</string>
+    <string name="location_unavailable">Жойлашув аниқланмади</string>
+    <string name="locating">Жойлашув аниқланмоқда</string>
+    <string name="qibla_found">Қибла топилди</string>
+    <string name="qibla_approx">Қиблага тахминан мос</string>
+    <string name="hold_still">Қимирлатмай туринг</string>
+    <string name="near_qibla">Қиблага яқин</string>
+    <string name="low_accuracy">Компас аниқлиги паст</string>
+    <string name="turn_left">Чапга бурилинг</string>
+    <string name="turn_right">Ўнгга бурилинг</string>
+    <string name="calibrate">Калибрлаш</string>
+    <string name="calibrate_compass">Компасни калибрлаш</string>
+    <string name="calibrate_metal">Магнитли ғилофни ечинг ва металл буюмлардан узоқлашинг.</string>
+    <string name="calibrate_motion">Телефон билан ҳавода бир неча марта 8 шаклини чизинг. Кейин телефонни бир зум қимирлатмай тутинг.</string>
+    <string name="accuracy_ready">Компас аниқлиги етарли</string>
+    <string name="accuracy_still_low">Компас аниқлиги ҳали паст</string>
+    <string name="north">Шимол</string>
+    <string name="east">Шарқ</string>
+    <string name="south">Жануб</string>
+    <string name="west">Ғарб</string>
+    <string name="qibla_compass">Қибла компаси</string>
+    <string name="loading_tasbih">Тасбеҳ ҳисоби юкланмоқда</string>
+    <string name="no_dhikr_history">Зикр тарихи ҳозирча мавжуд эмас</string>
+    <string name="dhikr_history">Зикр тарихи</string>
+    <string name="reset_count">Ҳисобни нолга тушириш</string>
+    <string name="new_dhikr">Янги зикр</string>
+    <string name="continue_dhikr">Аввалги зикрни давом эттиринг</string>
+    <string name="dhikr">Зикр</string>
+    <string name="location_services_off">Жойлашув хизматлари ўчиқ</string>
+    <string name="location_services_hint">Телефон созламаларида жойлашувни ёқинг.</string>
+    <string name="enable">Ёқиш</string>
+    <string name="cancel">Бекор қилиш</string>
+    <string name="language">Илова тили</string>
+    <string name="schedule_offline">Интернет йўқ. Бу ҳудуднинг жадвали ҳали сақланмаган.</string>
+    <string name="schedule_save_failed">Жадвални телефонга сақлаб бўлмади.</string>
+    <string name="schedule_http_error">Намоз вақтларини юклаб бўлмади (HTTP %1$s).</string>
+    <string name="schedule_network_error">Интернет алоқасини текширинг ва қайта уриниб кўринг.</string>
+    <string name="schedule_read_error">Намоз вақтлари маълумотини ўқиб бўлмади.</string>
+    <string name="schedule_date">%1$d %2$s</string>
+    <string-array name="calendar_month_names">
+        <item>январ</item>
+        <item>феврал</item>
+        <item>март</item>
+        <item>апрел</item>
+        <item>май</item>
+        <item>июн</item>
+        <item>июл</item>
+        <item>август</item>
+        <item>сентябр</item>
+        <item>октябр</item>
+        <item>ноябр</item>
+        <item>декабр</item>
+    </string-array>
+    <string-array name="weekday_names">
+        <item>Душанба</item>
+        <item>Сешанба</item>
+        <item>Чоршанба</item>
+        <item>Пайшанба</item>
+        <item>Жума</item>
+        <item>Шанба</item>
+        <item>Якшанба</item>
+    </string-array>
+    <string-array name="weekday_short_names">
+        <item>Ду</item>
+        <item>Се</item>
+        <item>Чо</item>
+        <item>Па</item>
+        <item>Жу</item>
+        <item>Ша</item>
+        <item>Як</item>
+    </string-array>
+</resources>

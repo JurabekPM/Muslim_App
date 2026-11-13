@@ -1,0 +1,123 @@
+<resources>
+    <string name="home">Асосӣ</string>
+    <string name="tasbih">Тасбеҳ</string>
+    <string name="weekly">7 рӯз</string>
+    <string name="monthly">30 рӯз</string>
+    <string name="qibla">Қибла</string>
+    <string name="prayer_times">Вақтҳои намоз</string>
+    <string name="prayer_time">Вақти намоз</string>
+    <string name="regions">Интихоби минтақа</string>
+    <string name="back">Бозгашт</string>
+    <string name="close">Пӯшидан</string>
+    <string name="connecting">Пайваст шуда истодааст…</string>
+    <string name="offline">Интернет нест</string>
+    <string name="online">Интернет пайваст шуд</string>
+    <string name="refreshing">Нав шуда истодааст…</string>
+    <string name="fajr">Бомдод</string>
+    <string name="sunrise">Тулуъ</string>
+    <string name="dhuhr">Пешин</string>
+    <string name="asr">Аср</string>
+    <string name="maghrib">Шом</string>
+    <string name="isha">Хуфтон</string>
+    <string name="prayer_schedule">Ҷадвали намоз</string>
+    <string name="retry">Дубора кӯшидан</string>
+    <string name="previous_month">Моҳи гузашта</string>
+    <string name="next_month">Моҳи оянда</string>
+    <string name="loading_prayers">Вақтҳои намоз бор шуда истодаанд</string>
+    <string name="no_day">Барои рӯзи интихобшуда вақтҳои намоз ёфт нашуданд.</string>
+    <string name="saved_schedule">Ҷадвали захирашуда · %1$s</string>
+    <string name="remaining_minutes">%1$d дақ</string>
+    <string name="remaining_hours">%1$d соат</string>
+    <string name="remaining_hours_minutes">%1$d соат %2$d дақ</string>
+    <string name="until_prayer">То намози %1$s — %2$s</string>
+    <string name="location_permission">Ба муайян кардани ҷойгиршавии дақиқ иҷозат диҳед ё минтақаро аз рӯйхат интихоб кунед.</string>
+    <string name="region_save_failed">Минтақаро захира кардан муяссар нашуд. Аз нав интихоб кунед.</string>
+    <string name="location_off">Муайян кардани ҷойгиршавиро дар танзимоти телефон фаъол кунед.</string>
+    <string name="location_no_fix">Ҷойгиршавӣ муайян нашуд. Дубора кӯшиш кунед.</string>
+    <string name="location_no_address">Нишонӣ муайян нашуд. Интернетро санҷед ё минтақаро интихоб кунед.</string>
+    <string name="location_no_match">Шаҳр ё ноҳияи мувофиқ ёфт нашуд. Минтақаро аз рӯйхат интихоб кунед.</string>
+    <string name="main_regions">Минтақаҳои асосӣ</string>
+    <string name="region_not_found">Минтақа ёфт нашуд</string>
+    <string name="current_location">Ҷойгиршавии ҷорӣ</string>
+    <string name="search_region">Ҷустуҷӯи минтақа</string>
+    <string name="clear_search">Пок кардани ҷустуҷӯ</string>
+    <string name="finding_location">Ҷойгиршавӣ муайян шуда истодааст…</string>
+    <string name="use_location">Ҷойгиршавии ман</string>
+    <string name="whole_region">Ҷадвал: %1$s</string>
+    <string name="city_name">шаҳри %1$s</string>
+    <string name="district_name">ноҳияи %1$s</string>
+    <string name="province_name">вилояти %1$s</string>
+    <string name="karakalpakstan">Ҷумҳурии Қарақалпоқистон</string>
+    <string name="qibla_direction">Самти қибла %1$s</string>
+    <string name="no_compass">Қутбнамо дастрас нест</string>
+    <string name="location_unavailable">Ҷойгиршавӣ муайян нашуд</string>
+    <string name="locating">Ҷойгиршавӣ муайян шуда истодааст</string>
+    <string name="qibla_found">Қибла ёфт шуд</string>
+    <string name="qibla_approx">Тақрибан ба самти қибла</string>
+    <string name="hold_still">Телефонро беҳаракат нигоҳ доред</string>
+    <string name="near_qibla">Наздик ба қибла</string>
+    <string name="low_accuracy">Дақиқии қутбнамо паст аст</string>
+    <string name="turn_left">Ба чап гардед</string>
+    <string name="turn_right">Ба рост гардед</string>
+    <string name="calibrate">Танзим кардан</string>
+    <string name="calibrate_compass">Танзими қутбнамо</string>
+    <string name="calibrate_metal">Ғилофи магнитиро гиред ва аз ашёи филизӣ дур шавед.</string>
+    <string name="calibrate_motion">Бо телефон дар ҳаво чанд бор шакли 8-ро кашед. Сипас онро лаҳзае беҳаракат нигоҳ доред.</string>
+    <string name="accuracy_ready">Дақиқии қутбнамо кофист</string>
+    <string name="accuracy_still_low">Дақиқии қутбнамо ҳанӯз паст аст</string>
+    <string name="north">Шимол</string>
+    <string name="east">Шарқ</string>
+    <string name="south">Ҷануб</string>
+    <string name="west">Ғарб</string>
+    <string name="qibla_compass">Қутбнамои қибла</string>
+    <string name="loading_tasbih">Ҳисоби тасбеҳ бор шуда истодааст</string>
+    <string name="no_dhikr_history">Таърихи зикр ҳоло дастрас нест</string>
+    <string name="dhikr_history">Таърихи зикр</string>
+    <string name="reset_count">Ҳисобро ба сифр баргардондан</string>
+    <string name="new_dhikr">Зикри нав</string>
+    <string name="continue_dhikr">Зикри пешинаро идома диҳед</string>
+    <string name="dhikr">Зикр</string>
+    <string name="location_services_off">Хидмати ҷойгиршавӣ ғайрифаъол аст</string>
+    <string name="location_services_hint">Муайян кардани ҷойгиршавиро дар танзимоти телефон фаъол кунед.</string>
+    <string name="enable">Фаъол кардан</string>
+    <string name="cancel">Бекор кардан</string>
+    <string name="language">Забони барнома</string>
+    <string name="schedule_offline">Интернет нест. Ҷадвали ин минтақа ҳанӯз захира нашудааст.</string>
+    <string name="schedule_save_failed">Ҷадвалро дар телефон захира кардан муяссар нашуд.</string>
+    <string name="schedule_http_error">Вақтҳои намоз бор нашуданд (HTTP %1$s).</string>
+    <string name="schedule_network_error">Пайвасти интернетро санҷед ва дубора кӯшиш кунед.</string>
+    <string name="schedule_read_error">Вақтҳои намоз хонда нашуданд.</string>
+    <string name="schedule_date">%1$d %2$s</string>
+    <string-array name="calendar_month_names">
+        <item>январ</item>
+        <item>феврал</item>
+        <item>март</item>
+        <item>апрел</item>
+        <item>май</item>
+        <item>июн</item>
+        <item>июл</item>
+        <item>август</item>
+        <item>сентябр</item>
+        <item>октябр</item>
+        <item>ноябр</item>
+        <item>декабр</item>
+    </string-array>
+    <string-array name="weekday_names">
+        <item>Душанбе</item>
+        <item>Сешанбе</item>
+        <item>Чоршанбе</item>
+        <item>Панҷшанбе</item>
+        <item>Ҷумъа</item>
+        <item>Шанбе</item>
+        <item>Якшанбе</item>
+    </string-array>
+    <string-array name="weekday_short_names">
+        <item>Дш</item>
+        <item>Сш</item>
+        <item>Чш</item>
+        <item>Пш</item>
+        <item>Ҷм</item>
+        <item>Шб</item>
+        <item>Яш</item>
+    </string-array>
+</resources>

@@ -5,8 +5,6 @@ import androidx.annotation.RequiresApi
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
-import java.time.format.TextStyle
-import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun YearMonth.getDayOfMonthStartingFromMonday(): List<LocalDate> {
@@ -17,9 +15,4 @@ fun YearMonth.getDayOfMonthStartingFromMonday(): List<LocalDate> {
     return generateSequence(firstMondayOfMonth) { it.plusDays(1) }
         .takeWhile { it.isBefore(firstDayOfNextMonth) }
         .toList()
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-fun YearMonth.getDisplayName(locale: Locale): String {
-    return "${month.getDisplayName(TextStyle.FULL, locale)} $year"
 }

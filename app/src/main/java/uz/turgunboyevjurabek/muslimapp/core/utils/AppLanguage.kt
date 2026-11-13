@@ -5,9 +5,14 @@ import android.content.res.Configuration
 import java.util.Locale
 
 internal enum class AppLanguage(val tag: String, val label: String) {
-    Uzbek("uz-Latn-UZ", "O‘zbekcha"),
+    Uzbek("uz-Latn-UZ", "O‘zbekcha (lotin)"),
+    UzbekCyrillic("uz-Cyrl-UZ", "Ўзбекча (кирилл)"),
     Russian("ru", "Русский"),
-    English("en", "English");
+    English("en", "English"),
+    Kazakh("kk-KZ", "Қазақша"),
+    Kyrgyz("ky-KG", "Кыргызча"),
+    Tajik("tg-TJ", "Тоҷикӣ"),
+    Turkmen("tk-TM", "Türkmençe");
 
     val locale: Locale get() = Locale.forLanguageTag(tag)
 

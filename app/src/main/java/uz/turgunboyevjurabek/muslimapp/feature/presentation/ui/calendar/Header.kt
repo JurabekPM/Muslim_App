@@ -1,6 +1,6 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.calendar
 
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.appLocale
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.scheduleMonth
 import androidx.compose.ui.res.stringResource
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedValueText
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.PressIconButton
@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import uz.turgunboyevjurabek.muslimapp.R
-import uz.turgunboyevjurabek.muslimapp.core.utils.getDisplayName
 import java.time.YearMonth
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -43,7 +42,7 @@ fun Header(
             )
         }
         AnimatedValueText(
-            text = yearMonth.getDisplayName(appLocale()),
+            text = scheduleMonth(yearMonth),
             contentAlignment = Alignment.Center,
             fontSize = 15.sp,
             style = MaterialTheme.typography.bodyLarge,

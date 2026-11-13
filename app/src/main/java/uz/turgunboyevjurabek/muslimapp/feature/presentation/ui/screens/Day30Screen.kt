@@ -1,11 +1,9 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens
 
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.messageText
-import java.time.format.TextStyle
-import java.time.DayOfWeek
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.appLocale
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.displayName
 import uz.turgunboyevjurabek.muslimapp.R
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.SelectRegionViewModel
 import androidx.compose.animation.AnimatedContent
@@ -67,7 +65,6 @@ fun DayOf30Screen(
     }
 
     val ovalShape = RoundedCornerShape(36.dp)
-    val locale = appLocale()
     ScheduleRefresh(load, refresh, topPadding, bottomPadding) {
         Column(
             modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
@@ -88,9 +85,7 @@ fun DayOf30Screen(
                 color = MaterialTheme.colorScheme.surfaceContainerLow,
             ) {
                 CalendarWidget(
-                    days = DayOfWeek.entries.map { day ->
-                        day.getDisplayName(TextStyle.SHORT, locale).replaceFirstChar { it.titlecase(locale) }
-                    }.toTypedArray(),
+                    days = stringArrayResource(R.array.weekday_short_names),
                     yearMonth = month,
                     dates = calendarDates.map { it.copy(isSelected = it.dayOfMonth.toIntOrNull() == selectedDay) },
                     onPreviousMonthButtonClicked = calendarViewModel::selectMonth,
