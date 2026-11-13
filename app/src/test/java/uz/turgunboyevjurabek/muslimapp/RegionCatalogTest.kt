@@ -8,8 +8,38 @@ import uz.turgunboyevjurabek.muslimapp.feature.domain.model.Regions
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.RegionKind
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.RegionAddressMatcher
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.RegionHierarchy
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.RegionSearchIndex
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.localizedBaseName
+import java.util.Locale
 
 class RegionCatalogTest {
+    @Test
+    fun localizedNamesKeepTheSameScheduleRegion() {
+        val kokand = Regions.resolve("qoqon-shahri")
+        assertEquals("Коканд", kokand.localizedBaseName(Locale.forLanguageTag("ru")))
+        assertEquals("Қўқон", kokand.localizedBaseName(Locale.forLanguageTag("uz-Cyrl")))
+        assertEquals("Kokand", kokand.localizedBaseName(Locale.ENGLISH))
+    }
+
+    @Test
+    fun searchAcceptsAliasesScriptsAndSmallTypos() {
+        listOf("Qo'qon", "Қўқон", "Коканд", "kokand", "Koknad", "Qoqqon", "город Коканд")
+            .forEach { query ->
+                assertEquals(query, "qoqon-shahri", RegionSearchIndex.search(query).first().slug)
+            }
+        assertEquals("toshkent-tumani", RegionSearchIndex.search("район Ташкент").first().slug)
+        assertEquals("toshkent-viloyati", RegionSearchIndex.search("Ташкент область").first().slug)
+        assertEquals("toshkent-shahri", RegionSearchIndex.search("Daş kent").first().slug)
+        assertTrue(RegionSearchIndex.search("zzzzzzzzzzzzzz").isEmpty())
+    }
+
+    @Test
+    fun searchStaysInsideTheOpenRegionGroup() {
+        val fergana = RegionHierarchy.groupsBySlug.getValue("fargona-viloyati")
+        assertTrue(RegionSearchIndex.search("Коканд", fergana.children).any { it.slug == "qoqon-shahri" })
+        assertTrue(RegionSearchIndex.search("Самарканд", fergana.children).isEmpty())
+    }
+
     @Test
     fun providerHierarchyCoversTheCatalogExactlyOnce() {
         val groups = RegionHierarchy.groups

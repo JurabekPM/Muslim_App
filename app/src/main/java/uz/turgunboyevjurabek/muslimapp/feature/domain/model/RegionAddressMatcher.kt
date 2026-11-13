@@ -46,6 +46,9 @@ internal object RegionAddressMatcher {
     private val cities by lazy { index(RegionKind.City) }
     private val districts by lazy { index(RegionKind.District) }
 
+    internal fun alternativeNames(name: String): List<String> =
+        aliases.filterValues { it == normalize(name).replace(" ", "") }.keys.toList()
+
     fun match(
         countryCode: String?,
         locality: String?,
@@ -98,7 +101,7 @@ internal object RegionAddressMatcher {
         return (aliases[name] ?: name) to (suffix ?: prefix)
     }
 
-    private fun normalize(value: String): String = buildString {
+    internal fun normalize(value: String): String = buildString {
         value.lowercase(Locale.ROOT).forEach { char ->
             append(cyrillic[char] ?: when {
                 char in 'a'..'z' || char in '0'..'9' -> char.toString()
@@ -116,5 +119,7 @@ internal object RegionAddressMatcher {
         'с' to "s", 'т' to "t", 'у' to "u", 'ф' to "f", 'х' to "x", 'ц' to "ts",
         'ч' to "ch", 'ш' to "sh", 'щ' to "sh", 'ъ' to "", 'ы' to "i", 'ь' to "",
         'э' to "e", 'ю' to "yu", 'я' to "ya", 'ў' to "o", 'қ' to "q", 'ғ' to "g", 'ҳ' to "h",
+        'ә' to "a", 'ө' to "o", 'ү' to "u", 'ұ' to "u", 'ң' to "n", 'і' to "i",
+        'ҷ' to "j", 'ӣ' to "i",
     )
 }

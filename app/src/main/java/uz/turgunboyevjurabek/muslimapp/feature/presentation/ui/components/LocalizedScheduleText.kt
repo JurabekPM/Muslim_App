@@ -6,6 +6,7 @@ import androidx.compose.ui.res.stringResource
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.RegionKind
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.Regions
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.localizedBaseName
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.PrayerInterval
 
 @Composable
@@ -13,7 +14,7 @@ internal fun appLocale() = LocalConfiguration.current.locales[0]
 
 @Composable
 internal fun Regions.displayName(): String {
-    val name = nameRegion.removeSuffix(" shahri").removeSuffix(" tumani").removeSuffix(" viloyati")
+    val name = localizedBaseName(appLocale())
     return when (kind) {
         RegionKind.City -> stringResource(R.string.city_name, name)
         RegionKind.District -> stringResource(R.string.district_name, name)

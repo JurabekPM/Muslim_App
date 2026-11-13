@@ -86,6 +86,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import uz.turgunboyevjurabek.muslimapp.feature.data.location.RegionLocationResult
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.RegionHierarchy
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.RegionSearchIndex
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.Regions
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.RegionSelection
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.SelectRegionViewModel
@@ -134,9 +135,10 @@ internal fun RegionSelectionScreen(
     val listState = rememberLazyListState()
     val matching = remember(query, group) {
         when {
-            query.isNotBlank() -> Regions.search(query).let { results ->
-                if (group == null) results else results.filter { it in group.children || it == group.region }
-            }
+            query.isNotBlank() -> RegionSearchIndex.search(
+                query,
+                candidates = group?.let { listOf(it.region) + it.children } ?: Regions.supported,
+            )
             group != null -> listOf(group.region) + group.children
             else -> RegionHierarchy.groups.map { it.region }
         }
