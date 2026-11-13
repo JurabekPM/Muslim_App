@@ -77,18 +77,18 @@ fun MainScreen(
                             val featured = slots.getOrNull(if (currentIndex >= 0) currentIndex else nextIndex)
                                 ?.let { (name, time) -> today.copy(featuredPrayer = name, featuredTime = time) }
                                 ?: today
-                            Column {
-                                FeaturedPrayerCard(featured)
-                                Spacer(Modifier.height(12.dp))
-                                PrayerLocationDate(today.region, today.date)
-                                SavedScheduleLabel(savedLabel)
-                            }
                             val interval = prayerInterval(
                                 slots.getOrNull(currentIndex)?.second,
                                 slots.getOrNull(nextIndex)?.second,
                                 now.toLocalTime(),
                             )
-                            PrayerTimeline(slots, currentIndex, nextIndex, interval)
+                            Column {
+                                FeaturedPrayerCard(featured, interval, slots.getOrNull(nextIndex)?.first)
+                                Spacer(Modifier.height(12.dp))
+                                PrayerLocationDate(today.region, today.date)
+                                SavedScheduleLabel(savedLabel)
+                            }
+                            PrayerTimeline(slots, currentIndex)
                         }
                     }
                 }

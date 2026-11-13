@@ -2,16 +2,23 @@ package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -21,21 +28,36 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.progressBarRangeInfo
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.daily.Bugungi
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.PrayerInterval
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.caption
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.ScheduleCardContent
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.ScheduleCardColor
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedValueText
 import java.util.Locale
 
 private val featuredCardShape = RoundedCornerShape(20.dp)
+private val progressGold = Color(0xFFF2D27C)
 
 private enum class PrayerArtwork(@param:DrawableRes val image: Int, val alignment: BiasAlignment) {
     Dawn(R.drawable.img_1, BiasAlignment(0f, 0.68f)),
@@ -57,9 +79,16 @@ private fun artworkFor(prayer: String?): PrayerArtwork = when (prayer?.trim()?.l
 }
 
 @Composable
-internal fun FeaturedPrayerCard(today: Bugungi, modifier: Modifier = Modifier) {
+internal fun FeaturedPrayerCard(
+    today: Bugungi,
+    interval: PrayerInterval?,
+    nextName: String?,
+    modifier: Modifier = Modifier,
+) {
     val artwork = remember(today.featuredPrayer) { artworkFor(today.featuredPrayer) }
     val cardColor = Color(0xFF142331)
+    val dark = MaterialTheme.colorScheme.background.luminance() < 0.3f
+    val shadowColor = if (dark) Color(0xFF597CA4) else ScheduleCardColor
     val scrim = remember(cardColor) {
         Brush.horizontalGradient(
             0f to cardColor,
@@ -71,12 +100,13 @@ internal fun FeaturedPrayerCard(today: Bugungi, modifier: Modifier = Modifier) {
 
     Box(
         modifier = modifier.fillMaxWidth().heightIn(min = 136.dp)
-            .shadow(
-                elevation = 5.dp,
+            .dropShadow(
                 shape = featuredCardShape,
-                clip = false,
-                ambientColor = ScheduleCardColor,
-                spotColor = ScheduleCardColor,
+                shadow = Shadow(
+                    radius = 10.dp,
+                    color = shadowColor.copy(alpha = if (dark) 0.46f else 0.28f),
+                    offset = DpOffset(0.dp, 5.dp),
+                ),
             )
             .clip(featuredCardShape)
             .background(cardColor),
@@ -101,11 +131,12 @@ internal fun FeaturedPrayerCard(today: Bugungi, modifier: Modifier = Modifier) {
         Box(Modifier.matchParentSize().background(scrim))
 
         Column(
-            modifier = Modifier.fillMaxWidth(0.58f).padding(horizontal = 18.dp, vertical = 16.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
             AnimatedValueText(
                 text = today.featuredPrayer?.takeIf { it.isNotBlank() } ?: "Namoz vaqti",
+                modifier = Modifier.fillMaxWidth(0.58f),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.SemiBold,
                 color = ScheduleCardContent,
@@ -115,9 +146,70 @@ internal fun FeaturedPrayerCard(today: Bugungi, modifier: Modifier = Modifier) {
                     time,
                     style = MaterialTheme.typography.displaySmall,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFFF2D27C),
+                    color = progressGold,
                 )
             }
+            if (interval != null && nextName != null) {
+                Spacer(Modifier.height(8.dp))
+                PrayerCardProgress(interval, nextName)
+            }
         }
+    }
+}
+
+@Composable
+private fun PrayerCardProgress(interval: PrayerInterval, nextName: String) {
+    val fraction = animateFloatAsState(interval.fraction, tween(650), label = "Prayer progress")
+    val duration = 950 + interval.minutesLeft.coerceIn(1L, 180L).toInt() * 15
+    val light = rememberInfiniteTransition(label = "Prayer progress light").animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(tween(duration, easing = LinearEasing)),
+        label = "Light position",
+    )
+    Column(
+        modifier = Modifier.fillMaxWidth()
+            .background(Color(0xD9101C28), RoundedCornerShape(12.dp))
+            .padding(horizontal = 10.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        AnimatedValueText(
+            interval.caption(nextName),
+            style = MaterialTheme.typography.bodySmall,
+            color = Color(0xFFFFE4A5),
+            fontWeight = FontWeight.Medium,
+        )
+        Box(
+            Modifier.fillMaxWidth().height(6.dp).clipToBounds()
+                .semantics { progressBarRangeInfo = ProgressBarRangeInfo(interval.fraction, 0f..1f) }
+                .drawWithCache {
+                    val corners = CornerRadius(size.height / 2f)
+                    val trackColor = Color(0xFF556272)
+                    val fillColor = Color(0xFFD19A39)
+                    val lightColor = Color(0xFFFFF3CD)
+                    val band = 30.dp.toPx()
+                    onDrawBehind {
+                        drawRoundRect(trackColor, cornerRadius = corners)
+                        val filled = size.width * fraction.value
+                        if (filled <= 0f) return@onDrawBehind
+                        val rtl = layoutDirection == LayoutDirection.Rtl
+                        val left = if (rtl) size.width - filled else 0f
+                        val center = (filled + 2 * band) * light.value - band
+                        val x = if (rtl) size.width - center else center
+                        clipRect(left = left, right = left + filled) {
+                            drawRoundRect(
+                                brush = Brush.horizontalGradient(
+                                    listOf(fillColor, progressGold, lightColor, progressGold, fillColor),
+                                    startX = x - band,
+                                    endX = x + band,
+                                ),
+                                topLeft = androidx.compose.ui.geometry.Offset(left, 0f),
+                                size = Size(filled, size.height),
+                                cornerRadius = corners,
+                            )
+                        }
+                    }
+                },
+        )
     }
 }
