@@ -210,6 +210,14 @@ PR #7 masterga qo‘shildi va Android Studio nusxasi yangilandi. 5-bosqichda Com
 
 Yangilangan Gradle build Kotlin Gradle plugin va Compose compiler 2.4.21 ni tanlagani tasdiqlandi. Debug APK, AndroidTest APK va 36 ta unit test o‘tdi. Samsung SM_S916N’da oq va qora mavzuda Asosiy va 7 kunlik ekranlar, glass AppBar/BottomNav, ro‘yxatni varaqlash va karta soyasi ko‘rildi. Tasbix hamda Qiblaning 5 ta instrumentatsiya testi o‘tdi. Telefonning oldingi mavzusi tiklandi.
 
+PR #8 masterga qo‘shildi va Android Studio nusxasi yangilandi. 2026-11-21 kuni Retrofit va converter-gson 3.0.0, Hilt plagini, Android kutubxonasi va protsessori 2.60.1, Haze va haze-glass 2.1.0 Maven Central’dagi eng so‘nggi barqaror nashrlar ekani tasdiqlandi. Shu uch kutubxonaning amaldagi versiyalari PR #8 dagi Samsung sinovida ishlatilgan. Birlashtirilgan master’da debug build va 36 ta unit test o‘tdi. Kutubxona sozlamalariga o‘zgartirish talab qilinmadi. 5-bosqich yakunlandi.
+
+6-bosqichda Google Play telefon ilovalari uchun talab qilgan Android 16 (API 36) `targetSdk` sifatida tanlandi. `compileSdk` 37.1, `minSdk` 24. Release AAPT tekshiruvida yettita JPEG rasmining kengaytmasi .png ekani aniqlandi. Fayllar o‘sha resurs nomlari bilan .jpg qilindi. GitHub Actions APK’lar, release AAB va unit testlarni tekshiradi.
+
+Release APK, release AAB, release lint va 36 ta unit test o‘tdi. AAB bundletool orqali tekshirildi, 16 KB zip alignment va to‘rtta 64-bit ELF kutubxonasida 16 KB LOAD alignment tasdiqlandi. Samsung SM_S916N Android 17 (API 37) va 4 KB sahifada mahalliy sinov imzosi qo‘yilgan non-debuggable release APK ishga tushdi. Asosiy, 7 va 30 kunlik ekranlar, AppBar/BottomNav insets, Qibla yo‘nalishi, Android orqaga ishorasi, mavjud joylashuv ruxsatlari, GPS orqali hudud tanlash va Tasbix tarixi tekshirildi. 16 KB qurilmada ishga tushirish alohida tekshiriladi.
+
+Nashr oldidan Play Console uchun upload kaliti bilan imzolangan AAB va Play App Signing, ommaviy maxfiylik siyosati va ilova ichidagi havola, Data safety hamda hisob turiga tegishli sinov talablari alohida bajariladi. [Target API](https://developer.android.com/google/play/requirements/target-sdk) · [16 KB](https://developer.android.com/guide/practices/page-sizes) · [App signing](https://developer.android.com/studio/publish/app-signing) · [Maxfiylik va Data safety](https://support.google.com/googleplay/android-developer/answer/10144311).
+
 ## Build va qurilmada tekshirish
 
 AppBar soyasining pastki o‘tishi 68 dp gacha kengaytirildi. Debug build va unit testlar o‘tdi. Yangilangan APK Samsung SM_S916N’da o‘rnatilib, oq temada 7 kunlik ro‘yxat AppBar ostidan surilganda o‘tish tekshirildi.
@@ -218,7 +226,7 @@ Qora AppBar va BottomNav ranglari yangilangach debug build va unit testlar o‘t
 
 Menyu va Sunset yangilanishida debug build va unit testlar o‘tdi. Samsung’da oq va qora Menyu ko‘rinishlari, qora mavzuning ilova qayta ochilganda saqlanishi, Tizim tanlovining belgilanishi va saqlanishi, til dialogi hamda «Ilova haqida» oynasi tekshirildi. Foydalanuvchi qolgan telefon tekshiruvlarini o‘zi bajarishini aytdi.
 
-Joriy versiyalarni Gradle fayllaridan tekshiring. Oxirgi holatda compileSdk 37.1, minSdk 24, targetSdk 34. Compose BOM 2026.11.01, Kotlin va Compose compiler 2.4.21, Lifecycle 2.11.1. Haze va haze-glass 2.1.0. Android Studio JBR bilan build ishlatilgan.
+Joriy versiyalarni Gradle fayllaridan tekshiring. Oxirgi holatda compileSdk 37.1, minSdk 24, targetSdk 36. Compose BOM 2026.11.01, Kotlin va Compose compiler 2.4.21, Lifecycle 2.11.1. Haze va haze-glass 2.1.0. Android Studio JBR bilan build ishlatilgan.
 
 PowerShell namunasi, kompyuterdagi yo‘llar mavjudligini avval tekshiring.
 

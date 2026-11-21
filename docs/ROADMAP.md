@@ -31,9 +31,11 @@ Har bosqich alohida branch va PR’da bajariladi. PR’da o‘zgarish, tekshiruv
 
 - [x] Compose BOM, Kotlin/Compose compiler va Lifecycle uchun mos barqaror versiyalarni o‘sha paytda qayta tekshirish. Build vositalarining mosligini tekshirib, kichik PR’larda yangilash.
 - [x] Oq va qora mavzuda glass, navigatsiya va Tasbix animatsiyalarini Samsung’da qayta tekshirish.
-- [ ] Retrofit, Hilt va Haze’ni aniq ehtiyoj yoki moslik talabi tug‘ilganda yangilash. Tasbix tarixiga uzoq muddatli saqlash yoki sana bo‘yicha qidiruv qo‘shilsa, Room’ga migratsiyani alohida baholash.
+- [x] Retrofit 3.0.0, Hilt 2.60.1 va Haze 2.1.0 Maven Central’dagi barqaror nashrlar bilan mosligi tasdiqlandi.
+- Tasbix tarixiga uzoq muddatli saqlash yoki sana bo‘yicha qidiruv qo‘shilsa, Room’ga migratsiyani alohida baholash.
 
 ## 6. Play Store uchun tayyorgarlik
 
-- [ ] Nashr rejalashtirilsa, targetSdk’ni Google Play talabi va amaldagi Android versiyasiga mos ko‘tarish. Ish boshlanishida talabni qayta tekshirish.
-- [ ] Release build, AppBar/BottomNav insets, ruxsatlar va asosiy ekranlarni sinash. Nashrga tayyorlash va nashr qilish qarorini alohida olish.
+- [x] Google Play talabi tekshirildi va targetSdk 36 ga ko‘tarildi.
+- [x] Release APK va AAB yig‘ildi. Samsung’da AppBar/BottomNav insets, mavjud joylashuv ruxsatlari va asosiy ekranlar sinovdan o‘tdi.
+- [ ] Nashrga tayyorlash qaroridan keyin 16 KB qurilmada amaliy sinov, Play App Signing, maxfiylik siyosati, Data safety va hisobga tegishli test talablarini yakunlash.
