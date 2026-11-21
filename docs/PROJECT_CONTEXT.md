@@ -228,6 +228,8 @@ PR #11 masterga qo‘shildi va Android Studio nusxasi fast-forward qilindi. AAB 
 
 `lintRelease` 0 ta xato ko‘rsatdi, ogohlantirishlar 49 tadan 4 taga tushdi. `OldTargetApi` ogohlantirishi bilan `targetSdk 36` joriy Google Play talabiga mos holda saqlandi. Qolgan uchta `PluralsCandidate` qisqa vaqt birliklariga tegishli. Ularning sakkiz tildagi yozilishi son bilan o‘zgarmaydi. Debug APK, release APK, AAB va 36 ta unit test o‘tdi. AAB ichidagi sakkiz til va 16 KB joylashuvi hamda APK ichidagi mavzuli ikonka qatlami tekshirildi.
 
+PR #12 masterga qo‘shildi va Android Studio nusxasi yangilandi. GitHub Actions `master`ga ochilgan PR’larda va `master`ga push qilinganda APK/AAB buildlari hamda unit testlar bilan birga `:app:lintRelease`ni ham ishga tushiradi.
+
 Play Store’ga hozircha nashr qilinmaydi. Yuborishdan oldin tasdiqlangan maxfiylik siyosatining ommaviy URL’i, Data safety javoblari, upload kaliti bilan imzolangan AAB, Play App Signing va hisob turiga tegishli sinov talablari qoladi. [Target API](https://developer.android.com/google/play/requirements/target-sdk) · [16 KB](https://developer.android.com/guide/practices/page-sizes) · [App signing](https://developer.android.com/studio/publish/app-signing) · [Maxfiylik va Data safety](https://support.google.com/googleplay/android-developer/answer/10144311).
 
 ## Build va qurilmada tekshirish
