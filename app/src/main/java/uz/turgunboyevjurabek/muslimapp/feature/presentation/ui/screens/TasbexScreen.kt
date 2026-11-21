@@ -47,12 +47,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.Morph
 import androidx.graphics.shapes.RoundedPolygon
@@ -95,7 +93,7 @@ fun TasbexScreen(viewModel: CounterViewModel) {
     val view = LocalView.current
     BoxWithConstraints(Modifier.fillMaxSize()) {
         val compact = maxHeight < 620.dp
-        val counterSize = minOf(350.dp, maxWidth - 24.dp, maxHeight - 205.dp)
+        val counterSize = minOf(350.dp, maxWidth - 24.dp, maxHeight - 215.dp)
             .coerceAtLeast(48.dp)
 
         Column(
@@ -104,20 +102,17 @@ fun TasbexScreen(viewModel: CounterViewModel) {
         ) {
             AnimatedCounter(
                 count = counter.count,
-                style = TextStyle(
-                    fontFamily = FontFamily.Serif,
-                    fontSize = 55.sp,
-                    fontWeight = FontWeight.ExtraBold,
+                style = MaterialTheme.typography.displayLarge.copy(
+                    fontWeight = FontWeight.SemiBold,
+                    fontFeatureSettings = "tnum",
                 ),
             )
             CounterMessage(hasCount = counter.count > 0)
         }
 
         Column(
-            modifier = Modifier.align(Alignment.BottomCenter)
-                .padding(bottom = if (compact) 12.dp else 30.dp),
+            modifier = Modifier.align(Alignment.BottomCenter),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(if (compact) 8.dp else 24.dp),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(0.9f),
@@ -148,7 +143,9 @@ fun TasbexScreen(viewModel: CounterViewModel) {
             }
             ShapeCount(
                 count = counter.count,
-                modifier = Modifier.size(counterSize),
+                shapeSize = counterSize,
+                topPadding = if (compact) 16.dp else 34.dp,
+                bottomPadding = if (compact) 12.dp else 30.dp,
                 onClick = {
                     view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                     viewModel.incrementCounter()
@@ -222,7 +219,7 @@ private fun TasbexAction(
             text = label,
             modifier = Modifier.semantics { if (description != label) contentDescription = description },
             color = colors.onSurfaceVariant.copy(alpha = alpha),
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.labelLarge,
             textAlign = TextAlign.Center,
         )
     }
@@ -274,15 +271,22 @@ private fun CounterMessage(hasCount: Boolean) {
     ) {
         AnimatedValueText(
             text = stringResource(if (hasCount) R.string.continue_dhikr else R.string.new_dhikr),
-            fontSize = 15.sp,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
-            fontFamily = FontFamily.Serif,
+            contentAlignment = Alignment.Center,
         )
     }
 }
 
 @Composable
-private fun ShapeCount(count: Int, modifier: Modifier, onClick: () -> Unit) {
+private fun ShapeCount(
+    count: Int,
+    shapeSize: Dp,
+    topPadding: Dp,
+    bottomPadding: Dp,
+    onClick: () -> Unit,
+) {
     val shadowAlpha = if (count < 10) 0.01f else (count / 10).coerceAtMost(10) * 0.05f
     val morph = remember {
         Morph(RoundedPolygon(12, rounding = CornerRounding(0.2f)), RoundedPolygon.circle(15))
@@ -303,33 +307,42 @@ private fun ShapeCount(count: Int, modifier: Modifier, onClick: () -> Unit) {
         }
     }
     val colors = MaterialTheme.colorScheme
+    val label = stringResource(R.string.dhikr)
     Box(
-        modifier = modifier
-            .coloredShadow(
-                colors.primary,
-                borderRadius = 150.dp,
-                alpha = shadowAlpha,
-                shadowRadius = 50.dp,
-                offsetX = 0.dp,
-                offsetY = 0.dp,
-            )
+        modifier = Modifier
+            .fillMaxWidth()
+            .semantics { contentDescription = label }
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
                 role = Role.Button,
                 onClick = onClick,
             )
-            .pressScale(rememberPressScale(interactionSource))
-            .clip(MorphPolygonShape(morph, progress.value))
-            .background(colors.surfaceColorAtElevation(10.dp)),
+            .padding(top = topPadding, bottom = bottomPadding),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            stringResource(R.string.dhikr),
-            color = colors.onSurface,
-            fontSize = 25.sp,
-            fontFamily = FontFamily.Serif,
-            fontWeight = FontWeight.ExtraBold,
-        )
+        Box(
+            modifier = Modifier
+                .size(shapeSize)
+                .coloredShadow(
+                    colors.primary,
+                    borderRadius = 150.dp,
+                    alpha = shadowAlpha,
+                    shadowRadius = 50.dp,
+                    offsetX = 0.dp,
+                    offsetY = 0.dp,
+                )
+                .pressScale(rememberPressScale(interactionSource))
+                .clip(MorphPolygonShape(morph, progress.value))
+                .background(colors.surfaceColorAtElevation(10.dp)),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_nav_tasbex),
+                contentDescription = null,
+                modifier = Modifier.size(46.dp),
+                tint = colors.primary,
+            )
+        }
     }
 }

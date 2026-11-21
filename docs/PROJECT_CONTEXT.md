@@ -125,6 +125,10 @@ Foydalanuvchi amaldagi Tasbix joylashuvini afzal ko‘rdi. [Yangilangan maket](d
 
 Debug APK va 23 ta unit test muvaffaqiyatli yakunlandi. Samsung SM_S916N’da alohida test DataStore bilan avvalgi sanoqni o‘qish, qisqa va uzoq bosishda bitta qo‘shish, −1, nollashni bekor qilish va tasdiqlash, nolga tushganda −1 bloklanishi hamda tarixda to‘g‘ri qiymat chiqishi sinovdan o‘tdi. Morf animatsiyasi kadrma-kadr o‘lchanmagan.
 
+Tasbixning keyingi sayqalida Tarix, −1 va Nollash qatori biroz yuqoriga surildi. Shakl markazidagi yozuvga tasbeh belgisi qo‘yildi. Ekran o‘quvchisi uchun mahalliy «Zikr» nomi saqlandi. Yon va pastdagi bo‘sh maydonlar sanoqni oshiradi, amallar qatori mustaqil ishlaydi. Sanoq bir xil enli raqamlar bilan terildi, yordamchi matnlar ilova tipografiyasiga moslandi. Oshganda raqamlar yuqoriga, kamayganda pastga aylanadi. Tasdiqlangan nollashda razryadlar orqaga aylanib nolga keladi.
+
+Debug build, 26 ta unit test va Samsung SM_S916N’da ikkita Tasbix instrumentatsiya testi o‘tdi. Shakl yonidagi bosish, tasdiqlash va tarix, shuningdek 124 dan 0 ga qaytishdagi oraliq kadr tekshirildi.
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.

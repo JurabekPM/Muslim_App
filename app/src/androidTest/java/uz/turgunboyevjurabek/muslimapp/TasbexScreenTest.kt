@@ -3,15 +3,21 @@ package uz.turgunboyevjurabek.muslimapp
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.toPixelMap
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.click
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDialog
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
@@ -26,10 +32,13 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.CounterViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.MuslimAppTheme
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedCounter
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.TasbexScreen
 import java.io.File
 import java.util.UUID
@@ -63,33 +72,67 @@ class TasbexScreenTest {
                 }
             }
             waitForCount(2)
-            val counter = compose.onNodeWithText(text(R.string.dhikr))
+            val counter = compose.onNodeWithContentDescription(text(R.string.dhikr))
             counter.performTouchInput { click() }
             waitForCount(3)
             counter.performTouchInput { longClick() }
             waitForCount(4)
+            counter.performTouchInput { click(Offset(4f, center.y)) }
+            waitForCount(5)
             compose.onNodeWithText("−1").performClick()
-            waitForCount(3)
+            waitForCount(4)
 
             val reset = text(R.string.tasbih_reset_short)
             compose.onNodeWithText(reset).performClick()
             compose.onNodeWithText(text(R.string.cancel)).performClick()
-            waitForCount(3)
+            waitForCount(4)
             assertEquals(emptyList<Any>(), viewModel.state.value?.history)
 
             compose.onNodeWithText(reset).performClick()
             compose.onNode(hasText(reset) and hasAnyAncestor(isDialog())).performClick()
             waitForCount(0)
             compose.onNodeWithText("−1").assertIsNotEnabled()
-            assertEquals(3, viewModel.state.value?.history?.single()?.count)
+            assertEquals(4, viewModel.state.value?.history?.single()?.count)
 
             compose.onNodeWithText(text(R.string.tasbih_history_short)).performClick()
             compose.onNodeWithText(text(R.string.dhikr_history)).assertIsDisplayed()
-            compose.onNodeWithText("3").assertIsDisplayed()
+            compose.onNodeWithText("4").assertIsDisplayed()
         } finally {
             compose.runOnIdle { viewModels.clear() }
             scope.cancel()
             file.delete()
         }
+    }
+
+    @Test
+    fun resetFromThreeDigitsDrawsIntermediateFramesBeforeSettling() {
+        val count = mutableIntStateOf(124)
+        compose.setContent {
+            MuslimAppTheme(darkTheme = true) {
+                Surface { AnimatedCounter(count.intValue) }
+            }
+        }
+        val before = compose.onNodeWithText("124").captureToImage()
+        compose.mainClock.autoAdvance = false
+        compose.runOnIdle { count.intValue = 0 }
+        compose.mainClock.advanceTimeBy(300)
+        val rolling = compose.onNodeWithText("0").captureToImage()
+        compose.mainClock.advanceTimeBy(600)
+        val settled = compose.onNodeWithText("0").captureToImage()
+
+        assertEquals(before.width, rolling.width)
+        assertNotEquals(before.glyphFrameHash(), rolling.glyphFrameHash())
+        assertTrue(settled.width < rolling.width)
+    }
+
+    private fun ImageBitmap.glyphFrameHash(): Int {
+        val pixels = toPixelMap()
+        var hash = 1
+        for (y in 0 until height step 3) {
+            for (x in 0 until width step 3) {
+                hash = 31 * hash + pixels[x, y].hashCode()
+            }
+        }
+        return hash
     }
 }
