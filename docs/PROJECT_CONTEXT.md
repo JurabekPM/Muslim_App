@@ -153,6 +153,16 @@ Tasbixda +1 va −1 raqam aylanishi oxirgi ikki bosish oralig‘iga mos ravishda
 
 Tasbixning tez aylanishida joriy va keyingi raqam bitta razryadda birga yorqin turmasligi uchun ularning shaffofligi navbat bilan pasayadi. Tepa-pastki gradient saqlandi. +1 va −1 animatsiyalari 80–460 ms oralig‘ida, yakka bosish 460 ms. Sanoq ostida doimiy markazlangan «Zikrni boshlang» yoki «Zikr davom etmoqda» yozuvi chiqadi. Sakkiz til resursi yangilandi. Debug build, unit testlar va Samsung SM_S916N’da uchta Tasbix testi o‘tdi. Tez +1/−1, oq va qora mavzudagi raqam kadrlari hamda ikkala yozuv holati tekshirildi.
 
+### Tasbix dialoglari maketlari
+
+«Zikr tarixi» va «Hisobni nollash» dialoglari uchun ImageGen orqali oq va qora mavzuda uchta maket tayyorlandi.
+
+- [1 — Ixcham](designs/tasbix-dialogs-1-compact.png). Tarix bitta ixcham ro‘yxatda, joriy sanoq bir qatorda.
+- [2 — Kartali](designs/tasbix-dialogs-2-cards.png). Tarix kartalarda, joriy sanoq kattaroq panelda.
+- [3 — Keng tugmalar](designs/tasbix-dialogs-3-stacked.png). Tarix vaqt chizig‘ida, nollash tugmalari vertikal joylashgan.
+
+Maketdagi fon, raqam va sanalar namunaviy. Tanlov kutilmoqda. Dialoglar hali ilovaga qo‘llanmagan.
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.
