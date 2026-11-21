@@ -198,6 +198,10 @@ Qibla uchun sensorlar va magnit og‘ish hisobini `QiblaSensors` boshqaradi. Ekr
 
 Qibla/GPS o‘zgarishida debug build va 32 ta unit test o‘tdi. Samsung SM_S916N’da Qibla animatsiyasi instrumentatsiya testi o‘tdi. Jonli sinovda Qibla yo‘nalishi yuklandi, 7 kunlik jadvalga o‘tilganda kompas yopildi va qaytilganda yana ishga tushdi. Android sensor jurnali magnetometr hamda aylanish sensori har safar ro‘yxatga olingani va chiqishda bo‘shatilganini ko‘rsatdi. «Hozirgi joylashuvim» hududni tanladi va qayta ochilganda GPS belgisi chiqdi. Aniq yo‘nalishga qo‘lda burib, telefonning haqiqiy azimutini alohida o‘lchash o‘tkazilmadi.
 
+PR #5 masterga qo‘shildi va Android Studio nusxasi yangilandi. 4-bosqichda Tasbix sanoqi, kamaytirish, nollash va tarix `TasbihRepository` orqali boshqariladi. DataStore fayli `counter`, `counter` va `dhikr_history` kalitlari hamda tarixning `timestamp:count` formati saqlangan. Nollash ikkala qiymatni bitta saqlash operatsiyasida yangilaydi. Amaldagi tarix chegarasi 20 yozuv. Hudud sozlamalarini ajratish roadmap’da keyingi vazifa.
+
+Tasbix repository o‘zgarishida debug build va 34 ta unit test o‘tdi. Unit testlar eski formatni qayta ochish, parallel nollashda bitta yozuv qo‘shilishi, 20 yozuv chegarasi va tez bosishlarni qamrab oldi. Samsung SM_S916N’da 4 ta instrumentatsiya testi o‘tdi. Ularda nollash dialogi, oq/qora mavzudagi animatsiyalar, tarix va 100 ta namunaviy yozuvni varaqlash tekshirildi. Haqiqiy sanoq va tarix yangilashdan oldin va keyin ekranda solishtirildi, asl DataStore fayli o‘zgarmadi.
+
 ## Build va qurilmada tekshirish
 
 AppBar soyasining pastki o‘tishi 68 dp gacha kengaytirildi. Debug build va unit testlar o‘tdi. Yangilangan APK Samsung SM_S916N’da o‘rnatilib, oq temada 7 kunlik ro‘yxat AppBar ostidan surilganda o‘tish tekshirildi.

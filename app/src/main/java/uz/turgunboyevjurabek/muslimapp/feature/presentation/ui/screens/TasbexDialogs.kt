@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import uz.turgunboyevjurabek.muslimapp.R
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.DhikrSession
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.DhikrSession
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.pressScale
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.rememberPressScale
 import java.text.DateFormat

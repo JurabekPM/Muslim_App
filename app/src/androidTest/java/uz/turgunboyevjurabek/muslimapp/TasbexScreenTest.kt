@@ -44,7 +44,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.CounterViewModel
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.DhikrSession
+import uz.turgunboyevjurabek.muslimapp.feature.data.repository.DataStoreTasbihRepository
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.DhikrSession
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.MuslimAppTheme
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedCounter
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.TasbexHistorySheet
@@ -64,7 +65,7 @@ class TasbexScreenTest {
         val file = File(context.cacheDir, "${UUID.randomUUID()}.preferences_pb")
         val preferences = PreferenceDataStoreFactory.create(scope = scope) { file }
         val viewModels = ViewModelStore()
-        val viewModel = CounterViewModel(preferences)
+        val viewModel = CounterViewModel(DataStoreTasbihRepository(preferences))
         val darkTheme = mutableStateOf(true)
         viewModels.put("tasbih", viewModel)
         fun text(id: Int) = context.getString(id)
