@@ -40,9 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.dropShadow
-import androidx.compose.ui.draw.innerShadow
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
@@ -74,6 +72,7 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.Animate
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.CounterTapCadence
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.pressScale
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.rememberPressScale
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.TasbexPressIcon
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.shimmers.ShimmerPlaceholder
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.tasbexOutlineProgress
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.shape.MorphPolygonShape
@@ -305,14 +304,6 @@ private fun ShapeCount(
     val ambientOpacity = if (dark) 0.46f else 0.15f
     val contactOpacity = if (dark) 0.44f else 0.15f
     val gold = if (dark) colors.tertiary else Color(0xFFB98525)
-    val glowOpacity = if (dark) 0.48f else 0.62f
-    val lowerRimGlow = remember(gold) {
-        Brush.verticalGradient(
-            0.45f to Color.Transparent,
-            0.75f to gold.copy(alpha = 0.5f),
-            1f to gold,
-        )
-    }
     val label = stringResource(R.string.dhikr)
     val hasOutline = fraction != null
     val progressOutline = if (fraction == null) {
@@ -354,29 +345,10 @@ private fun ShapeCount(
                 }
                 .clip(shape)
                 .background(colors.surfaceColorAtElevation(10.dp))
-                .innerShadow(shape) {
-                    if (hasOutline) {
-                        brush = lowerRimGlow
-                        radius = 17.dp.toPx()
-                        spread = 2.dp.toPx()
-                        offset = Offset(0f, -8.dp.toPx())
-                        alpha = pressure * if (dark) 0.90f else 0.82f
-                    } else {
-                        color = gold
-                        radius = 5.dp.toPx()
-                        spread = 1.5.dp.toPx()
-                        alpha = pressure * glowOpacity
-                    }
-                }
                 .then(progressOutline),
             contentAlignment = Alignment.Center,
         ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_nav_tasbex),
-                contentDescription = null,
-                modifier = Modifier.size(46.dp),
-                tint = colors.primary,
-            )
+            TasbexPressIcon(interactionSource, tint = colors.primary, glow = gold)
         }
     }
 }

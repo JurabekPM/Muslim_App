@@ -195,6 +195,10 @@ PR #17 dagi vizual sayqalda Sunset chizig‘i 7 dp dan 9 dp ga qalinlashdi. Tash
 
 Sanoq maqsadi tanlanganda bosishdagi oltin nur pastki ichki qirrada kuchaytirildi. Nur gradienti yuqoriga qarab so‘nadi. Samsung SM-S916N’dagi oldingi va yangi oq hamda qora kadrlar solishtirildi. Ikkala mavzuda ham qirradagi nur kuchaygani ko‘rindi. 6 ta qurilma testi, 37 ta unit test va `lintRelease` o‘tdi.
 
+Bosish animatsiyasi uchun [6-variant](designs/tasbix-bead-glow.png) tanlandi. Katta tugmadagi tasbeh donalari ketma-ket yaltiraydi. Tez bosishda nur donalar bo‘ylab yurishni yakunlab so‘nadi. Sanoqning Sunset progressi qirrada turadi. Qo‘shimcha Sunset effekti uchun joylashuv maketlari ko‘rib chiqilmoqda.
+
+Samsung SM-S916N’da 6 ta Tasbix testi o‘tdi. Oq va qora mavzuda maqsadli hamda Erkin rejimdagi donalar yaltirashi, Sunset konturi va bosishdan keyingi tiklanish tekshirildi. Mavjud sanoq va tarix fayli saqlandi. Debug build, 37 ta unit test va `lintRelease` o‘tdi.
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.

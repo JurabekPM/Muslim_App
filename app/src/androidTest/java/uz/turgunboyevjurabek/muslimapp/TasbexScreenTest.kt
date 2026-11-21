@@ -418,6 +418,7 @@ class TasbexScreenTest {
         counter.performTouchInput { up() }
         assertTrue("Idle contour has the Sunset fill", idle.hasSunsetStroke())
         assertTrue("Pressed contour has the Sunset fill", pressed.hasSunsetStroke())
+        assertTrue("Press lights the beads inside the Sunset contour", pressed.highlightedBeadPixels() > idle.highlightedBeadPixels())
         assertNotEquals(idle.glyphFrameHash(), pressed.glyphFrameHash())
     }
 
@@ -455,22 +456,22 @@ class TasbexScreenTest {
         counter.performTouchInput { up() }
         val released = counter.captureToImage()
 
-        val idleWarmth = idle.upperRimWarmth()
-        val pressedWarmth = pressed.upperRimWarmth()
-        assertTrue("Press adds a warm rim ($idleWarmth → $pressedWarmth)", pressedWarmth > idleWarmth + 0.04f)
+        assertTrue("Press lights the beads", pressed.highlightedBeadPixels() > idle.highlightedBeadPixels())
         assertEquals("Releasing leaves the neutral shadow", idle.glyphFrameHash(), released.glyphFrameHash())
     }
 
-    private fun ImageBitmap.upperRimWarmth(): Float {
+    private fun ImageBitmap.highlightedBeadPixels(): Int {
         val pixels = toPixelMap()
-        var warmth = 0f
-        for (y in 0 until height / 3 step 2) {
-            for (x in 0 until width step 2) {
+        var highlighted = 0
+        for (y in height * 5 / 12 until height * 7 / 12) {
+            for (x in width * 5 / 12 until width * 7 / 12) {
                 val color = pixels[x, y]
-                warmth = maxOf(warmth, color.red - color.blue)
+                if (color.red > 0.94f && color.green > 0.85f && color.blue > 0.72f && color.red - color.blue > 0.04f) {
+                    highlighted++
+                }
             }
         }
-        return warmth
+        return highlighted
     }
 
     private fun ImageBitmap.glyphInk(columns: IntRange): GlyphInk {
