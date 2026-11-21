@@ -129,7 +129,7 @@ Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.
 
 ## Build va qurilmada tekshirish
 
-Qora AppBar va BottomNav ranglari yangilangach debug build va unit testlar o‘tdi. Telefonda ranglarni foydalanuvchi tekshiradi.
+Qora AppBar va BottomNav ranglari yangilangach debug build va unit testlar o‘tdi. 2026-11-21 kuni yangilangan APK Samsung SM_S916N’ga o‘rnatildi va Asosiy ekran qora temada oldingi skrinshot bilan solishtirildi. Fon nuqtalarida AppBar `#383F47` dan `#182028` ga, BottomNav `#646E77` dan `#293640` ga o‘zgargani tasdiqlandi.
 
 Menyu va Sunset yangilanishida debug build va unit testlar o‘tdi. Samsung’da oq va qora Menyu ko‘rinishlari, qora mavzuning ilova qayta ochilganda saqlanishi, Tizim tanlovining belgilanishi va saqlanishi, til dialogi hamda «Ilova haqida» oynasi tekshirildi. Foydalanuvchi qolgan telefon tekshiruvlarini o‘zi bajarishini aytdi.
 
