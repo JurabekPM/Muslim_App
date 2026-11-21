@@ -20,6 +20,8 @@ import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertIsNotSelected
+import androidx.compose.ui.test.assertIsOff
+import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.click
@@ -58,6 +60,7 @@ import org.junit.Test
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.CounterViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.data.repository.DataStoreTasbihRepository
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.DhikrSession
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.TasbihFeedbackOption
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.MuslimAppTheme
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedCounter
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.TasbexHistorySheet
@@ -238,6 +241,78 @@ class TasbexScreenTest {
             free.performClick()
             waitForTarget(null, 20)
             counter.assert(SemanticsMatcher.keyNotDefined(SemanticsProperties.ProgressBarRangeInfo))
+        } finally {
+            compose.mainClock.autoAdvance = true
+            compose.runOnIdle { viewModels.clear() }
+            scope.cancel()
+            file.delete()
+        }
+    }
+
+    @Test
+    fun feedbackSettingsAreIndependentAndCompletionAppearsThenFades() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+        val file = File(context.cacheDir, "${UUID.randomUUID()}.preferences_pb")
+        val store = PreferenceDataStoreFactory.create(scope = scope) { file }
+        val repository = DataStoreTasbihRepository(store)
+        val viewModel = CounterViewModel(repository)
+        val viewModels = ViewModelStore().apply { put("tasbih", viewModel) }
+        val darkTheme = mutableStateOf(false)
+        fun label(id: Int) = compose.onNodeWithText(context.getString(id))
+
+        try {
+            runBlocking {
+                store.edit { it[intPreferencesKey("counter")] = 32 }
+                repository.setTarget(33)
+            }
+            compose.setContent {
+                MuslimAppTheme(darkTheme = darkTheme.value) {
+                    Surface {
+                        Box(Modifier.fillMaxSize().padding(vertical = 48.dp)) { TasbexScreen(viewModel) }
+                    }
+                }
+            }
+            compose.waitUntil(5_000) { viewModel.state.value?.count == 32 }
+            val settings = compose.onNodeWithContentDescription(context.getString(R.string.tasbih_feedback_settings))
+            settings.performClick()
+            val tapSound = label(R.string.tasbih_tap_sound).assertIsOff()
+            val tapVibration = label(R.string.tasbih_tap_vibration).assertIsOn()
+            val completionSound = label(R.string.tasbih_completion_sound).assertIsOff()
+            val completionVibration = label(R.string.tasbih_completion_vibration).assertIsOn()
+            tapSound.performClick()
+            tapVibration.performClick()
+            completionSound.performClick()
+            completionVibration.performClick()
+            val expected = setOf(TasbihFeedbackOption.TapSound, TasbihFeedbackOption.CompletionSound)
+            compose.waitUntil(5_000) { viewModel.state.value?.feedback == expected }
+            label(R.string.close).performClick()
+
+            compose.runOnIdle { darkTheme.value = true }
+            settings.performClick()
+            tapSound.assertIsOn()
+            tapVibration.assertIsOff()
+            completionSound.assertIsOn()
+            completionVibration.assertIsOff().performClick()
+            compose.waitUntil(5_000) {
+                viewModel.state.value?.feedback == expected + TasbihFeedbackOption.CompletionVibration
+            }
+            label(R.string.close).performClick()
+
+            val completed = context.resources.getQuantityString(R.plurals.tasbih_goal_completed, 33, 33)
+            val message = compose.onNodeWithText(completed)
+            val counter = compose.onNodeWithContentDescription(context.getString(R.string.dhikr))
+            compose.mainClock.autoAdvance = false
+            counter.performTouchInput { click() }
+            compose.waitUntil(5_000) { viewModel.state.value?.count == 33 }
+            compose.mainClock.advanceTimeBy(400)
+            message.assertIsDisplayed()
+            compose.mainClock.advanceTimeBy(2_400)
+            message.assertDoesNotExist()
+            counter.performTouchInput { click() }
+            compose.waitUntil(5_000) { viewModel.state.value?.count == 34 }
+            compose.mainClock.advanceTimeBy(400)
+            message.assertDoesNotExist()
         } finally {
             compose.mainClock.autoAdvance = true
             compose.runOnIdle { viewModels.clear() }

@@ -148,4 +148,13 @@
         <item quantity="one">%d марта</item>
         <item quantity="other">%d марта</item>
     </plurals>
+    <string name="tasbih_feedback_settings">Овоз ва тебраниш</string>
+    <string name="tasbih_tap_sound">Босиш овози</string>
+    <string name="tasbih_tap_vibration">Босиш тебраниши</string>
+    <string name="tasbih_completion_sound">Якун овози</string>
+    <string name="tasbih_completion_vibration">Якун тебраниши</string>
+    <plurals name="tasbih_goal_completed">
+        <item quantity="one">%1$d та зикр бажарилди</item>
+        <item quantity="other">%1$d та зикр бажарилди</item>
+    </plurals>
 </resources>

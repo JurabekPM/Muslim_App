@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.DhikrSession
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.TasbihFeedbackOption
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.TasbihState
 import uz.turgunboyevjurabek.muslimapp.feature.domain.repository.TasbihRepository
 import java.io.IOException
@@ -42,12 +43,15 @@ internal class DataStoreTasbihRepository(
                     lastHistoryValue = historyValue
                 }
                 val target = preferences[targetKey]?.takeIf { it > 0 }
-                emit(TasbihState(preferences[counterKey] ?: 0, history, target))
+                val feedback = feedbackKeys.keys.filterTo(mutableSetOf()) { option ->
+                    preferences[feedbackKeys.getValue(option)] ?: (option in TasbihFeedbackOption.defaults)
+                }
+                emit(TasbihState(preferences[counterKey] ?: 0, history, target, feedback))
             }
     }
 
-    override suspend fun increment(): Boolean {
-        var reachedTarget = false
+    override suspend fun increment(): Int? {
+        var reachedTarget: Int? = null
         store.edit { preferences ->
             val count = preferences[counterKey] ?: 0
             if (count == Int.MAX_VALUE) return@edit
@@ -56,7 +60,7 @@ internal class DataStoreTasbihRepository(
             preferences[counterKey] = next
             if (next == preferences[targetKey] && preferences[targetReachedKey] != true) {
                 preferences[targetReachedKey] = true
-                reachedTarget = true
+                reachedTarget = next
             }
         }
         return reachedTarget
@@ -96,6 +100,10 @@ internal class DataStoreTasbihRepository(
         }
     }
 
+    override suspend fun setFeedback(option: TasbihFeedbackOption, enabled: Boolean) {
+        store.edit { it[feedbackKeys.getValue(option)] = enabled }
+    }
+
     private fun decodeHistory(value: String?): List<DhikrSession> =
         value.orEmpty().lineSequence().mapNotNull { line ->
             val timestamp = line.substringBefore(':').toLongOrNull() ?: return@mapNotNull null
@@ -108,5 +116,11 @@ internal class DataStoreTasbihRepository(
         val historyKey = stringPreferencesKey("dhikr_history")
         val targetKey = intPreferencesKey("tasbih_target")
         val targetReachedKey = booleanPreferencesKey("tasbih_target_reached")
+        val feedbackKeys = mapOf(
+            TasbihFeedbackOption.TapSound to booleanPreferencesKey("tasbih_tap_sound"),
+            TasbihFeedbackOption.TapVibration to booleanPreferencesKey("tasbih_tap_vibration"),
+            TasbihFeedbackOption.CompletionSound to booleanPreferencesKey("tasbih_completion_sound"),
+            TasbihFeedbackOption.CompletionVibration to booleanPreferencesKey("tasbih_completion_vibration"),
+        )
     }
 }

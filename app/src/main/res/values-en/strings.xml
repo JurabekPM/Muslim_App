@@ -148,4 +148,13 @@
         <item quantity="one">%d time</item>
         <item quantity="other">%d times</item>
     </plurals>
+    <string name="tasbih_feedback_settings">Sound and vibration</string>
+    <string name="tasbih_tap_sound">Tap sound</string>
+    <string name="tasbih_tap_vibration">Tap vibration</string>
+    <string name="tasbih_completion_sound">Completion sound</string>
+    <string name="tasbih_completion_vibration">Completion vibration</string>
+    <plurals name="tasbih_goal_completed">
+        <item quantity="one">%1$d dhikr recitation completed</item>
+        <item quantity="other">%1$d dhikr recitations completed</item>
+    </plurals>
 </resources>

@@ -166,4 +166,15 @@
         <item quantity="many">%d раз</item>
         <item quantity="other">%d раза</item>
     </plurals>
+    <string name="tasbih_feedback_settings">Звук и вибрация</string>
+    <string name="tasbih_tap_sound">Звук нажатия</string>
+    <string name="tasbih_tap_vibration">Вибрация при нажатии</string>
+    <string name="tasbih_completion_sound">Звук при достижении цели</string>
+    <string name="tasbih_completion_vibration">Вибрация при достижении цели</string>
+    <plurals name="tasbih_goal_completed">
+        <item quantity="one">%1$d зикр выполнен</item>
+        <item quantity="few">Выполнено %1$d зикра</item>
+        <item quantity="many">Выполнено %1$d зикров</item>
+        <item quantity="other">Выполнено %1$d зикров</item>
+    </plurals>
 </resources>

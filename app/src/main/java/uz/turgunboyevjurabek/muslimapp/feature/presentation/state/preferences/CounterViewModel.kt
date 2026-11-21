@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.TasbihFeedbackOption
 import uz.turgunboyevjurabek.muslimapp.feature.domain.repository.TasbihRepository
 import javax.inject.Inject
 
@@ -15,7 +16,7 @@ class CounterViewModel @Inject constructor(
 ) : ViewModel() {
     val state = repository.state.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    fun incrementCounter(onCounted: (reachedTarget: Boolean) -> Unit) {
+    fun incrementCounter(onCounted: (completedTarget: Int?) -> Unit) {
         viewModelScope.launch { onCounted(repository.increment()) }
     }
 
@@ -29,5 +30,9 @@ class CounterViewModel @Inject constructor(
 
     fun setTarget(target: Int?) {
         viewModelScope.launch { repository.setTarget(target) }
+    }
+
+    fun setFeedback(option: TasbihFeedbackOption, enabled: Boolean) {
+        viewModelScope.launch { repository.setFeedback(option, enabled) }
     }
 }

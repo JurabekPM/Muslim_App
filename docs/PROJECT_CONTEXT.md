@@ -215,6 +215,12 @@ Samsung SM-S916N’da takroriy sinovda 6 ta Tasbix testi o‘tdi. Oq va qora mav
 
 Samsung SM-S916N’da 6 ta Tasbix testi o‘tdi. Oq va qora mavzuda bitta ushlab turilgan barmoq bilan chapdan past orqali o‘ngga sudrash, chap va o‘ng qirraning navbat bilan yorishishi hamda barmoq qo‘yib yuborilgandan keyingi so‘nish kadrlar bo‘yicha tekshirildi. Sudrashdan keyingi sanoq va oddiy bosishdagi bitta qo‘shish tasdiqlandi. Qurilmadagi asl sanoq va tarix fayli xeshi mos keldi. Debug va test APK’lari, 37 ta unit test va `lintRelease` o‘tdi (0 xato, avvalgi 4 ogohlantirish).
 
+Tasbixda «Ovoz va tebranish» sozlamasi sanoq rejimining o‘ng tomonida. Bosish va yakun uchun ovoz hamda tebranish alohida yoqiladi yoki o‘chiriladi. Ovozlar dastlab o‘chiq va telefon ovozsiz yoki faqat tebranish rejimida chalinmaydi. Tebranishlar dastlab yoqilgan va tizim sozlamasiga amal qiladi. Yakunda bir martalik 165 ms tebranish, qisqa ikki notali ovoz hamda sanoq ostida «33 ta zikr bajarildi» kabi 2,3 soniyalik xabar bor. Sozlamalar avvalgi DataStore faylida alohida kalitlarda saqlanadi. Matnlar sakkiz tilda.
+
+Samsung SM-S916N’da 7 ta Tasbix sinovi o‘tdi. Oq va qora mavzuda to‘rtta sozlama, 33 ga yetishdagi so‘nuvchi xabar va keyingi bosishda qayta chiqmasligi tekshirildi. Samsung jurnali ikkita qisqa ovozning boshlanganini va yakundagi 165 ms tebranish effektini qayd etdi. Asl sanoq va tarix fayli xeshi mos keldi.
+
+Debug va test APK’lari yig‘ildi, 38 ta unit test hamda `lintRelease` o‘tdi (0 xato, avvalgi 4 ogohlantirish). Unit test alohida sozlamalar parallel yozilganda, sanoq nollanganda va DataStore qayta ochilganda saqlanishini tekshirdi.
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.
