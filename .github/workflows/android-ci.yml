@@ -36,5 +36,8 @@ jobs:
       - name: Install Android SDK packages
         run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37.1" "build-tools;36.0.0"'
 
-      - name: Build APKs, release bundle, and run unit tests
-        run: bash ./gradlew --no-daemon :app:assembleDebug :app:assembleRelease :app:bundleRelease :app:testDebugUnitTest
+      - name: Build APKs and release bundle, run unit tests and release lint
+        run: >-
+          bash ./gradlew --no-daemon
+          :app:assembleDebug :app:assembleRelease :app:bundleRelease
+          :app:testDebugUnitTest :app:lintRelease
