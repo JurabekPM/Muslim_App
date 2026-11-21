@@ -13,6 +13,7 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -95,6 +96,42 @@ class TasbihRepositoryTest {
             assertEquals(Int.MAX_VALUE, repository.state.first().count)
         } finally {
             job.cancelAndJoin()
+        }
+    }
+
+    @Test
+    fun targetSurvivesReopenAndOnlySignalsOnceUntilReset() = runBlocking {
+        val file = File(folder.root, "goal.preferences_pb")
+        val initialJob = Job()
+        try {
+            val repository = DataStoreTasbihRepository(open(file, initialJob))
+            assertFalse(repository.increment())
+            repository.setTarget(3)
+            assertEquals(TasbihState(1, emptyList(), target = 3), repository.state.first())
+            val results = List(3) { async { repository.increment() } }.awaitAll()
+            assertEquals(1, results.count { it })
+            assertEquals(4, repository.state.first().count)
+        } finally {
+            initialJob.cancelAndJoin()
+        }
+
+        val reopenJob = Job()
+        try {
+            val repository = DataStoreTasbihRepository(open(file, reopenJob))
+            assertEquals(TasbihState(4, emptyList(), target = 3), repository.state.first())
+            repository.decrement()
+            repository.decrement()
+            assertFalse(repository.increment())
+            repository.reset()
+            assertEquals(3, repository.state.first().target)
+            assertEquals(3, repository.state.first().history.single().count)
+            repeat(2) { assertFalse(repository.increment()) }
+            assertTrue(repository.increment())
+            repository.setTarget(null)
+            assertEquals(null, repository.state.first().target)
+            assertEquals(3, repository.state.first().count)
+        } finally {
+            reopenJob.cancelAndJoin()
         }
     }
 

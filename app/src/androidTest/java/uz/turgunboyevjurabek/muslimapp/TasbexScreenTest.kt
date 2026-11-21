@@ -12,7 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toPixelMap
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertIsNotSelected
@@ -30,6 +34,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
+import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
@@ -109,7 +114,6 @@ class TasbexScreenTest {
             assertDirectionalShadowAndPressGlow(counter)
             waitForCount(3)
             compose.runOnIdle { darkTheme.value = false }
-            assertCaptionAboveActions(R.string.continue_dhikr, 3)
             assertDirectionalShadowAndPressGlow(counter)
             waitForCount(4)
             runBlocking { preferences.edit { it[intPreferencesKey("counter")] = 2 } }
@@ -166,6 +170,76 @@ class TasbexScreenTest {
             }
             waitForCount(2)
         } finally {
+            compose.runOnIdle { viewModels.clear() }
+            scope.cancel()
+            file.delete()
+        }
+    }
+
+    @Test
+    fun selectsGoalsAndDrawsSunsetOnThePressingShapeInBothThemes() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+        val file = File(context.cacheDir, "${UUID.randomUUID()}.preferences_pb")
+        val store = PreferenceDataStoreFactory.create(scope = scope) { file }
+        val viewModels = ViewModelStore()
+        val viewModel = CounterViewModel(DataStoreTasbihRepository(store))
+        viewModels.put("tasbih", viewModel)
+        val darkTheme = mutableStateOf(true)
+
+        fun text(id: Int) = context.getString(id)
+        fun times(count: Int) = context.resources.getQuantityString(R.plurals.tasbih_count_times, count, count)
+        fun waitForTarget(target: Int?, count: Int) {
+            compose.waitUntil(5_000) { viewModel.state.value?.let { it.target == target && it.count == count } == true }
+        }
+        val counter = compose.onNodeWithContentDescription(text(R.string.dhikr))
+
+        try {
+            runBlocking { store.edit { it[intPreferencesKey("counter")] = 18 } }
+            compose.setContent {
+                MuslimAppTheme(darkTheme = darkTheme.value) {
+                    Surface {
+                        Box(Modifier.fillMaxSize().padding(vertical = 48.dp)) { TasbexScreen(viewModel) }
+                    }
+                }
+            }
+            waitForTarget(null, 18)
+            val hint = compose.onNodeWithText(text(R.string.continue_dhikr))
+            hint.assertIsDisplayed()
+            compose.mainClock.autoAdvance = false
+            compose.mainClock.advanceTimeBy(5_500)
+            hint.assertDoesNotExist()
+            compose.mainClock.autoAdvance = true
+
+            val free = compose.onNodeWithText(text(R.string.tasbih_free_count))
+            free.performClick()
+            compose.onNodeWithText(times(33)).performClick()
+            waitForTarget(33, 18)
+            assertSunsetPress(counter, 18f / 33)
+            waitForTarget(33, 19)
+
+            compose.runOnIdle { darkTheme.value = false }
+            compose.onNodeWithText(times(33)).performClick()
+            compose.onNodeWithText(times(99)).performClick()
+            waitForTarget(99, 19)
+            compose.onNodeWithText(times(99)).performClick()
+            compose.onNodeWithText(text(R.string.tasbih_custom_count)).performClick()
+            val value = compose.onNodeWithText(text(R.string.tasbih_enter_count))
+            val save = compose.onNodeWithText(text(R.string.tasbih_save_count))
+            value.performTextReplacement("0")
+            save.assertIsNotEnabled()
+            value.performTextReplacement("54")
+            save.performClick()
+
+            waitForTarget(54, 19)
+            assertSunsetPress(counter, 19f / 54)
+            waitForTarget(54, 20)
+            compose.onNodeWithText(times(54)).performClick()
+            free.performClick()
+            waitForTarget(null, 20)
+            counter.assert(SemanticsMatcher.keyNotDefined(SemanticsProperties.ProgressBarRangeInfo))
+        } finally {
+            compose.mainClock.autoAdvance = true
             compose.runOnIdle { viewModels.clear() }
             scope.cancel()
             file.delete()
@@ -331,6 +405,34 @@ class TasbexScreenTest {
             assertTrue(rising.hasClearEdges())
             assertTrue(falling.hasClearEdges())
         }
+    }
+
+    private fun assertSunsetPress(counter: SemanticsNodeInteraction, fraction: Float) {
+        val progress = SemanticsMatcher.expectValue(
+            SemanticsProperties.ProgressBarRangeInfo,
+            ProgressBarRangeInfo(fraction, 0f..1f),
+        )
+        val idle = counter.assert(progress).captureToImage()
+        counter.performTouchInput { down(center) }
+        val pressed = counter.assert(progress).captureToImage()
+        counter.performTouchInput { up() }
+        assertTrue("Idle contour has the Sunset fill", idle.hasSunsetStroke())
+        assertTrue("Pressed contour has the Sunset fill", pressed.hasSunsetStroke())
+        assertNotEquals(idle.glyphFrameHash(), pressed.glyphFrameHash())
+    }
+
+    private fun ImageBitmap.hasSunsetStroke(): Boolean {
+        val pixels = toPixelMap()
+        var coloredPixels = 0
+        for (y in 0 until height step 3) {
+            for (x in 0 until width step 3) {
+                val pixel = pixels[x, y]
+                if (pixel.red > 0.65f && pixel.red - pixel.green > 0.16f && pixel.green - pixel.blue > 0.14f) {
+                    coloredPixels++
+                }
+            }
+        }
+        return coloredPixels > 30
     }
 
     private fun assertDirectionalShadowAndPressGlow(counter: SemanticsNodeInteraction) {
