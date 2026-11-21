@@ -33,11 +33,11 @@ class CounterRollTest {
 
     @Test
     fun newCountResumesFromTheDigitsAlreadyOnScreen() {
-        val reset = CounterRoll.settled(124).retarget(0, 1f)
+        val reset = CounterRoll.settled(124).retarget(0, 1f, isReset = true)
         val resumed = reset.retarget(1, 0.3f)
 
         reset.wheels.zip(resumed.wheels).forEach { (before, after) ->
-            val position = before.positionAt(0.3f)
+            val position = before.positionAt(reset.wheelProgressAt(0.3f))
             assertEquals(position - floor(position / 10f) * 10f, after.start - floor(after.start / 10f) * 10f, 0.001f)
         }
         assertEquals(listOf(1, 0, 0), resumed.wheels.map { it.end.toInt().mod(10) })

@@ -1,7 +1,9 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,7 +35,6 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import kotlin.math.abs
 import kotlin.math.floor
-import kotlin.math.roundToInt
 
 @Composable
 internal fun AnimatedCounter(
@@ -54,8 +55,12 @@ internal fun AnimatedCounter(
         val next = roll.retarget(count, progress.value, isReset)
         progress.snapTo(0f)
         roll = next
-        val duration = if (isReset) 1050 else 200
-        progress.animateTo(1f, tween(duration, easing = FastOutSlowInEasing))
+        val spec = if (isReset) {
+            tween<Float>(1550, easing = LinearEasing)
+        } else {
+            tween<Float>(200, easing = FastOutSlowInEasing)
+        }
+        progress.animateTo(1f, spec)
         roll = CounterRoll.settled(count)
     }
 
@@ -67,6 +72,7 @@ internal fun AnimatedCounter(
     val digitHeight = digits.maxOf { it.size.height }.toFloat()
     val wheels = roll.wheels
     val resetExit = roll.resetExit
+    val activeRoll = roll
     val width = digitWidth * wheels.size
     val color = LocalContentColor.current
     val density = LocalDensity.current
@@ -92,6 +98,7 @@ internal fun AnimatedCounter(
             },
     ) {
         val fraction = progress.value
+        val wheelProgress = activeRoll.wheelProgressAt(fraction)
         val exitProgress = resetExit?.progressAt(fraction)
         val leadingAlpha = if (exitProgress == null) {
             ((1f - fraction) * 3f).coerceIn(0f, 1f)
@@ -120,22 +127,17 @@ internal fun AnimatedCounter(
             wheels.forEachIndexed { place, wheel ->
                 val isLeaving = place >= countText.length
                 val columnLeft = left + (wheels.lastIndex - place) * digitWidth
-                if (resetExit != null && exitProgress != null && isLeaving) {
-                    val digit = resetExit.digits.getOrNull(place)
-                    if (digit != null && leadingAlpha > 0f) {
-                        drawDigit(digit, columnLeft, top + digitHeight * 0.68f * exitProgress, leadingAlpha)
-                    }
-                    return@forEachIndexed
-                }
-
-                val x = columnLeft - departingWidth / 2f
-                val position = wheel.positionAt(fraction)
+                val leavingOnReset = exitProgress != null && isLeaving
+                val x = if (leavingOnReset) columnLeft else columnLeft - departingWidth / 2f
+                val y = if (leavingOnReset) top + digitHeight * 0.68f * (exitProgress ?: 0f) else top
+                val position = wheel.positionAt(wheelProgress)
                 val lower = floor(position).toInt()
                 val offset = position - lower
                 val alpha = if (isLeaving) leadingAlpha else 1f
-                drawDigit(lower, x, top - offset * digitHeight, alpha)
+                if (alpha <= 0f) return@forEachIndexed
+                drawDigit(lower, x, y - offset * digitHeight, alpha)
                 if (offset > 0f) {
-                    drawDigit(lower + 1, x, top + (1f - offset) * digitHeight, alpha)
+                    drawDigit(lower + 1, x, y + (1f - offset) * digitHeight, alpha)
                 }
             }
         }
@@ -146,8 +148,25 @@ internal data class DigitWheel(val start: Float, val end: Float) {
     fun positionAt(progress: Float): Float = start + (end - start) * progress
 }
 
-internal data class ResetDigitExit(val digits: List<Int>, val start: Float = 0f) {
-    fun progressAt(progress: Float): Float = start + (1f - start) * progress
+private val resetRollEasing = CubicBezierEasing(0.35f, 0.2f, 0.65f, 1f)
+
+internal class ResetDigitExit(private val carriedProgress: Float? = null) {
+    fun wheelProgressAt(progress: Float): Float =
+        if (carriedProgress == null) {
+            resetRollEasing.transform((progress / 0.86f).coerceIn(0f, 1f))
+        } else {
+            progress
+        }
+
+    fun progressAt(progress: Float): Float {
+        val start = carriedProgress
+        return if (start == null) {
+            // Let the wheels roll before the leading places start to leave.
+            FastOutSlowInEasing.transform(((progress - 0.58f) / 0.42f).coerceIn(0f, 1f))
+        } else {
+            start + (1f - start) * progress
+        }
+    }
 }
 
 internal class CounterRoll private constructor(
@@ -155,14 +174,17 @@ internal class CounterRoll private constructor(
     val wheels: List<DigitWheel>,
     val resetExit: ResetDigitExit? = null,
 ) {
+    fun wheelProgressAt(progress: Float): Float = resetExit?.wheelProgressAt(progress) ?: progress
+
     fun retarget(count: Int, progress: Float, isReset: Boolean = false): CounterRoll {
+        val wheelProgress = wheelProgressAt(progress)
         var oldDigits = target
         var newDigits = count
         val wheelCount = maxOf(wheels.size, count.toString().length)
         val nextWheels = List(wheelCount) { place ->
             val previousWheel = wheels.getOrNull(place) ?: DigitWheel(0f, 0f)
             val oldDigit = (oldDigits % 10).toFloat()
-            val current = oldDigit + (previousWheel.positionAt(progress) - previousWheel.end) % 10f
+            val current = oldDigit + (previousWheel.positionAt(wheelProgress) - previousWheel.end) % 10f
             val change = newDigits - oldDigits
             // Keep the destination digit and direction, with at most one turn per update.
             val steps = when {
@@ -175,9 +197,9 @@ internal class CounterRoll private constructor(
             DigitWheel(current, oldDigit + steps)
         }
         val exit = if (isReset) {
-            ResetDigitExit(nextWheels.map { it.start.roundToInt().mod(10) })
+            ResetDigitExit()
         } else {
-            resetExit?.copy(start = resetExit.progressAt(progress))
+            resetExit?.let { ResetDigitExit(it.progressAt(progress)) }
         }
         return CounterRoll(count, nextWheels, exit)
     }

@@ -133,6 +133,8 @@ Tasbix raqamlari uchun animatsiya maydoni ekran eniga kengaytirildi va yuqori-pa
 
 Nollashda chapdagi raqamlar pastga sirg‘alib so‘nadi, birlik razryadi aylanib markazda 0 bo‘lib to‘xtaydi. Davomiylik 1050 ms. Debug build, 26 ta unit test va Samsung SM_S916N’da ikkita Tasbix testi o‘tdi. 124 → 0 kadrlarida chapdagi raqamlarning pastga siljishi va so‘nishi hamda yakuniy nolning markazda turishi tekshirildi.
 
+Nollash juda tez nolga o‘tgandek ko‘ringani uchun animatsiya 1550 ms ga uzaytirildi. Avval hamma razryad orqaga aylanadi. Chap raqamlar animatsiyaning 58 foizidan keyin pastga sirg‘alib so‘na boshlaydi va birlik noli markazga siljiydi. Debug build, 26 ta unit test va Samsung SM_S916N’da ikkita Tasbix testi o‘tdi. 124 → 0 da dastlabki, o‘rta, so‘nish va yakuniy kadrlar solishtirildi.
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.
