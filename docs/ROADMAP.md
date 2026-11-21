@@ -1,4 +1,6 @@
-# Muslim App rivojlantirish rejasi
+# Muslim App arxitektura auditi bo‘yicha joriy reja
+
+Bu vaqtinchalik reja 2026-11-21 kungi arxitektura va texnologiya auditi tavsiyalarini birma-bir bajarishga mo‘ljallangan. Tavsiyalar yakunlangach reja yopiladi. Keyingi ilova g‘oyalari alohida rejalashtiriladi.
 
 Har bosqich alohida branch va PR’da bajariladi. PR’da o‘zgarish, tekshiruv natijasi va qolgan ish ko‘rsatiladi. Tasdiqlangach masterga qo‘shiladi. Bosqichlarni tartib bilan qilamiz, shunda muammo chiqsa qaysi o‘zgarishdan kelgani ko‘rinib turadi.
 

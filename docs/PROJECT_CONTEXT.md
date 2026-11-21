@@ -187,7 +187,7 @@ Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.
 
 ## Rivojlantirish yo‘li
 
-[Arxitektura va texnologiyalar roadmap’i](ROADMAP.md) PR’lar tartibini belgilaydi. Avval Android CI, so‘ng kesh, domen modellari, Tasbix va hudud sozlamalari, kutubxonalar hamda Play Store tayyorgarligi. PR’lar masterga tasdiqdan keyin qo‘shiladi. 1-bosqichda GitHub Actions masterga ochilgan PR va masterga push bo‘lganda debug build hamda unit testlarni ishga tushiradi. Mahalliy debug build va 30 ta unit test o‘tdi. GitHub’dagi bajarilish holati PR tekshiruvlarida ko‘rinadi.
+[Arxitektura auditi bo‘yicha vaqtinchalik reja](ROADMAP.md) faqat 2026-11-21 kungi tavsiyalar uchun PR’lar tartibini belgilaydi. Avval Android CI, so‘ng kesh, domen modellari, Tasbix va hudud sozlamalari, kutubxonalar hamda Play Store tayyorgarligi. PR’lar masterga tasdiqdan keyin qo‘shiladi. 1-bosqichda GitHub Actions masterga ochilgan PR va masterga push bo‘lganda debug build hamda unit testlarni ishga tushiradi. Mahalliy debug build va 30 ta unit test o‘tdi. GitHub’dagi bajarilish holati PR tekshiruvlarida ko‘rinadi.
 
 ## Build va qurilmada tekshirish
 
