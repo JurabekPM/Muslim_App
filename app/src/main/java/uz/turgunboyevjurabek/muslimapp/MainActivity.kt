@@ -66,7 +66,7 @@ class MainActivity : ComponentActivity() {
             viewModelFactory {
                 initializer {
                     val isDebug = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
-                    CounterViewModel(dataStore, initialCount = if (isDebug) 1234 else 0)
+                    CounterViewModel(dataStore, testCount = if (isDebug) 1234 else null)
                 }
             }
         }

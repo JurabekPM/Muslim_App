@@ -137,6 +137,8 @@ Nollash juda tez nolga o‘tgandek ko‘ringani uchun animatsiya 1550 ms ga uzay
 
 Nollanish animatsiyasini ko‘rish uchun debug versiyada saqlangan sanoq bo‘lmasa vaqtincha 1234 ko‘rsatiladi. Avvaldan saqlangan qiymat ustun. Tasdiqlangan nollash DataStore’ga 0 yozadi. Release uchun boshlang‘ich qiymat 0. Debug build va unit testlar o‘tdi. Samsung SM_S916N’da bo‘sh test DataStore uchun 1234, saqlangan qiymatning ustunligi va nollashdan keyin 0 yozilishi tasdiqlandi.
 
+Debug versiyada katta Tasbix tugmasini uzoq bosish sinov uchun joriy sanoqni 1234 ga qo‘yadi. Bu amal tarixga yozuv qo‘shmaydi. Qisqa bosish sanoqni bittaga oshiradi. Release versiyada sinov amali faol emas. Debug build va unit testlar o‘tdi. Samsung SM_S916N’da uzoq bosish bilan 1234 ga o‘tish, keyingi qisqa bosishda 1235 chiqishi va tarix saqlanishi tekshirildi.
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.

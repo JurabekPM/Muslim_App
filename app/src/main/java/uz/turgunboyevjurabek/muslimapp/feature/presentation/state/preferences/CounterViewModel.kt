@@ -22,10 +22,12 @@ data class TasbihState(val count: Int, val history: List<DhikrSession>)
 
 class CounterViewModel(
     private val dataStore: DataStore<Preferences>,
-    private val initialCount: Int = 0,
+    private val testCount: Int? = null,
 ) : ViewModel() {
     private val counterKey = intPreferencesKey("counter")
     private val historyKey = stringPreferencesKey("dhikr_history")
+
+    val canSetTestCount: Boolean get() = testCount != null
 
     val state: StateFlow<TasbihState?> = dataStore.data
         .catch { error ->
@@ -73,7 +75,14 @@ class CounterViewModel(
         }
     }
 
-    private fun Preferences.currentCount(): Int = this[counterKey] ?: initialCount
+    fun setTestCount() {
+        val count = testCount ?: return
+        viewModelScope.launch {
+            dataStore.edit { preferences -> preferences[counterKey] = count }
+        }
+    }
+
+    private fun Preferences.currentCount(): Int = this[counterKey] ?: testCount ?: 0
 
     private fun decodeHistory(value: String?): List<DhikrSession> =
         value.orEmpty().lineSequence().mapNotNull { line ->

@@ -58,7 +58,7 @@ class TasbexScreenTest {
         val file = File(context.cacheDir, "${UUID.randomUUID()}.preferences_pb")
         val preferences = PreferenceDataStoreFactory.create(scope = scope) { file }
         val viewModels = ViewModelStore()
-        val viewModel = CounterViewModel(preferences, initialCount = 1234)
+        val viewModel = CounterViewModel(preferences, testCount = 1234)
         viewModels.put("tasbih", viewModel)
         fun text(id: Int) = context.getString(id)
         fun waitForCount(expected: Int) {
@@ -82,7 +82,7 @@ class TasbexScreenTest {
             val counter = compose.onNodeWithContentDescription(text(R.string.dhikr))
             counter.performTouchInput { click() }
             waitForCount(3)
-            counter.performTouchInput { longClick() }
+            counter.performTouchInput { click() }
             waitForCount(4)
             counter.performTouchInput { click(Offset(4f, center.y)) }
             waitForCount(5)
@@ -105,6 +105,15 @@ class TasbexScreenTest {
             compose.onNodeWithText(text(R.string.tasbih_history_short)).performClick()
             compose.onNodeWithText(text(R.string.dhikr_history)).assertIsDisplayed()
             compose.onNodeWithText("4").assertIsDisplayed()
+            compose.onNodeWithText(text(R.string.close)).performClick()
+
+            counter.performTouchInput { longClick() }
+            waitForCount(1234)
+            assertEquals(1234, runBlocking { preferences.data.first()[intPreferencesKey("counter")] })
+            assertEquals(4, viewModel.state.value?.history?.single()?.count)
+
+            counter.performTouchInput { click() }
+            waitForCount(1235)
         } finally {
             compose.runOnIdle { viewModels.clear() }
             scope.cancel()

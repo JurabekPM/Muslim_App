@@ -8,6 +8,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
@@ -147,6 +148,7 @@ fun TasbexScreen(viewModel: CounterViewModel) {
                 shapeSize = counterSize,
                 topPadding = if (compact) 16.dp else 34.dp,
                 bottomPadding = if (compact) 12.dp else 30.dp,
+                onLongClick = if (viewModel.canSetTestCount) viewModel::setTestCount else null,
                 onClick = {
                     view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                     viewModel.incrementCounter()
@@ -286,6 +288,7 @@ private fun ShapeCount(
     shapeSize: Dp,
     topPadding: Dp,
     bottomPadding: Dp,
+    onLongClick: (() -> Unit)?,
     onClick: () -> Unit,
 ) {
     val shadowAlpha = if (count < 10) 0.01f else (count / 10).coerceAtMost(10) * 0.05f
@@ -313,11 +316,12 @@ private fun ShapeCount(
         modifier = Modifier
             .fillMaxWidth()
             .semantics { contentDescription = label }
-            .clickable(
+            .combinedClickable(
                 interactionSource = interactionSource,
                 indication = null,
                 role = Role.Button,
                 onClick = onClick,
+                onLongClick = onLongClick,
             )
             .padding(top = topPadding, bottom = bottomPadding),
         contentAlignment = Alignment.Center,
