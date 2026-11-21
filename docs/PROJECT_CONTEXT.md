@@ -111,6 +111,16 @@ Maketdagi namoz vaqtlari, progress va sanoq vizual namunalardir. Eslatmalar, Hij
 
 Maketlar konsept rasmlaridir. Imagegen’dagi matn, tanlov holati yoki ayrim masofalar implementatsiyadagi qat’iy talab sifatida qabul qilinmasin. Besh bo‘limli nav uchun barcha sakkiz tilda uzun matn va katta font scale holatini hisobga olish kerak. Mavjud press/drag/filled-outline animatsiyalar saqlanishi talab etilgan.
 
+## Tasbix maketlari
+
+Tasbix uchun oq va qora temada uchta maket tayyorlandi. Ularda keng «Zikr +1» tugmasi, «33 / 99 / Erkin» tanlovi, «−1» va «Qayta boshlash» ko‘rsatilgan. «Subhanalloh» va 18/33 sanoq namuna sifatida ishlatilgan.
+
+- [1 — Oltin halqa](designs/tasbix-gold-ring.png). Katta sanoq atrofida uzluksiz progress halqasi.
+- [2 — Raqamli hisoblagich](designs/tasbix-digital-counter.png). Raqamlar yumaloq kartada, progress gorizontal chiziqda.
+- [3 — Tasbeh donalari](designs/tasbix-bead-counter.png). Sanoq atrofidagi donalar ketma-ket oltin rangga o‘tadi. Maketdagi donalar soni tasviriy namuna.
+
+Maket tanlovi kutilmoqda. Tasbix kodi hozircha avvalgi holatda.
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.
