@@ -45,6 +45,7 @@ Muslim App O‘zbekiston uchun namoz vaqtlari, tasbeh va Qibla funksiyalarini be
 - API’da `lotin`, `kirill`, `ru`, `en`, `kk`, `ky`, `tg`, `tk` tillari mavjud. Oldingi sessiyada har birining haqiqiy JSON javobi tekshirilgan.
 - Hisoblash, kesh va rasm tanlash uchun kanonik kalitlar saqlanadi. Interfeys tarjimasi lokal resurslardan olinadi, tilni almashtirish keshni almashtirmaydi.
 - DataStore orqali oxirgi yuklangan jadval ilova yopilganda ham saqlanadi. Internet bo‘lmasa saqlangan ma’lumot chiqadi. Birinchi yuklash va pastga tortib yangilash mavjud.
+- Kesh va API o‘rtasidagi tanlovni `CachedPrayerScheduleRepository` boshqaradi. ViewModel ekranga jadval holatini uzatadi, xato matnlari interfeysda tarjima qilinadi. DataStore fayli, saqlash formati va hudud kalitlari saqlangan.
 - Ekran almashganda keskin qayta yuklashdan qochilgan. Yuklanish uchun shimmer va internet holati uchun AppBar’da jonli qisqa xabarlar bor.
 - 7 kunlik kartalar animatsiya bilan ochilib yopiladi.
 - 30 kunlik kalendar va vaqt kartalari oval. Yuqori va yon chetlari kesilmasin. Boshqa sana tanlanganda ham bugungi sana bilinib tursin.
@@ -180,14 +181,16 @@ Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.
 - `feature/presentation/ui/screens/RegionSelectionScreen.kt` hudud tanlash. `MenuScreen.kt` mavzu, til dialogi va ilova haqida oynasi.
 - `feature/domain/model/Regions.kt`, `RegionHierarchy.kt`, `RegionNames.kt`, `RegionSearchIndex.kt`, `RegionAddressMatcher.kt` hudud katalogi va mosliklar.
 - `feature/presentation/ui/components/LocalizedScheduleText.kt`, `ScheduleRegion.kt` tarjima qilingan jadval matnlari.
-- `feature/presentation/state/PrayerScheduleViewModel.kt` jadval va kesh holatlari.
-- `feature/data/repository` remote va saqlangan ma’lumotlar.
+- `feature/presentation/state/PrayerScheduleViewModel.kt` jadvalni ekran bilan bog‘laydi.
+- `feature/data/repository/CachedPrayerScheduleRepository.kt` va `ScheduleCache.kt` kesh, API so‘rovi va saqlash qoidalari.
 - `feature/data/location` sensorlar va GPS.
 - `app/src/test` mavjud JUnit testlar.
 
 ## Rivojlantirish yo‘li
 
-[Arxitektura auditi bo‘yicha vaqtinchalik reja](ROADMAP.md) faqat 2026-11-21 kungi tavsiyalar uchun PR’lar tartibini belgilaydi. Avval Android CI, so‘ng kesh, domen modellari, Tasbix va hudud sozlamalari, kutubxonalar hamda Play Store tayyorgarligi. PR’lar masterga tasdiqdan keyin qo‘shiladi. 1-bosqichda GitHub Actions masterga ochilgan PR va masterga push bo‘lganda debug build hamda unit testlarni ishga tushiradi. Mahalliy debug build va 30 ta unit test o‘tdi. GitHub’dagi bajarilish holati PR tekshiruvlarida ko‘rinadi.
+[Arxitektura auditi bo‘yicha vaqtinchalik reja](ROADMAP.md) faqat 2026-11-21 kungi tavsiyalar uchun PR’lar tartibini belgilaydi. Avval Android CI, so‘ng kesh, domen modellari, Tasbix va hudud sozlamalari, kutubxonalar hamda Play Store tayyorgarligi. PR’lar masterga tasdiqdan keyin qo‘shiladi. 1-bosqichda GitHub Actions masterga ochilgan PR va masterga push bo‘lganda debug build hamda unit testlarni ishga tushiradi. Mahalliy debug build va 30 ta unit test o‘tdi. GitHub Actions tekshiruvi o‘tdi va PR #2 masterga qo‘shildi.
+
+2-bosqichda kunlik, haftalik va oylik jadvallar DataStore qayta ochilgach yangi repository orqali internetsiz o‘qilishi sinovdan o‘tdi. Mos davr bo‘lmasa so‘nggi jadval ko‘rsatiladi. Qo‘lda yangilashdagi HTTP 502 va tarmoq xatolarida saqlangan jadval qoladi. Mahalliy debug build va 30 ta unit test o‘tdi. Samsung’da shu bosqich uchun amaliy sinov o‘tkazilmagan. 2-bosqich PR’i tasdiq kutilmoqda.
 
 ## Build va qurilmada tekshirish
 

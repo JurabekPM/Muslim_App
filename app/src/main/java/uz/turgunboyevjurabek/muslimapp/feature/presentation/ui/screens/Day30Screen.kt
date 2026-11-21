@@ -27,7 +27,7 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.Schedu
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.SavedScheduleLabel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.savedLabel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.PrayerScheduleViewModel
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.ScheduleMonth
+import uz.turgunboyevjurabek.muslimapp.feature.domain.repository.ScheduleMonth
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.shimmers.ShimmerPlaceholder
 
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedValueText

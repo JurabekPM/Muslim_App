@@ -25,7 +25,7 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.Schedu
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.SavedScheduleLabel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.savedLabel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.PrayerScheduleViewModel
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.ScheduleDay
+import uz.turgunboyevjurabek.muslimapp.feature.domain.repository.ScheduleDay
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.shimmers.DayOf7ShimmerList
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll

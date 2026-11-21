@@ -17,13 +17,12 @@ import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
-import uz.turgunboyevjurabek.muslimapp.feature.domain.repository.PrayerScheduleRepository
 import javax.inject.Inject
 
 internal class RemotePrayerScheduleRepository @Inject constructor(
     private val apiService: ApiService,
-) : PrayerScheduleRepository {
-    override suspend fun getDailySchedule(location: Regions): Bugungi {
+) {
+    suspend fun getDailySchedule(location: Regions): Bugungi {
         val response = apiService.getPrayerTimes(location.slug, "today")
         val date = LocalDate.parse(requireNotNull(response.meta?.date))
         val today = requireNotNull(response.today)
@@ -40,7 +39,7 @@ internal class RemotePrayerScheduleRepository @Inject constructor(
         )
     }
 
-    override suspend fun getWeeklySchedule(location: Regions): Birhaftalik {
+    suspend fun getWeeklySchedule(location: Regions): Birhaftalik {
         val days = apiService.getPrayerTimes(location.slug, "week").periodTable.orEmpty().take(7)
         require(days.size == 7)
         return days.mapTo(Birhaftalik()) { day ->
@@ -55,7 +54,7 @@ internal class RemotePrayerScheduleRepository @Inject constructor(
         }
     }
 
-    override suspend fun getMonthlySchedule(location: Regions, month: YearMonth): BirOylik {
+    suspend fun getMonthlySchedule(location: Regions, month: YearMonth): BirOylik {
         val days = apiService.getPrayerTimes(location.slug, month.toString()).periodTable.orEmpty()
         require(days.isNotEmpty())
         return days.mapTo(BirOylik()) { day ->

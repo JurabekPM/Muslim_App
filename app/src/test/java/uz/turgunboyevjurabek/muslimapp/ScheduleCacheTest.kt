@@ -1,17 +1,15 @@
 package uz.turgunboyevjurabek.muslimapp
 
+import java.io.IOException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.yield
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Test
-import uz.turgunboyevjurabek.muslimapp.core.utils.Status
-import uz.turgunboyevjurabek.muslimapp.feature.data.local.SavedSchedule
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.ScheduleCache
-import java.io.IOException
+import uz.turgunboyevjurabek.muslimapp.feature.data.repository.ScheduleCache
+import uz.turgunboyevjurabek.muslimapp.feature.domain.repository.SavedSchedule
+import uz.turgunboyevjurabek.muslimapp.feature.domain.repository.ScheduleFailure
 
 class ScheduleCacheTest {
     @Test
@@ -24,6 +22,7 @@ class ScheduleCacheTest {
             periodOf = { key: String -> key },
             online = { online },
             restore = { SavedSchedule("saved", "2026-11-11", 1L) },
+            persist = { _, _ -> },
         ) {
             requests++
             response.await()
@@ -32,49 +31,58 @@ class ScheduleCacheTest {
         cache.load(period)
         yield()
         assertEquals(0, requests)
-        assertEquals("saved", cache[period].result.data)
-        assertEquals("2026-11-11", cache[period].snapshot?.period)
+        assertEquals("saved", cache.states.value[period]?.snapshot?.data)
+        assertEquals("2026-11-11", cache.states.value[period]?.snapshot?.period)
 
         online = true
         cache.load(period, force = true)
         yield()
         assertEquals(1, requests)
-        assertTrue(cache[period].refreshing)
-        assertEquals("saved", cache[period].result.data)
+        assertEquals(true, cache.states.value[period]?.refreshing)
+        assertEquals("saved", cache.states.value[period]?.snapshot?.data)
         response.complete("fresh")
         yield()
-        assertEquals("fresh", cache[period].result.data)
-        assertEquals(period, cache[period].snapshot?.period)
+        assertEquals("fresh", cache.states.value[period]?.snapshot?.data)
+        assertEquals(period, cache.states.value[period]?.snapshot?.period)
     }
 
     @Test
     fun reopeningUsesLoadedDataAndRefreshKeepsItVisible() = runBlocking {
         var requests = 0
         var response = CompletableDeferred<String>()
-        val cache = ScheduleCache(this) { _: String -> requests++; response.await() }
+        val cache = ScheduleCache(
+            scope = this,
+            periodOf = { key: String -> key },
+            online = { true },
+            restore = { null },
+            persist = { _, _ -> },
+        ) {
+            requests++
+            response.await()
+        }
         cache.load("region")
         cache.load("region", force = true)
         yield()
         assertEquals(1, requests)
-        assertEquals(Status.LOADING, cache["region"].result.status)
+        assertEquals(true, cache.states.value["region"]?.requesting)
 
         response.complete("old")
         yield()
         cache.load("region")
         yield()
         assertEquals(1, requests)
-        assertEquals("old", cache["region"].result.data)
+        assertEquals("old", cache.states.value["region"]?.snapshot?.data)
 
         response = CompletableDeferred()
         cache.load("region", force = true)
         yield()
-        assertTrue(cache["region"].refreshing)
-        assertEquals("old", cache["region"].result.data)
+        assertEquals(true, cache.states.value["region"]?.refreshing)
+        assertEquals("old", cache.states.value["region"]?.snapshot?.data)
         response.completeExceptionally(IOException())
         yield()
-        assertFalse(cache["region"].refreshing)
-        assertEquals("old", cache["region"].result.data)
-        assertTrue(cache["region"].refreshError != null)
-        assertNull(cache["other region"].result.data)
+        assertEquals(false, cache.states.value["region"]?.refreshing)
+        assertEquals("old", cache.states.value["region"]?.snapshot?.data)
+        assertEquals(ScheduleFailure.Network, cache.states.value["region"]?.failure)
+        assertNull(cache.states.value["other region"]?.snapshot?.data)
     }
 }
