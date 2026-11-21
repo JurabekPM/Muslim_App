@@ -312,6 +312,7 @@ private fun ShapeCount(
     val gold = if (dark) colors.tertiary else Color(0xFFB98525)
     val label = stringResource(R.string.dhikr)
     val hasOutline = fraction != null
+    val touchRimLight = if (hasOutline) Modifier else Modifier.tasbexTouchRimLight(shape, touchCenter, dark, pressLight)
     val progressOutline = if (fraction == null) {
         Modifier
     } else {
@@ -349,10 +350,10 @@ private fun ShapeCount(
                     offset = Offset(0f, (4.dp - 3.dp * pressure).toPx())
                     alpha = contactOpacity
                 }
-                .tasbexTouchRimLight(shape, touchCenter, dark, pressLight)
-                .clip(shape)
-                .background(colors.surfaceColorAtElevation(10.dp))
-                .then(progressOutline),
+                .then(touchRimLight)
+                .background(colors.surfaceColorAtElevation(10.dp), shape)
+                .then(progressOutline)
+                .clip(shape),
             contentAlignment = Alignment.Center,
         ) {
             TasbexPressIcon(interactionSource, tint = colors.primary, glow = gold)

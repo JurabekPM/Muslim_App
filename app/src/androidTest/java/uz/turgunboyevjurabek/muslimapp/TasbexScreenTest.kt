@@ -408,7 +408,7 @@ class TasbexScreenTest {
     }
 
     private fun assertSunsetPress(counter: SemanticsNodeInteraction, fraction: Float) {
-        assertTouchRimLight(counter)
+        assertFilledRimLight(counter)
         val progress = SemanticsMatcher.expectValue(
             SemanticsProperties.ProgressBarRangeInfo,
             ProgressBarRangeInfo(fraction, 0f..1f),
@@ -437,28 +437,25 @@ class TasbexScreenTest {
         assertNotEquals(idle.glyphFrameHash(), held.glyphFrameHash())
     }
 
-    private fun assertTouchRimLight(counter: SemanticsNodeInteraction) {
-        for (left in listOf(true, false)) {
-            val direction = if (left) -1f else 1f
-            compose.mainClock.autoAdvance = false
-            val (held, ended) = try {
-                counter.performTouchInput { down(center + Offset(direction * center.x / 2f, 0f)) }
-                compose.mainClock.advanceTimeBy(800)
-                val held = counter.captureToImage()
-                counter.performTouchInput { cancel() }
-                compose.mainClock.advanceTimeBy(384)
-                held to counter.captureToImage()
-            } finally {
-                compose.mainClock.autoAdvance = true
-            }
-            val touchedGlow = held.rimWarmth(left) - ended.rimWarmth(left)
-            val oppositeGlow = held.rimWarmth(!left) - ended.rimWarmth(!left)
-            val side = if (left) "left" else "right"
-            assertTrue(
-                "The $side rim stays lit while held and then fades (touched=$touchedGlow, opposite=$oppositeGlow)",
-                touchedGlow > 4f && touchedGlow > oppositeGlow + 4f,
-            )
+    private fun assertFilledRimLight(counter: SemanticsNodeInteraction) {
+        compose.mainClock.autoAdvance = false
+        val (held, ended) = try {
+            counter.performTouchInput { down(center - Offset(center.x / 2f, 0f)) }
+            compose.mainClock.advanceTimeBy(800)
+            val held = counter.captureToImage()
+            counter.performTouchInput { cancel() }
+            compose.mainClock.advanceTimeBy(384)
+            held to counter.captureToImage()
+        } finally {
+            compose.mainClock.autoAdvance = true
         }
+        // Both progress samples fill the right rim and leave the left rim empty.
+        val filledGlow = held.rimWarmth(left = false) - ended.rimWarmth(left = false)
+        val emptyGlow = held.rimWarmth(left = true) - ended.rimWarmth(left = true)
+        assertTrue(
+            "The filled rim stays lit when the empty side is pressed (filled=$filledGlow, empty=$emptyGlow)",
+            filledGlow > 8f && filledGlow > emptyGlow + 8f,
+        )
     }
 
     private fun ImageBitmap.rimWarmth(left: Boolean): Float {

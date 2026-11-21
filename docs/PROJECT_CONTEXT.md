@@ -211,6 +211,10 @@ Samsung SM-S916N’da 6 ta Tasbix sinovi o‘tdi. Oq va qora mavzuda chap hamda 
 
 Samsung SM-S916N’da takroriy sinovda 6 ta Tasbix testi o‘tdi. Oq va qora mavzuda chap va o‘ng qirra 800 ms bosib turilganda yoniq qolgani, bosish tugagach so‘ngani, donalar yaltirashi 448 ms da ko‘ringani va progress uchidagi oq nuqta ajralishi kadrlar bo‘yicha tasdiqlandi. Haqiqiy sanoq va tarix fayli xeshi mos keldi. Debug va test APK’lari, 37 ta unit test va `lintRelease` o‘tdi (0 xato, avvalgi 4 ogohlantirish).
 
+1-variant solishtirish uchun `codex/tasbix-sunset-filled-rim` branchida tayyorlandi. Bosganda Sunset nuri faqat to‘lgan progress yoyini kuzatadi va yoyning ikki uchida yumshoq so‘nadi. Bosib turilganda nur saqlanadi, bosish tugagach mayin yo‘qoladi. Erkin sanoqda qirradagi nur bosilgan joyga qarab chiqadi. 4-variant PR #17 da. Yakuniy tanlov foydalanuvchidan kutilmoqda.
+
+[Samsung’dagi taqqoslash kadrlari](designs/tasbix-sunset-samsung-comparison.png) 24/33 sanoqda, aynan bir xil joyda 800 ms bosib turilganda olindi. 1-variant to‘lgan yoyni yaxlit yoritadi, 4-variant bosilgan tomonni ajratadi. 1-variant uchun Samsung SM-S916N’da 6 ta qurilma testi o‘tdi, jumladan ikki mavzuda bo‘sh qirra bosilganda to‘lgan yoyning yorishishi va bosish tugagach so‘nishi tekshirildi. Haqiqiy sanoq va tarix fayli saqlandi. Debug va test APK’lari, 37 ta unit test, hamda `lintRelease` o‘tdi (0 xato, avvalgi 4 ogohlantirish).
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.
