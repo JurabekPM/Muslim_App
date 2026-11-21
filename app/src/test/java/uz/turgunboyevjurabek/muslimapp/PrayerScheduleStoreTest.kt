@@ -1,24 +1,40 @@
 package uz.turgunboyevjurabek.muslimapp
 
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import java.io.File
+import java.time.LocalDate
+import java.time.YearMonth
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Rule
-import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.junit.Test
+import retrofit2.HttpException
+import retrofit2.Response
 import uz.turgunboyevjurabek.muslimapp.feature.data.local.PrayerScheduleStore
-import uz.turgunboyevjurabek.muslimapp.feature.data.local.SavedSchedule
-import uz.turgunboyevjurabek.muslimapp.feature.domain.model.weekly.Birhaftalik
-import uz.turgunboyevjurabek.muslimapp.feature.domain.model.weekly.BirhaftalikItem
+import uz.turgunboyevjurabek.muslimapp.feature.data.network.ApiService
+import uz.turgunboyevjurabek.muslimapp.feature.data.network.PrayerTimesResponse
+import uz.turgunboyevjurabek.muslimapp.feature.data.repository.CachedPrayerScheduleRepository
+import uz.turgunboyevjurabek.muslimapp.feature.data.repository.RemotePrayerScheduleRepository
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.daily.Bugungi
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.monthly.BirOylik
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.monthly.BirOylikItem
-import uz.turgunboyevjurabek.muslimapp.feature.domain.model.daily.Bugungi
-import java.io.File
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.Regions
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.weekly.Birhaftalik
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.weekly.BirhaftalikItem
+import uz.turgunboyevjurabek.muslimapp.feature.domain.repository.PrayerScheduleSource
+import uz.turgunboyevjurabek.muslimapp.feature.domain.repository.SavedSchedule
+import uz.turgunboyevjurabek.muslimapp.feature.domain.repository.ScheduleDay
+import uz.turgunboyevjurabek.muslimapp.feature.domain.repository.ScheduleFailure
+import uz.turgunboyevjurabek.muslimapp.feature.domain.repository.ScheduleMonth
 
 class PrayerScheduleStoreTest {
     @get:Rule val folder = TemporaryFolder()
@@ -51,10 +67,47 @@ class PrayerScheduleStoreTest {
             assertEquals("12.11.2026", store.read("weekly:qoqon", "2026-11-12", Birhaftalik::class.java)?.data?.single()?.date)
             assertEquals(12, store.read("monthly:qoqon", "2026-12", BirOylik::class.java)?.data?.single()?.day)
             assertNull(store.read("daily:andijon", "2026-11-12", Bugungi::class.java))
+
+            var online = false
+            var requests = 0
+            val api = object : ApiService {
+                override suspend fun getPrayerTimes(region: String, period: String): PrayerTimesResponse {
+                    requests++
+                    assertEquals("qoqon", region)
+                    assertEquals("today", period)
+                    throw HttpException(Response.error<PrayerTimesResponse>(502, "".toResponseBody()))
+                }
+            }
+            val repository = CachedPrayerScheduleRepository(RemotePrayerScheduleRepository(api), store)
+            val schedules = repository.schedules(this) { online }
+            val region = Regions("Qo‘qon shahri", "qoqon")
+            val day = ScheduleDay(region, LocalDate.of(2026, 11, 12))
+            val weekFallback = day.copy(date = day.date.plusDays(1))
+            val monthFallback = ScheduleMonth(region, YearMonth.of(2026, 12))
+
+            assertEquals("12.11.2026", schedules.daily.loadAndWait(day).snapshot?.data?.date)
+            assertEquals(day.date.toString(), schedules.weekly.loadAndWait(weekFallback).snapshot?.period)
+            assertEquals(12, schedules.monthly.loadAndWait(monthFallback).snapshot?.data?.single()?.day)
+            assertEquals(0, requests)
+
+            online = true
+            schedules.daily.load(day)
+            assertEquals(false, schedules.daily.states.value[day]?.requesting)
+            assertEquals(0, requests)
+            val failedRefresh = schedules.daily.loadAndWait(day, force = true)
+            assertEquals(1, requests)
+            assertEquals("12.11.2026", failedRefresh.snapshot?.data?.date)
+            assertEquals(ScheduleFailure.Http(502), failedRefresh.failure)
         } finally {
             second.cancelAndJoin()
         }
     }
+
+    private suspend fun <K, T> PrayerScheduleSource<K, T>.loadAndWait(key: K, force: Boolean = false) =
+        withTimeout(5_000L) {
+            load(key, force)
+            checkNotNull(states.first { it[key]?.requesting == false }[key])
+        }
 
     private fun open(file: File, job: Job) = PrayerScheduleStore(
         PreferenceDataStoreFactory.create(scope = CoroutineScope(Dispatchers.IO + job)) { file },

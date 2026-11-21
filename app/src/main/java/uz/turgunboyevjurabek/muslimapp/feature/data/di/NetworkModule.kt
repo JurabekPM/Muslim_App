@@ -9,7 +9,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import uz.turgunboyevjurabek.muslimapp.feature.data.network.ApiService
-import uz.turgunboyevjurabek.muslimapp.feature.data.repository.RemotePrayerScheduleRepository
+import uz.turgunboyevjurabek.muslimapp.feature.data.repository.CachedPrayerScheduleRepository
 import uz.turgunboyevjurabek.muslimapp.feature.domain.repository.PrayerScheduleRepository
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -18,7 +18,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 internal abstract class NetworkModule {
     @Binds
-    abstract fun bindPrayerScheduleRepository(implementation: RemotePrayerScheduleRepository): PrayerScheduleRepository
+    abstract fun bindPrayerScheduleRepository(implementation: CachedPrayerScheduleRepository): PrayerScheduleRepository
 
     companion object {
         private const val BASE_URL = "https://namoz-vaqti.uz/"

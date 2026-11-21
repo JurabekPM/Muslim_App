@@ -30,7 +30,9 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import uz.turgunboyevjurabek.muslimapp.feature.data.network.InternetConnection
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedValueText
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.ScheduleCache
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import uz.turgunboyevjurabek.muslimapp.feature.domain.repository.PrayerScheduleSource
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.toScheduleLoad
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.ScheduleLoad
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.prayerZone
 import java.time.ZonedDateTime
@@ -45,12 +47,13 @@ internal fun rememberPrayerClock() = produceState(initialValue = ZonedDateTime.n
 
 @Composable
 internal fun <K : Any, T : Any> rememberPrayerTimes(
-    cache: ScheduleCache<K, T>,
+    cache: PrayerScheduleSource<K, T>,
     key: K?,
     connection: InternetConnection,
 ): ScheduleLoad<T> {
     LaunchedEffect(cache, key, connection) { key?.let { cache.load(it) } }
-    return cache[key]
+    val states = cache.states.collectAsStateWithLifecycle()
+    return key?.let { states.value[it] }.toScheduleLoad()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

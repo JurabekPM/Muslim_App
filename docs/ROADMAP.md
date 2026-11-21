@@ -7,13 +7,13 @@ Har bosqich alohida branch va PR’da bajariladi. PR’da o‘zgarish, tekshiruv
 ## 1. Avtomatik tekshiruv
 
 - [x] Masterga ochilgan PR’larda va master yangilanganda GitHub Actions orqali debug APK yig‘ish va unit testlarni ishga tushirish.
-- [ ] Birinchi GitHub Actions natijasini tekshirish va ushbu bosqichni masterga qo‘shish.
+- [x] Birinchi GitHub Actions natijasini tekshirish va ushbu bosqichni masterga qo‘shish.
 
 ## 2. Namoz jadvali va kesh
 
-- [ ] Keshdan o‘qish, API’dan yuklash va saqlash qoidalarini repository’ga ajratish. ViewModel ekran holati va foydalanuvchi amallarini boshqaradi.
-- [ ] Kunlik, haftalik va oylik jadvallar uchun mavjud kesh yozuvlari bilan moslikni tekshirish. Kesh kalitlari, hudud sluglari va vaqt mintaqasini saqlash.
-- [ ] API xatosi, internet uzilishi, ilovani qayta ochish va qo‘lda yangilash holatlarini tekshirish.
+- [x] Keshdan o‘qish, API’dan yuklash va saqlash qoidalarini repository’ga ajratish. ViewModel ekran holati va foydalanuvchi amallarini boshqaradi.
+- [x] Kunlik, haftalik va oylik jadvallar uchun mavjud kesh yozuvlari bilan moslikni tekshirish. Kesh kalitlari, hudud sluglari va vaqt mintaqasini saqlash.
+- [x] API xatosi, internet uzilishi, ilovani qayta ochish va qo‘lda yangilash holatlarini tekshirish.
 
 ## 3. Namoz modellari va ekran chegaralari
 

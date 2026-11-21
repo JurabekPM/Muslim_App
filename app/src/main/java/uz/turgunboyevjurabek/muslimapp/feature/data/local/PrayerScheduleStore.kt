@@ -14,13 +14,12 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import uz.turgunboyevjurabek.muslimapp.feature.domain.repository.SavedSchedule
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
 private val Context.prayerScheduleStore by preferencesDataStore("prayer_schedule_cache_v1")
-
-internal data class SavedSchedule<T>(val data: T, val period: String, val savedAt: Long)
 
 @Singleton
 class PrayerScheduleStore internal constructor(private val store: DataStore<Preferences>) {
