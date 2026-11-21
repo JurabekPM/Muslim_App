@@ -1,7 +1,5 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.calendar
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -14,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.calendar.CalendarUiState
 import java.time.YearMonth
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CalendarWidget(
     days: Array<String>,

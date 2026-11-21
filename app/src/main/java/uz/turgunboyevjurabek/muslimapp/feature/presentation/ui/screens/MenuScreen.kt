@@ -108,6 +108,11 @@ internal fun MenuScreen(
             onClick = { showLanguage = true },
         )
         MenuRow(
+            title = stringResource(R.string.privacy_policy),
+            icon = Icons.Default.Lock,
+            onClick = { showPrivacy = true },
+        )
+        MenuRow(
             title = stringResource(R.string.about_app),
             icon = Icons.Default.Info,
             onClick = { showAbout = true },

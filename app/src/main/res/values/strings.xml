@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Muslim App</string>
+    <string name="app_name" translatable="false">Muslim App</string>
     <string name="home">Asosiy</string>
     <string name="tasbih">Tasbex</string>
     <string name="weekly">7 Kunlik</string>

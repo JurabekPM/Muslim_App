@@ -1,9 +1,9 @@
 package uz.turgunboyevjurabek.muslimapp.core.utils
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import androidx.core.content.ContextCompat
@@ -29,15 +29,19 @@ fun drawableToBitmap(context: Context, drawableId: Int): Bitmap {
     return drawable.toBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight)
 }
 
-@SuppressLint("MissingPermission", "InlinedApi")
-fun vibrateDevice(context: Context, virateTime: Long) {
-    val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
-    if (vibrator != null && vibrator.hasVibrator()) {
+fun vibrateDevice(context: Context, durationMillis: Long) {
+    val vibrator = context.getSystemService(Vibrator::class.java) ?: return
+    if (!vibrator.hasVibrator()) return
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         vibrator.vibrate(
             VibrationEffect.createOneShot(
-                virateTime, // Vibration duration in milliseconds
-                VibrationEffect.DEFAULT_AMPLITUDE
-            )
+                durationMillis,
+                VibrationEffect.DEFAULT_AMPLITUDE,
+            ),
         )
+    } else {
+        @Suppress("DEPRECATION")
+        vibrator.vibrate(durationMillis)
     }
 }
