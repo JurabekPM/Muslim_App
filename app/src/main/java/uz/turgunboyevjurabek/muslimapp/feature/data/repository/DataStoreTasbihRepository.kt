@@ -11,7 +11,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flow
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.DhikrSession
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.TasbihState
 import uz.turgunboyevjurabek.muslimapp.feature.domain.repository.TasbihRepository
@@ -27,13 +27,22 @@ internal class DataStoreTasbihRepository(
 ) : TasbihRepository {
     @Inject constructor(@ApplicationContext context: Context) : this(context.tasbihStore)
 
-    override val state: Flow<TasbihState> = store.data
-        .catch { error ->
-            if (error is IOException) emit(emptyPreferences()) else throw error
-        }
-        .map { preferences ->
-            TasbihState(preferences[counterKey] ?: 0, decodeHistory(preferences[historyKey]))
-        }
+    override val state: Flow<TasbihState> = flow {
+        var lastHistoryValue: String? = null
+        var history = emptyList<DhikrSession>()
+        store.data
+            .catch { error ->
+                if (error is IOException) emit(emptyPreferences()) else throw error
+            }
+            .collect { preferences ->
+                val historyValue = preferences[historyKey]
+                if (historyValue != lastHistoryValue) {
+                    history = decodeHistory(historyValue)
+                    lastHistoryValue = historyValue
+                }
+                emit(TasbihState(preferences[counterKey] ?: 0, history))
+            }
+    }
 
     override suspend fun increment() {
         store.edit { preferences ->
@@ -54,11 +63,9 @@ internal class DataStoreTasbihRepository(
             val count = preferences[counterKey] ?: 0
             if (count <= 0) return@edit
 
-            val session = DhikrSession(count, System.currentTimeMillis())
-            val history = listOf(session) + decodeHistory(preferences[historyKey])
-            preferences[historyKey] = history.take(historyLimit).joinToString("\n") {
-                "${it.finishedAtMillis}:${it.count}"
-            }
+            val entry = "${System.currentTimeMillis()}:$count"
+            val history = preferences[historyKey]
+            preferences[historyKey] = if (history.isNullOrEmpty()) entry else "$entry\n$history"
             preferences[counterKey] = 0
         }
     }
@@ -71,7 +78,6 @@ internal class DataStoreTasbihRepository(
         }.toList()
 
     private companion object {
-        const val historyLimit = 20
         val counterKey = intPreferencesKey("counter")
         val historyKey = stringPreferencesKey("dhikr_history")
     }

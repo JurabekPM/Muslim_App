@@ -133,4 +133,10 @@
     <string name="tasbih_current_count">Ағымдағы сан</string>
     <string name="privacy_policy">Құпиялық саясаты</string>
     <string name="privacy_policy_summary">Орналасқан жерге рұқсат беру міндетті емес. Құбыла бағыты телефонда есептеледі. Ағымдағы өңірді анықтауды таңдасаңыз, Android жүйесінің орынды және мекенжайды анықтау қызметтері пайдаланылады. Өңірді қолмен де таңдауға болады.\n\nНамаз уақыттарын алу үшін таңдалған өңір мен кесте кезеңі namoz-vaqti.uz қызметіне HTTPS арқылы жіберіледі. Қызмет қосылымның IP мекенжайын да көре алады.\n\nӨңір, кестелер кэші, зікір тарихы, санақ, тіл және тақырып қолданбада сақталады. Android баптауларға қарай олардың сақтық көшірмесін жасай алады. Телефондағы деректерді өшіру үшін Android баптауларынан қолданба жадын тазартыңыз.</string>
+    <string name="tasbih_history_select_date">Күнді таңдау</string>
+    <string name="tasbih_history_open_date">Өту</string>
+    <plurals name="tasbih_history_entries">
+        <item quantity="one">%d жазба</item>
+        <item quantity="other">%d жазба</item>
+    </plurals>
 </resources>

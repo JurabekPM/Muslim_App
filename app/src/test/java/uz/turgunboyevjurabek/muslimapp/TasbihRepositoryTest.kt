@@ -52,11 +52,11 @@ class TasbihRepositoryTest {
             List(4) { async { repository.reset() } }.awaitAll()
             val result = repository.state.first()
             assertEquals(0, result.count)
-            assertEquals(20, result.history.size)
+            assertEquals(legacy.size + 1, result.history.size)
             val session = result.history.first()
             assertEquals(143, session.count)
             assertTrue(session.finishedAtMillis > 0)
-            assertEquals(legacy.take(19), result.history.drop(1))
+            assertEquals(legacy, result.history.drop(1))
 
             val saved = store.data.first()
             assertEquals(0, saved[counterKey])

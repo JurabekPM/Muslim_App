@@ -2,6 +2,8 @@ package uz.turgunboyevjurabek.muslimapp
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -12,11 +14,14 @@ import androidx.compose.ui.graphics.toPixelMap
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.assertIsNotSelected
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.click
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasScrollToIndexAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDialog
@@ -51,6 +56,9 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.Animate
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.TasbexHistorySheet
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.TasbexScreen
 import java.io.File
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZoneOffset
 import java.util.UUID
 import kotlin.math.abs
 
@@ -171,11 +179,11 @@ class TasbexScreenTest {
 
         compose.runOnIdle {
             history.value = List(100) { index ->
-                DhikrSession(count = 101 + index, finishedAtMillis = 1_790_000_000_000L - index * 3_600_000L)
+                LocalDate.of(2026, 11, 21).session(count = 101 + index, minutesBeforeEvening = index.toLong())
             }
         }
         compose.onNodeWithText("101").assertIsDisplayed()
-        compose.onNode(hasScrollToIndexAction()).performScrollToIndex(99)
+        compose.onNode(hasScrollToIndexAction()).performScrollToIndex(101)
         compose.onNodeWithText("200").assertIsDisplayed()
         close.assertIsDisplayed()
 
@@ -183,6 +191,60 @@ class TasbexScreenTest {
         close.assertIsDisplayed().performClick()
         close.assertDoesNotExist()
     }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Test
+    fun historyExpandsMonthsAndJumpsToTheChosenDayInBothThemes() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val darkTheme = mutableStateOf(true)
+        val today = LocalDate.of(2026, 11, 21)
+        val olderDay = LocalDate.of(2026, 10, 7)
+        val history = listOf(
+            olderDay.session(734),
+            today.session(731),
+            olderDay.plusDays(1).session(733),
+        )
+        compose.setContent {
+            MuslimAppTheme(darkTheme = darkTheme.value) {
+                TasbexHistorySheet(history) {}
+            }
+        }
+        val monthNames = context.resources.getStringArray(R.array.calendar_month_names)
+        val locale = context.resources.configuration.locales[0]
+        fun monthName(month: Int) = monthNames[month - 1].replaceFirstChar { it.titlecase(locale) } + " 2026"
+        val recentMonth = compose.onNodeWithText(monthName(11))
+        val olderMonth = compose.onNodeWithText(monthName(10))
+        val dateAction = context.getString(R.string.tasbih_history_select_date)
+        val confirm = context.getString(R.string.tasbih_history_open_date)
+        val dayLabel = checkNotNull(
+            DatePickerDefaults.dateFormatter().formatDate(
+                olderDay.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli(),
+                locale,
+                forContentDescription = true,
+            ),
+        )
+
+        listOf(true, false).forEach { dark ->
+            compose.runOnIdle { darkTheme.value = dark }
+            recentMonth.assertIsSelected()
+            compose.onNodeWithText("731").assertIsDisplayed()
+            olderMonth.assertIsNotSelected().performClick()
+            olderMonth.assertIsSelected()
+            recentMonth.assertIsNotSelected()
+            compose.onNodeWithText("733").assertIsDisplayed()
+            compose.onNodeWithText(dateAction).performClick()
+            compose.onNode(hasText(dayLabel, substring = true) and hasClickAction()).performClick()
+            compose.onNodeWithText(confirm).performClick()
+            compose.onNodeWithText(confirm).assertDoesNotExist()
+            compose.onNodeWithText("734").assertIsDisplayed()
+            compose.onNodeWithText(context.getString(R.string.close)).assertIsDisplayed()
+            recentMonth.performClick()
+        }
+    }
+
+    private fun LocalDate.session(count: Int, minutesBeforeEvening: Long = 0) =
+        DhikrSession(count, atTime(22, 0).minusMinutes(minutesBeforeEvening)
+            .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
 
     @Test
     fun resetSlidesLeadingDigitsDownAndCentersTheLastZero() {

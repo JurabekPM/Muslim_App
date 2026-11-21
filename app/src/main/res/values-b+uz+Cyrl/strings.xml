@@ -133,4 +133,10 @@
     <string name="tasbih_current_count">Жорий саноқ</string>
     <string name="privacy_policy">Махфийлик сиёсати</string>
     <string name="privacy_policy_summary">Жойлашув рухсати ихтиёрий. Қибла йўналиши телефонда ҳисобланади. Ҳозирги ҳудудни аниқлашни танласангиз, Android жойлашув ва манзилни аниқлаш хизматларидан фойдаланилади. Ҳудудни қўлда ҳам танлашингиз мумкин.\n\nНамоз вақтларини олиш учун танланган ҳудуд ва жадвал даври namoz-vaqti.uz хизматига HTTPS орқали юборилади. Хизмат уланишнинг IP манзилини ҳам кўриши мумкин.\n\nҲудуд, жадвал кеши, зикр тарихи, саноқ, тил ва мавзу илова хотирасида сақланади. Android созламаларингизга қараб улар захираланиши мумкин. Телефондагиларни Android созламаларида илова хотирасини тозалаб ўчиришингиз мумкин.</string>
+    <string name="tasbih_history_select_date">Сана танлаш</string>
+    <string name="tasbih_history_open_date">Ўтиш</string>
+    <plurals name="tasbih_history_entries">
+        <item quantity="one">%d ёзув</item>
+        <item quantity="other">%d ёзув</item>
+    </plurals>
 </resources>
