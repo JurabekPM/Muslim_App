@@ -183,6 +183,8 @@ Foydalanuvchi Tarix uchun 3-maketdagi vaqt chizig‘i bilan pastdan ochiladigan 
 
 Debug APK, test APK va 36 ta unit test o‘tdi. `lintRelease` 0 xato va avvalgi 4 ta ogohlantirish bilan yakunlandi. Samsung SM-S916N’da 5 ta Tasbix testi, jumladan oq va qora mavzuda boshqa oyni ochish va sana tanlash, hamda 100 yozuvda «Yopish» tugmasining ko‘rinib turishi tekshirildi. Qurilmaning Tasbix saqlov fayli xeshi yakuniy APK o‘rnatilishidan oldin, keyin va sinovdan so‘ng bir xil bo‘ldi. Eski formatdagi 20 ta namuna yozuvi yangi nollashdan keyin ham saqlanib, testda qayta ochildi.
 
+Tasbixdagi «Zikrni boshlang» va «Zikr davom etmoqda» yozuvlari sanoq bilan bitta vertikal tartibda joylashadi. Amallar qatoridan oldin alohida oraliq bor. Katta sanash tugmasi qolgan balandlikka mos o‘lchanadi. Raqamlarning yuqori va pastda so‘nish maydoni saqlandi. Debug APK, test APK va 36 ta unit test o‘tdi. `lintRelease` 0 xato va avvalgi 4 ta ogohlantirish bilan yakunlandi. Samsung SM-S916N’da 5 ta Tasbix testi, jumladan oq va qora mavzuda yozuvning sanoq ostida va amallardan ajralib turishi tekshirildi. Qurilmadagi mavjud sanoq va tarix fayli sinovdan oldin va keyin bir xil bo‘ldi.
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.

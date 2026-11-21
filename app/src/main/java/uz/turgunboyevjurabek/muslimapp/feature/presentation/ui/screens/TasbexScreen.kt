@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -92,11 +94,9 @@ fun TasbexScreen(viewModel: CounterViewModel) {
     }
     BoxWithConstraints(Modifier.fillMaxSize()) {
         val compact = maxHeight < 620.dp
-        val counterSize = minOf(350.dp, maxWidth - 24.dp, maxHeight - 247.dp)
-            .coerceAtLeast(48.dp)
 
         Column(
-            modifier = Modifier.align(Alignment.TopCenter).padding(top = if (compact) 0.dp else 26.dp),
+            modifier = Modifier.fillMaxSize().padding(top = if (compact) 0.dp else 12.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             AnimatedCounter(
@@ -109,12 +109,8 @@ fun TasbexScreen(viewModel: CounterViewModel) {
                 ),
             )
             CounterMessage(hasCount = counter.count > 0)
-        }
 
-        Column(
-            modifier = Modifier.align(Alignment.BottomCenter),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+            Spacer(Modifier.height(if (compact) 10.dp else 14.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(0.9f),
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -145,16 +141,25 @@ fun TasbexScreen(viewModel: CounterViewModel) {
                     onClick = { dialog = TasbexDialog.Reset },
                 )
             }
-            ShapeCount(
-                shapeSize = counterSize,
-                topPadding = if (compact) 16.dp else 34.dp,
-                bottomPadding = if (compact) 12.dp else 30.dp,
-                onClick = {
-                    recordTap()
-                    view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                    viewModel.incrementCounter()
-                },
-            )
+            BoxWithConstraints(
+                modifier = Modifier.weight(1f).fillMaxWidth(),
+                contentAlignment = Alignment.BottomCenter,
+            ) {
+                val topPadding = minOf(if (compact) 16.dp else 34.dp, maxHeight / 4)
+                val bottomPadding = minOf(if (compact) 12.dp else 30.dp, maxHeight / 4)
+                val shapeSize = minOf(350.dp, maxWidth - 24.dp, maxHeight - topPadding - bottomPadding)
+                    .coerceAtLeast(0.dp)
+                ShapeCount(
+                    shapeSize = shapeSize,
+                    topPadding = topPadding,
+                    bottomPadding = bottomPadding,
+                    onClick = {
+                        recordTap()
+                        view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                        viewModel.incrementCounter()
+                    },
+                )
+            }
         }
     }
 
@@ -227,7 +232,7 @@ private fun CounterMessage(hasCount: Boolean) {
     AnimatedValueText(
         text = stringResource(if (hasCount) R.string.continue_dhikr else R.string.new_dhikr),
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-        style = MaterialTheme.typography.labelLarge,
+        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.Center,
         contentAlignment = Alignment.Center,

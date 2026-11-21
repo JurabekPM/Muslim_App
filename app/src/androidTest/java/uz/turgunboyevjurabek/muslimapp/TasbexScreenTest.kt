@@ -2,6 +2,7 @@ package uz.turgunboyevjurabek.muslimapp
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
@@ -30,6 +31,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
 import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -81,6 +83,13 @@ class TasbexScreenTest {
             compose.waitUntil(5_000) { viewModel.state.value?.count == expected }
             compose.onNodeWithText(expected.toString()).assertIsDisplayed()
         }
+        fun assertCaptionAboveActions(id: Int, count: Int) {
+            val caption = compose.onNodeWithText(text(id)).assertIsDisplayed().fetchSemanticsNode().boundsInRoot
+            val number = compose.onNodeWithText(count.toString()).fetchSemanticsNode().boundsInRoot
+            val history = compose.onNodeWithText(text(R.string.tasbih_history_short)).fetchSemanticsNode().boundsInRoot
+            assertTrue("The caption stays below the counter and clear of the action row",
+                caption.top >= number.bottom && caption.bottom < history.top)
+        }
 
         try {
             runBlocking {
@@ -90,16 +99,17 @@ class TasbexScreenTest {
             compose.setContent {
                 MuslimAppTheme(darkTheme = darkTheme.value) {
                     Surface {
-                        Box(Modifier.fillMaxSize()) { TasbexScreen(viewModel) }
+                        Box(Modifier.fillMaxSize().padding(vertical = 48.dp)) { TasbexScreen(viewModel) }
                     }
                 }
             }
             waitForCount(2)
-            compose.onNodeWithText(text(R.string.continue_dhikr)).assertIsDisplayed()
+            assertCaptionAboveActions(R.string.continue_dhikr, 2)
             val counter = compose.onNodeWithContentDescription(text(R.string.dhikr))
             assertDirectionalShadowAndPressGlow(counter)
             waitForCount(3)
             compose.runOnIdle { darkTheme.value = false }
+            assertCaptionAboveActions(R.string.continue_dhikr, 3)
             assertDirectionalShadowAndPressGlow(counter)
             waitForCount(4)
             runBlocking { preferences.edit { it[intPreferencesKey("counter")] = 2 } }
@@ -124,7 +134,7 @@ class TasbexScreenTest {
             compose.onNodeWithText(reset).performClick()
             compose.onNode(hasText(reset) and hasAnyAncestor(isDialog())).performClick()
             waitForCount(0)
-            compose.onNodeWithText(text(R.string.new_dhikr)).assertIsDisplayed()
+            assertCaptionAboveActions(R.string.new_dhikr, 0)
             assertEquals(0, runBlocking { preferences.data.first()[intPreferencesKey("counter")] })
             compose.onNodeWithText("−1").assertIsNotEnabled()
             assertEquals(4, viewModel.state.value?.history?.single()?.count)
