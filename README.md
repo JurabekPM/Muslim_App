@@ -21,7 +21,7 @@ Muslim App — O‘zbekiston hududlari uchun namoz vaqtlari, Qibla kompasi va ta
 
 ## Android Studio’da ishga tushirish
 
-**Talablar** — Android Gradle Plugin 9.4.1 bilan mos Android Studio, Android SDK Platform 37 va Android 7.0 (API 24) yoki undan yuqori telefon yoki emulyator. Gradle versiyasi loyihadagi Wrapper orqali olinadi.
+**Talablar** — Android Gradle Plugin 9.4.1 bilan mos Android Studio, Android SDK Platform 37.1 va Android 7.0 (API 24) yoki undan yuqori telefon yoki emulyator. Gradle versiyasi loyihadagi Wrapper orqali olinadi.
 
 1. Android Studio’da **Get from VCS** orqali repozitoriyani klonlang. Terminal orqali klonlash ham mumkin.
 
@@ -30,7 +30,7 @@ Muslim App — O‘zbekiston hududlari uchun namoz vaqtlari, Qibla kompasi va ta
    cd Muslim_App
    ```
 
-2. Android Studio’da loyihaning asosiy papkasini oching. **SDK Manager** orqali Android SDK Platform 37 ni o‘rnating. **Gradle JDK** uchun Android Studio bilan kelgan **Embedded JDK** ni tanlang va **Sync Project with Gradle Files** ni bajaring.
+2. Android Studio’da loyihaning asosiy papkasini oching. **SDK Manager** orqali Android SDK Platform 37.1 ni o‘rnating. **Gradle JDK** uchun Android Studio bilan kelgan **Embedded JDK** ni tanlang va **Sync Project with Gradle Files** ni bajaring.
 3. Qurilma ro‘yxatidan telefon yoki emulyatorni, ishga tushirish konfiguratsiyasidan **app** modulini tanlang. **Run ▶** ni bosing. Birinchi sinxronlash va namoz jadvallarini birinchi yuklash uchun internet kerak.
 4. **Hozirgi joylashuvim** yoki **Qibla** funksiyasini ishlatganda Android so‘ragan joylashuv ruxsatini bering. Hududni ro‘yxatdan qo‘lda ham tanlash mumkin.
 

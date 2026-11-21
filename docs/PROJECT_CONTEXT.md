@@ -206,6 +206,10 @@ PR #6 masterga qo‘shildi va Android Studio nusxasi yangilandi. Hudud tanlovi v
 
 Samsung SM_S916N’da haqiqiy hudud tanlovi va «Hozirgi joylashuv» belgisi yangilanishdan oldin hamda APK o‘rnatilib ilova qayta ochilgandan keyin ekranda solishtirildi. Ikkalasi mos keldi. Asl DataStore fayli o‘zgarmadi. Shu o‘zgarish bilan 4-bosqich yakunlandi.
 
+PR #7 masterga qo‘shildi va Android Studio nusxasi yangilandi. 5-bosqichda Compose BOM 2026.11.01, Kotlin va Compose compiler 2.4.21 hamda Lifecycle 2.11.1 tanlandi. Compose 1.13.0 talab qilgan Android SDK 37.1 build va CI’da ishlatiladi. Rangli soya Compose’ning Android `nativePaint` API’siga o‘tdi.
+
+Yangilangan Gradle build Kotlin Gradle plugin va Compose compiler 2.4.21 ni tanlagani tasdiqlandi. Debug APK, AndroidTest APK va 36 ta unit test o‘tdi. Samsung SM_S916N’da oq va qora mavzuda Asosiy va 7 kunlik ekranlar, glass AppBar/BottomNav, ro‘yxatni varaqlash va karta soyasi ko‘rildi. Tasbix hamda Qiblaning 5 ta instrumentatsiya testi o‘tdi. Telefonning oldingi mavzusi tiklandi.
+
 ## Build va qurilmada tekshirish
 
 AppBar soyasining pastki o‘tishi 68 dp gacha kengaytirildi. Debug build va unit testlar o‘tdi. Yangilangan APK Samsung SM_S916N’da o‘rnatilib, oq temada 7 kunlik ro‘yxat AppBar ostidan surilganda o‘tish tekshirildi.
@@ -214,7 +218,7 @@ Qora AppBar va BottomNav ranglari yangilangach debug build va unit testlar o‘t
 
 Menyu va Sunset yangilanishida debug build va unit testlar o‘tdi. Samsung’da oq va qora Menyu ko‘rinishlari, qora mavzuning ilova qayta ochilganda saqlanishi, Tizim tanlovining belgilanishi va saqlanishi, til dialogi hamda «Ilova haqida» oynasi tekshirildi. Foydalanuvchi qolgan telefon tekshiruvlarini o‘zi bajarishini aytdi.
 
-Joriy versiyalarni Gradle fayllaridan tekshiring. Oxirgi holatda compileSdk 37, minSdk 24, targetSdk 34. Compose BOM 2026.09.00, Haze va haze-glass 2.1.0. Android Studio JBR bilan build ishlatilgan.
+Joriy versiyalarni Gradle fayllaridan tekshiring. Oxirgi holatda compileSdk 37.1, minSdk 24, targetSdk 34. Compose BOM 2026.11.01, Kotlin va Compose compiler 2.4.21, Lifecycle 2.11.1. Haze va haze-glass 2.1.0. Android Studio JBR bilan build ishlatilgan.
 
 PowerShell namunasi, kompyuterdagi yo‘llar mavjudligini avval tekshiring.
 

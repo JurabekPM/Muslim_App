@@ -29,8 +29,8 @@ Har bosqich alohida branch va PR’da bajariladi. PR’da o‘zgarish, tekshiruv
 
 ## 5. Barqaror kutubxona yangilanishlari
 
-- [ ] Compose BOM, Kotlin/Compose compiler va Lifecycle uchun mos barqaror versiyalarni o‘sha paytda qayta tekshirish. Build vositalarining mosligini tekshirib, kichik PR’larda yangilash.
-- [ ] Oq va qora mavzuda glass, navigatsiya va Tasbix animatsiyalarini Samsung’da qayta tekshirish.
+- [x] Compose BOM, Kotlin/Compose compiler va Lifecycle uchun mos barqaror versiyalarni o‘sha paytda qayta tekshirish. Build vositalarining mosligini tekshirib, kichik PR’larda yangilash.
+- [x] Oq va qora mavzuda glass, navigatsiya va Tasbix animatsiyalarini Samsung’da qayta tekshirish.
 - [ ] Retrofit, Hilt va Haze’ni aniq ehtiyoj yoki moslik talabi tug‘ilganda yangilash. Tasbix tarixiga uzoq muddatli saqlash yoki sana bo‘yicha qidiruv qo‘shilsa, Room’ga migratsiyani alohida baholash.
 
 ## 6. Play Store uchun tayyorgarlik
