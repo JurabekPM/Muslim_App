@@ -119,7 +119,7 @@ Tasbix uchun oq va qora temada uchta maket tayyorlandi. Ularda keng «Zikr +1» 
 - [2 — Raqamli hisoblagich](designs/tasbix-digital-counter.png). Raqamlar yumaloq kartada, progress gorizontal chiziqda.
 - [3 — Tasbeh donalari](designs/tasbix-bead-counter.png). Sanoq atrofidagi donalar ketma-ket oltin rangga o‘tadi. Maketdagi donalar soni tasviriy namuna.
 
-Maket tanlovi kutilmoqda. Tasbix kodi hozircha avvalgi holatda.
+Foydalanuvchi uchala maketdagi alohida katta «Zikr +1» tugmasi va bosish joyini noqulay deb topdi. [Bir qo‘lda sanash maketi](designs/tasbix-one-handed.png) oq va qora temada tayyorlandi. Katta sanoq va progress pastdagi keng kartada. Karta bo‘ylab bosish sanoqni oshiradi. «−1» va «Qayta boshlash» kartadan yuqorida. Maket bo‘yicha fikr kutilmoqda.
 
 ## Muhim kod yo‘llari
 
