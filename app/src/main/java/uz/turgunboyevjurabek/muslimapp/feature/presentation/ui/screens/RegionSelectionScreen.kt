@@ -2,11 +2,7 @@ package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens
 
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.displayName
 import androidx.compose.ui.res.stringResource
-import android.content.pm.PackageManager
-import android.Manifest
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.Crossfade
@@ -59,7 +55,6 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -71,12 +66,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import java.io.IOException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import uz.turgunboyevjurabek.muslimapp.feature.data.location.RegionLocationResult
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.RegionGpsState
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.RegionHierarchy
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.RegionSearchIndex
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.Regions
@@ -92,10 +86,12 @@ private const val gpsBadgeExitMillis = 180
 @Composable
 internal fun RegionSelectionScreen(
     selectRegionViewModel: SelectRegionViewModel,
-    lookupLocation: suspend () -> RegionLocationResult,
+    findingLocation: Boolean,
+    gpsState: RegionGpsState,
+    onLocate: () -> Unit,
+    onCancelLocation: () -> Unit,
     onClose: () -> Unit,
 ) {
-    val context = LocalContext.current
     val colors = MaterialTheme.colorScheme
     val keyboard = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -106,18 +102,6 @@ internal fun RegionSelectionScreen(
     var query by rememberSaveable { mutableStateOf("") }
     var saving by remember { mutableStateOf(false) }
     var message by remember { mutableStateOf<Int?>(null) }
-    var findingLocation by remember { mutableStateOf(false) }
-    var requestingPermission by rememberSaveable { mutableStateOf(false) }
-    val requestLocationPermission = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions(),
-    ) { permissions ->
-        requestingPermission = false
-        if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true) {
-            findingLocation = true
-        } else {
-            message = R.string.location_permission
-        }
-    }
 
     val group = groupSlug?.let(RegionHierarchy.groupsBySlug::get)
     val displayedSelection = outgoingSelection ?: selection
@@ -151,7 +135,7 @@ internal fun RegionSelectionScreen(
 
     fun saveSelection(next: RegionSelection) {
         if (saving) return
-        findingLocation = false
+        onCancelLocation()
         saving = true
         message = null
         focusManager.clearFocus()
@@ -176,16 +160,9 @@ internal fun RegionSelectionScreen(
         }
     }
 
-    LaunchedEffect(findingLocation) {
-        if (!findingLocation) return@LaunchedEffect
-        val result = lookupLocation()
-        findingLocation = false
-        when (result) {
-            is RegionLocationResult.Found -> saveSelection(RegionSelection(result.region, fromGps = true))
-            RegionLocationResult.LocationOff -> message = R.string.location_services_hint
-            RegionLocationResult.NoFix -> message = R.string.location_no_fix
-            RegionLocationResult.AddressUnavailable -> message = R.string.location_no_address
-            RegionLocationResult.NoMatch -> message = R.string.location_no_match
+    LaunchedEffect(gpsState) {
+        if (gpsState is RegionGpsState.Resolved) {
+            saveSelection(RegionSelection(gpsState.region, fromGps = true))
         }
     }
 
@@ -241,24 +218,15 @@ internal fun RegionSelectionScreen(
                             SelectedRegion(it.region, it.fromGps && outgoingSelection == null)
                         }
                         CurrentLocationButton(
-                            finding = findingLocation || requestingPermission,
-                            enabled = !saving && !findingLocation && !requestingPermission,
+                            finding = findingLocation,
+                            enabled = !saving && !findingLocation,
                         ) {
                             message = null
                             focusManager.clearFocus()
                             keyboard?.hide()
-                            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
-                                PackageManager.PERMISSION_GRANTED
-                            ) {
-                                findingLocation = true
-                            } else {
-                                requestingPermission = true
-                                requestLocationPermission.launch(
-                                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
-                                )
-                            }
+                            onLocate()
                         }
-                        message?.let {
+                        (message ?: (gpsState as? RegionGpsState.Failed)?.message)?.let {
                             Text(
                                 stringResource(it),
                                 modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },

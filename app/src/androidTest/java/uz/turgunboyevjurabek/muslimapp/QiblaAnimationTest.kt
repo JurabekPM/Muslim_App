@@ -15,7 +15,6 @@ import org.junit.Test
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.QiblaScreen
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.qibla.QiblaState
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.MuslimAppTheme
-import uz.turgunboyevjurabek.muslimapp.feature.data.location.CompassReading
 import kotlin.math.roundToInt
 
 class QiblaAnimationTest {
@@ -25,12 +24,12 @@ class QiblaAnimationTest {
     @Test
     fun confirmationClosesTurnArcAndKeepsGlowUntilLeavingQibla() {
         val state = MutableStateFlow(
-            QiblaState(qiblaDirection = 243f, compass = CompassReading(183f, reliable = true)),
+            QiblaState(qiblaDirection = 243f, trueHeading = 183f, turn = 60f, reliable = true),
         )
         compose.setContent {
             MuslimAppTheme(darkTheme = true) {
                 Surface {
-                    QiblaScreen(qiblaState = state, compassAvailable = true)
+                    QiblaScreen(qiblaState = state)
                 }
             }
         }
@@ -41,7 +40,7 @@ class QiblaAnimationTest {
 
         compose.mainClock.autoAdvance = false
         compose.runOnIdle {
-            state.value = state.value.copy(compass = CompassReading(241f, reliable = true), aligned = true)
+            state.value = state.value.copy(trueHeading = 241f, turn = 2f, aligned = true)
         }
         compose.waitForIdle()
         val flashFrames = List(5) {
@@ -55,7 +54,7 @@ class QiblaAnimationTest {
         val later = dial.captureToImage()
 
         compose.runOnIdle {
-            state.value = state.value.copy(compass = CompassReading(183f, reliable = true), aligned = false)
+            state.value = state.value.copy(trueHeading = 183f, turn = 60f, aligned = false)
         }
         compose.waitForIdle()
         compose.mainClock.advanceTimeBy(700)

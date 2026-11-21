@@ -28,9 +28,8 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.Co
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.PrayerScheduleViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.SelectRegionViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.qibla.QiblaViewModel
-import uz.turgunboyevjurabek.muslimapp.feature.data.location.CompassSensorManager
-import uz.turgunboyevjurabek.muslimapp.feature.data.location.MyLocationManager
-import uz.turgunboyevjurabek.muslimapp.feature.data.location.PermissionsManager
+import uz.turgunboyevjurabek.muslimapp.feature.data.location.QiblaSensors
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.navigation.PermissionsManager
 import uz.turgunboyevjurabek.muslimapp.feature.data.location.RegionLocationLookup
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.navigation.MuslimApp
 import javax.inject.Inject
@@ -38,13 +37,10 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @Inject
-    lateinit var myLocationManager: MyLocationManager
+    lateinit var qiblaSensors: QiblaSensors
 
     @Inject
     lateinit var regionLocationLookup: RegionLocationLookup
-
-    @Inject
-    lateinit var compassSensorManager: CompassSensorManager
 
     private lateinit var permissionsManager: PermissionsManager
 
@@ -88,8 +84,7 @@ class MainActivity : ComponentActivity() {
                 counterViewModel = counterViewModel,
                 qiblaViewModel = qiblaViewModel,
                 regionLocationLookup = regionLocationLookup,
-                locationManager = myLocationManager,
-                compassSensorManager = compassSensorManager,
+                qiblaSensors = qiblaSensors,
                 permissionsManager = permissionsManager,
                 displayRotation = ::displayRotation,
                 language = AppLanguage.load(this),

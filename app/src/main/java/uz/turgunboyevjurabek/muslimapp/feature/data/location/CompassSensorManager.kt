@@ -11,19 +11,12 @@ import android.view.Surface
 import uz.turgunboyevjurabek.muslimapp.core.utils.CompassHeading
 import uz.turgunboyevjurabek.muslimapp.core.utils.HeadingFilter
 import uz.turgunboyevjurabek.muslimapp.core.utils.isMagneticFieldUsable
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.CompassReading
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.sin
 import kotlin.math.sqrt
 import javax.inject.Inject
-
-data class CompassReading(
-    val heading: Float?,
-    val rawHeading: Float? = null,
-    val reliable: Boolean = false,
-    val canConfirm: Boolean = false,
-    val timestamp: Long = 0L,
-)
 
 class CompassSensorManager @Inject constructor(
     private val sensorManager: SensorManager,

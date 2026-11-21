@@ -13,20 +13,11 @@ import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeoutOrNull
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.RegionAddressMatcher
-import uz.turgunboyevjurabek.muslimapp.feature.domain.model.Regions
-import uz.turgunboyevjurabek.muslimapp.feature.data.location.MyLocationManager
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.RegionLocationResult
 import java.io.IOException
 import java.util.Locale
 import javax.inject.Inject
 import kotlin.coroutines.resume
-
-sealed interface RegionLocationResult {
-    data class Found(val region: Regions) : RegionLocationResult
-    data object LocationOff : RegionLocationResult
-    data object NoFix : RegionLocationResult
-    data object AddressUnavailable : RegionLocationResult
-    data object NoMatch : RegionLocationResult
-}
 
 class RegionLocationLookup @Inject constructor(
     @ApplicationContext private val context: Context,

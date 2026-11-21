@@ -36,7 +36,6 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.DayOf30Sc
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.Dayof7Screen
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.MainScreen
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.TasbexScreen
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.RegionSelectionScreen
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.MenuScreen
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.AppThemeMode
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.CounterViewModel
@@ -44,9 +43,7 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.PrayerSchedule
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.SelectRegionViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.qibla.QiblaViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.MuslimAppTheme
-import uz.turgunboyevjurabek.muslimapp.feature.data.location.CompassSensorManager
-import uz.turgunboyevjurabek.muslimapp.feature.data.location.MyLocationManager
-import uz.turgunboyevjurabek.muslimapp.feature.data.location.PermissionsManager
+import uz.turgunboyevjurabek.muslimapp.feature.data.location.QiblaSensors
 import uz.turgunboyevjurabek.muslimapp.feature.data.location.RegionLocationLookup
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MyTopBar
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.myBottomNavigationBar
@@ -58,8 +55,7 @@ internal fun MuslimApp(
     counterViewModel: CounterViewModel,
     qiblaViewModel: QiblaViewModel,
     regionLocationLookup: RegionLocationLookup,
-    locationManager: MyLocationManager,
-    compassSensorManager: CompassSensorManager,
+    qiblaSensors: QiblaSensors,
     permissionsManager: PermissionsManager,
     displayRotation: () -> Int,
     language: AppLanguage,
@@ -132,8 +128,8 @@ internal fun MuslimApp(
                             .background(MaterialTheme.colorScheme.background),
                     ) {
                         composable(AppRoute.REGIONS) {
-                            RegionSelectionScreen(
-                                selectRegionViewModel = regionViewModel,
+                            RegionSelectionRoute(
+                                viewModel = regionViewModel,
                                 lookupLocation = regionLocationLookup::find,
                                 onClose = { navController.popBackStack() },
                             )
@@ -188,8 +184,7 @@ internal fun MuslimApp(
                             QiblaRoute(
                                 lifecycle = backStackEntry.lifecycle,
                                 viewModel = qiblaViewModel,
-                                locationManager = locationManager,
-                                compassSensorManager = compassSensorManager,
+                                sensors = qiblaSensors,
                                 permissionsManager = permissionsManager,
                                 displayRotation = displayRotation,
                                 modifier = Modifier.padding(bottom = dockPadding),

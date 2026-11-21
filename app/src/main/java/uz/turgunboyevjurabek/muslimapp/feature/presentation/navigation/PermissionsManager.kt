@@ -1,4 +1,4 @@
-package uz.turgunboyevjurabek.muslimapp.feature.data.location
+package uz.turgunboyevjurabek.muslimapp.feature.presentation.navigation
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -15,11 +15,9 @@ class PermissionsManager(private val activity: ComponentActivity) {
         ActivityResultContracts.RequestMultiplePermissions(),
     ) { result ->
         if (result.values.any { it }) onPermissionGranted?.invoke()
-        else onPermissionDenied?.invoke()
     }
 
     var onPermissionGranted: (() -> Unit)? = null
-    var onPermissionDenied: (() -> Unit)? = null
 
     fun checkAndRequestLocationPermission() {
         if (permissions.any { ContextCompat.checkSelfPermission(activity, it) == PackageManager.PERMISSION_GRANTED }) {
