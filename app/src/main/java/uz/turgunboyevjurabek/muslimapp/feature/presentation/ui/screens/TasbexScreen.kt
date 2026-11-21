@@ -306,15 +306,11 @@ private fun ShapeCount(
     val gold = if (dark) colors.tertiary else Color(0xFFB98525)
     val glowOpacity = if (dark) 0.48f else 0.62f
     val label = stringResource(R.string.dhikr)
-    val pressDecoration = if (fraction == null) {
-        Modifier.innerShadow(shape) {
-            color = gold
-            radius = 5.dp.toPx()
-            spread = 1.5.dp.toPx()
-            alpha = pressure * glowOpacity
-        }
+    val hasOutline = fraction != null
+    val progressOutline = if (fraction == null) {
+        Modifier
     } else {
-        Modifier.tasbexOutlineProgress(shape, fraction, dark, gold) { pressure }
+        Modifier.tasbexOutlineProgress(shape, fraction, dark, gold)
     }
     Box(
         modifier = Modifier
@@ -338,19 +334,26 @@ private fun ShapeCount(
                 .pressScale(pressScale)
                 .dropShadow(shape) {
                     color = shadowColor
-                    radius = 18.dp.toPx()
+                    radius = (if (hasOutline) 18.dp - 6.dp * pressure else 18.dp).toPx()
                     offset = Offset(0f, (9.dp - 6.dp * pressure).toPx())
                     alpha = ambientOpacity * (1f - 0.38f * pressure)
                 }
                 .dropShadow(shape) {
                     color = shadowColor
-                    radius = 6.dp.toPx()
+                    radius = (if (hasOutline) 6.dp - 2.dp * pressure else 6.dp).toPx()
                     offset = Offset(0f, (4.dp - 3.dp * pressure).toPx())
                     alpha = contactOpacity
                 }
                 .clip(shape)
                 .background(colors.surfaceColorAtElevation(10.dp))
-                .then(pressDecoration),
+                .innerShadow(shape) {
+                    color = gold
+                    radius = (if (hasOutline) 13.dp else 5.dp).toPx()
+                    spread = (if (hasOutline) 1.dp else 1.5.dp).toPx()
+                    if (hasOutline) offset = Offset(0f, -5.dp.toPx())
+                    alpha = pressure * glowOpacity * if (hasOutline) 0.72f else 1f
+                }
+                .then(progressOutline),
             contentAlignment = Alignment.Center,
         ) {
             Icon(

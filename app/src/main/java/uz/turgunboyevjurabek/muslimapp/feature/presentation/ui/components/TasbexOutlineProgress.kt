@@ -34,7 +34,6 @@ internal fun Modifier.tasbexOutlineProgress(
     fraction: Float,
     dark: Boolean,
     glowColor: Color,
-    pressAmount: () -> Float,
 ): Modifier {
     val visibleFraction = animateFloatAsState(fraction, tween(280), label = "Tasbix progress")
     val motion = rememberSunsetProgressPhase(2_500)
@@ -45,8 +44,9 @@ internal fun Modifier.tasbexOutlineProgress(
         val shortSide = size.minDimension
         if (shortSide <= 0f) return@drawWithCache onDrawBehind {}
 
-        val inset = minOf(10.dp.toPx(), shortSide / 8f)
-        val strokeWidth = minOf(7.dp.toPx(), inset)
+        val strokeWidth = minOf(9.dp.toPx(), shortSide / 8f)
+        // The outer half of the stroke reaches the button outline. The parent shape clips it.
+        val inset = strokeWidth / 2f
         val stroke = Stroke(strokeWidth, cap = StrokeCap.Round, join = StrokeJoin.Round)
         val center = Offset(size.width / 2f, size.height / 2f)
         val contour = shape.outlinePath(size, inset)
@@ -67,11 +67,6 @@ internal fun Modifier.tasbexOutlineProgress(
             }
         }
         val sunset = if (filled > 0f) sunsetSweep(center, startAngle, endAngle.coerceAtLeast(0.001f)) else null
-        val lowerGlow = Brush.radialGradient(
-            listOf(glowColor.copy(alpha = if (dark) 0.22f else 0.30f), Color.Transparent),
-            center = Offset(center.x, size.height - inset * 2f),
-            radius = shortSide * 0.32f,
-        )
         val tipGlow = Brush.radialGradient(
             listOf(sunsetProgressLight, Color.Transparent),
             center = tip,
@@ -80,7 +75,6 @@ internal fun Modifier.tasbexOutlineProgress(
         val drift = 17.dp.toPx()
         onDrawBehind {
             val phase = motion.value
-            drawRect(lowerGlow, alpha = pressAmount())
             drawPath(contour, trackColor, style = stroke)
             if (sunset != null) drawPath(segment, sunset, style = stroke)
             sparklePhases.forEachIndexed { index, offset ->

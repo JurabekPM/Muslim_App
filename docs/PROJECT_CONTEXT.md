@@ -191,6 +191,8 @@ Sunset progressini katta tugma konturi chizadigan `MorphPolygonShape` bilan bir 
 
 Debug APK, test APK va 37 ta unit test o‘tdi. `lintRelease` 0 xato va avvalgi 4 ta ogohlantirish bilan yakunlandi. Samsung SM-S916N’da yakuniy APK bilan 6 ta Tasbix testi o‘tdi. Oq va qora mavzuda Sunset chizig‘ining bo‘sh va bosilgan kadrlari, 33, 99, Erkin va 54 lik boshqa son, nolni rad etish va yordamchi yozuvning so‘nishi tekshirildi. Test oldi va keyingi haqiqiy sanoq va tarix fayllari xeshi mos keldi. Maqsad chegarasidagi bitta signal mantiqi va rejimning qayta ochilishda saqlanishi unit testda tekshirildi.
 
+PR #17 dagi vizual sayqalda Sunset chizig‘i 7 dp dan 9 dp ga qalinlashdi. Tashqi chiziq tugma chetiga tutashadi. Bosilgandagi oltin nur pastki ichki qirra bo‘ylab tarqaladi, tashqi soyaning yoyilishi bosilganda qisqaradi. Samsung SM-S916N’da 6 ta Tasbix testi o‘tdi. Oq va qora mavzudagi bosilgan kadrlar ko‘rildi, mavjud sanoq va tarix fayli saqlandi. Build, 37 ta unit test va 0 xatoli `lintRelease` o‘tdi.
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.
