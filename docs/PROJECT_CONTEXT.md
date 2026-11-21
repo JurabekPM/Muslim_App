@@ -190,7 +190,9 @@ Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.
 
 [Arxitektura auditi bo‘yicha vaqtinchalik reja](ROADMAP.md) faqat 2026-11-21 kungi tavsiyalar uchun PR’lar tartibini belgilaydi. Avval Android CI, so‘ng kesh, domen modellari, Tasbix va hudud sozlamalari, kutubxonalar hamda Play Store tayyorgarligi. PR’lar masterga tasdiqdan keyin qo‘shiladi. 1-bosqichda GitHub Actions masterga ochilgan PR va masterga push bo‘lganda debug build hamda unit testlarni ishga tushiradi. Mahalliy debug build va 30 ta unit test o‘tdi. GitHub Actions tekshiruvi o‘tdi va PR #2 masterga qo‘shildi.
 
-2-bosqichda kunlik, haftalik va oylik jadvallar DataStore qayta ochilgach yangi repository orqali internetsiz o‘qilishi sinovdan o‘tdi. Mos davr bo‘lmasa so‘nggi jadval ko‘rsatiladi. Qo‘lda yangilashdagi HTTP 502 va tarmoq xatolarida saqlangan jadval qoladi. Mahalliy debug build va 30 ta unit test o‘tdi. Samsung’da shu bosqich uchun amaliy sinov o‘tkazilmagan. 2-bosqich PR’i tasdiq kutilmoqda.
+2-bosqichda kunlik, haftalik va oylik jadvallar DataStore qayta ochilgach yangi repository orqali internetsiz o‘qilishi sinovdan o‘tdi. Mos davr bo‘lmasa so‘nggi jadval ko‘rsatiladi. Qo‘lda yangilashdagi HTTP 502 va tarmoq xatolarida saqlangan jadval qoladi. Mahalliy debug build va 30 ta unit test o‘tdi. Samsung’da shu bosqich uchun amaliy sinov o‘tkazilmagan. PR #3 masterga qo‘shildi va Android Studio nusxasi yangilandi.
+
+Namoz jadvali uchun API DTO’lari `feature/data/network` ichida, v1 kesh DTO’lari hamda ularning xaritalashi `feature/data/local/ScheduleCacheFormat.kt` ichida. Repository Gson’dan mustaqil Kotlin modellarini qaytaradi. Kunlik, haftalik va oylik yozuvlar bir xil DataStore fayli, JSON maydonlari va hudud kalitlaridan foydalanadi. Debug build va 31 ta unit test o‘tdi. Testlar API xaritalashini, eski JSON’dan o‘qishni va shu formatda qayta yozishni qamrab oldi. Samsung SM_S916N’da yangilashdan oldin olingan haqiqiy kesh nusxasidan kunlik, 7 kunlik va oylik jadvallarning barcha namoz vaqtlari tarmoq so‘rovisiz o‘qildi. Qibla va GPS holatini ajratish roadmap’da ochiq.
 
 ## Build va qurilmada tekshirish
 

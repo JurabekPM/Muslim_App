@@ -128,8 +128,8 @@ fun DayOf30Screen(
                                     Column(Modifier.padding(horizontal = 10.dp, vertical = 10.dp)) {
                                         val times = entry.times
                                         PrayerScheduleRows(
-                                            times?.tongSaharlik, times?.quyosh, times?.peshin,
-                                            times?.asr, times?.shomIftor, times?.hufton,
+                                            times?.bomdod, times?.quyosh, times?.peshin,
+                                            times?.asr, times?.shom, times?.xufton,
                                             rowHeight = 35.dp,
                                         )
                                     }

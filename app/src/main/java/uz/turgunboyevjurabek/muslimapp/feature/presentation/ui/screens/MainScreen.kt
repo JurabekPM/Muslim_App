@@ -100,10 +100,10 @@ fun MainScreen(
 }
 
 private fun Bugungi.prayerSlots(): List<Pair<String, String?>> = listOf(
-    "Bomdod" to times?.tongSaharlik,
+    "Bomdod" to times?.bomdod,
     "Quyosh" to times?.quyosh,
     "Peshin" to times?.peshin,
     "Asr" to times?.asr,
-    "Shom" to times?.shomIftor,
-    "Xufton" to times?.hufton,
+    "Shom" to times?.shom,
+    "Xufton" to times?.xufton,
 )

@@ -1,23 +1,15 @@
 package uz.turgunboyevjurabek.muslimapp.feature.domain.model.monthly
 
-
-import com.google.gson.annotations.SerializedName
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.HijriDate
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.PrayerTimes
 
 data class BirOylikItem(
-    @SerializedName("date")
-    var date: String?=null,
-    @SerializedName("day")
-    var day: Int?=null,
-    @SerializedName("hijri_date")
-    var hijriDate: HijriDate?=null,
-    @SerializedName("month")
-    var month: Int?=null,
-    @SerializedName("region")
-    var region: String?=null,
-    @SerializedName("regionNumber")
-    var regionNumber: Int?=null,
-    @SerializedName("times")
-    var times: Times?=null,
-    @SerializedName("weekday")
-    var weekday: String?=null
+    val date: String? = null,
+    val hijriDate: HijriDate? = null,
+    val region: String? = null,
+    val times: PrayerTimes? = null,
+    val weekday: String? = null,
+    val day: Int? = null,
+    val month: Int? = null,
+    val regionNumber: Int? = null,
 )

@@ -2,10 +2,8 @@ package uz.turgunboyevjurabek.muslimapp.feature.data.repository
 
 import kotlinx.coroutines.CoroutineScope
 import uz.turgunboyevjurabek.muslimapp.feature.data.local.PrayerScheduleStore
+import uz.turgunboyevjurabek.muslimapp.feature.data.local.ScheduleCacheFormat
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.Regions
-import uz.turgunboyevjurabek.muslimapp.feature.domain.model.daily.Bugungi
-import uz.turgunboyevjurabek.muslimapp.feature.domain.model.monthly.BirOylik
-import uz.turgunboyevjurabek.muslimapp.feature.domain.model.weekly.Birhaftalik
 import uz.turgunboyevjurabek.muslimapp.feature.domain.repository.PrayerScheduleRepository
 import uz.turgunboyevjurabek.muslimapp.feature.domain.repository.PrayerSchedules
 import uz.turgunboyevjurabek.muslimapp.feature.domain.repository.ScheduleDay
@@ -18,13 +16,13 @@ internal class CachedPrayerScheduleRepository @Inject constructor(
 ) : PrayerScheduleRepository {
     override fun schedules(scope: CoroutineScope, isOnline: () -> Boolean) = PrayerSchedules(
         daily = cache(
-            scope, isOnline, "daily", Bugungi::class.java, ScheduleDay::region, { it.date.toString() },
+            scope, isOnline, "daily", ScheduleCacheFormat.Daily, ScheduleDay::region, { it.date.toString() },
         ) { remote.getDailySchedule(it.region) },
         weekly = cache(
-            scope, isOnline, "weekly", Birhaftalik::class.java, ScheduleDay::region, { it.date.toString() },
+            scope, isOnline, "weekly", ScheduleCacheFormat.Weekly, ScheduleDay::region, { it.date.toString() },
         ) { remote.getWeeklySchedule(it.region) },
         monthly = cache(
-            scope, isOnline, "monthly", BirOylik::class.java, ScheduleMonth::region, { it.month.toString() },
+            scope, isOnline, "monthly", ScheduleCacheFormat.Monthly, ScheduleMonth::region, { it.month.toString() },
         ) { remote.getMonthlySchedule(it.region, it.month) },
     )
 
@@ -32,7 +30,7 @@ internal class CachedPrayerScheduleRepository @Inject constructor(
         scope: CoroutineScope,
         isOnline: () -> Boolean,
         bucket: String,
-        type: Class<T>,
+        format: ScheduleCacheFormat<T>,
         regionOf: (K) -> Regions,
         periodOf: (K) -> String,
         request: suspend (K) -> T,
@@ -40,8 +38,8 @@ internal class CachedPrayerScheduleRepository @Inject constructor(
         scope = scope,
         periodOf = periodOf,
         online = isOnline,
-        restore = { key -> store.read("$bucket:${regionOf(key).slug}", periodOf(key), type) },
-        persist = { key, entry -> store.write("$bucket:${regionOf(key).slug}", entry) },
+        restore = { key -> store.read("$bucket:${regionOf(key).slug}", periodOf(key), format) },
+        persist = { key, entry -> store.write("$bucket:${regionOf(key).slug}", entry, format) },
         request = request,
     )
 }

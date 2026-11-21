@@ -2,22 +2,23 @@ package uz.turgunboyevjurabek.muslimapp.feature.data.local
 
 import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.google.gson.annotations.SerializedName
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonParseException
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import uz.turgunboyevjurabek.muslimapp.feature.domain.repository.SavedSchedule
-import java.io.IOException
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private val Context.prayerScheduleStore by preferencesDataStore("prayer_schedule_cache_v1")
 
@@ -30,7 +31,7 @@ class PrayerScheduleStore internal constructor(private val store: DataStore<Pref
     internal suspend fun <T : Any> read(
         bucket: String,
         period: String,
-        type: Class<T>,
+        format: ScheduleCacheFormat<T>,
     ): SavedSchedule<T>? = withContext(Dispatchers.IO) {
         val entries = try {
             decode(store.data.first()[stringPreferencesKey(bucket)])
@@ -42,17 +43,17 @@ class PrayerScheduleStore internal constructor(private val store: DataStore<Pref
         )
         ordered.firstNotNullOfOrNull { entry ->
             try {
-                gson.fromJson(entry.data, type)?.let { SavedSchedule(it, entry.period, entry.savedAt) }
+                format.decode(gson, entry.data)?.let { SavedSchedule(it, entry.period, entry.savedAt) }
             } catch (_: JsonParseException) {
                 null
             }
         }
     }
 
-    internal suspend fun <T : Any> write(bucket: String, schedule: SavedSchedule<T>) {
+    internal suspend fun <T : Any> write(bucket: String, schedule: SavedSchedule<T>, format: ScheduleCacheFormat<T>) {
         withContext(Dispatchers.IO) {
             val key = stringPreferencesKey(bucket)
-            val entry = StoredSchedule(schedule.period, schedule.savedAt, gson.toJsonTree(schedule.data))
+            val entry = StoredSchedule(schedule.period, schedule.savedAt, format.encode(gson, schedule.data))
             store.edit { preferences ->
                 val history = decode(preferences[key]).filterNot { it.period == entry.period }
                 preferences[key] = gson.toJson(listOf(entry) + history.take(5), listType)
@@ -66,5 +67,9 @@ class PrayerScheduleStore internal constructor(private val store: DataStore<Pref
         emptyList()
     }
 
-    private data class StoredSchedule(val period: String, val savedAt: Long, val data: JsonElement)
+    private data class StoredSchedule(
+        @SerializedName("period") val period: String,
+        @SerializedName("savedAt") val savedAt: Long,
+        @SerializedName("data") val data: JsonElement,
+    )
 }
