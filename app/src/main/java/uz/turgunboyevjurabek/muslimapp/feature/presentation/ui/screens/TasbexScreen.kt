@@ -40,6 +40,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.draw.innerShadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
@@ -50,6 +55,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.Morph
@@ -60,7 +66,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filterIsInstance
 import uz.turgunboyevjurabek.muslimapp.R
-import uz.turgunboyevjurabek.muslimapp.core.utils.coloredShadow
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.CounterViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.DhikrSession
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedCounter
@@ -143,7 +148,6 @@ fun TasbexScreen(viewModel: CounterViewModel) {
                 )
             }
             ShapeCount(
-                count = counter.count,
                 shapeSize = counterSize,
                 topPadding = if (compact) 16.dp else 34.dp,
                 bottomPadding = if (compact) 12.dp else 30.dp,
@@ -282,13 +286,11 @@ private fun CounterMessage(hasCount: Boolean) {
 
 @Composable
 private fun ShapeCount(
-    count: Int,
     shapeSize: Dp,
     topPadding: Dp,
     bottomPadding: Dp,
     onClick: () -> Unit,
 ) {
-    val shadowAlpha = if (count < 10) 0.01f else (count / 10).coerceAtMost(10) * 0.05f
     val morph = remember {
         Morph(RoundedPolygon(12, rounding = CornerRounding(0.2f)), RoundedPolygon.circle(15))
     }
@@ -308,6 +310,11 @@ private fun ShapeCount(
         }
     }
     val colors = MaterialTheme.colorScheme
+    val dark = colors.background.luminance() < 0.3f
+    val shape = MorphPolygonShape(morph, progress.value)
+    val pressScale = rememberPressScale(interactionSource)
+    val shadowColor = if (dark) Color.Black.copy(alpha = 0.64f) else colors.onSurface.copy(alpha = 0.22f)
+    val gold = if (dark) colors.tertiary else Color(0xFFB98525)
     val label = stringResource(R.string.dhikr)
     Box(
         modifier = Modifier
@@ -325,16 +332,22 @@ private fun ShapeCount(
         Box(
             modifier = Modifier
                 .size(shapeSize)
-                .coloredShadow(
-                    colors.primary,
-                    borderRadius = 150.dp,
-                    alpha = shadowAlpha,
-                    shadowRadius = 50.dp,
-                    offsetX = 0.dp,
-                    offsetY = 0.dp,
+                .pressScale(pressScale)
+                .dropShadow(
+                    shape = shape,
+                    shadow = Shadow(
+                        radius = 16.dp,
+                        color = shadowColor,
+                        offset = DpOffset(0.dp, 8.dp),
+                    ),
                 )
-                .pressScale(rememberPressScale(interactionSource))
-                .clip(MorphPolygonShape(morph, progress.value))
+                .clip(shape)
+                .innerShadow(shape) {
+                    color = gold
+                    radius = 5.dp.toPx()
+                    spread = 1.5.dp.toPx()
+                    alpha = ((1f - pressScale.value) / 0.06f).coerceIn(0f, 1f) * 0.48f
+                }
                 .background(colors.surfaceColorAtElevation(10.dp)),
             contentAlignment = Alignment.Center,
         ) {

@@ -143,7 +143,7 @@ Debug versiyada katta Tasbix tugmasini uzoq bosish sinov uchun joriy sanoqni 123
 
 Sinov uchun 1234 boshlang‘ich qiymati va uzoq bosish orqali 1234 qo‘yish amali olib tashlandi. Yangi sanoq 0 dan boshlanadi. Mavjud sanoq va tarix saqlanadi. 1234 → 0 faqat animatsiya regressiya testidagi namuna. Nollanish animatsiyasi saqlandi. Debug build va unit testlar o‘tdi. Samsung SM_S916N’ga APK o‘rnatildi. Telefonda boshqa ilova faol bo‘lgani uchun yakuniy instrumentatsiya testi o‘tkazilmadi.
 
-Tasbix tugmasi soyasi uchun taklif — shakl konturiga ergashadigan ixcham, pastga yo‘nalgan yumshoq soya va bosishda mayin oltin aksent. Bu faqat dizayn tavsiyasi.
+Tasbix tugmasida soya ko‘pburchak va doira konturiga ergashadi. 16 dp yoyilish va 8 dp pastga siljish bor. Soya sanoqqa bog‘liq emas. Bosish animatsiyasi tugma chetida mayin oltin yaltirash beradi va qo‘yib yuborilganda so‘nadi. Debug build va unit testlar o‘tdi. APK Samsung SM_S916N’ga o‘rnatildi. Telefonda boshqa ilova faol bo‘lgani uchun oq va qora mavzudagi ekran sinovi kutilmoqda.
 
 ## Muhim kod yo‘llari
 

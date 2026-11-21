@@ -4,10 +4,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toPixelMap
+import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.captureToImage
@@ -59,6 +61,7 @@ class TasbexScreenTest {
         val preferences = PreferenceDataStoreFactory.create(scope = scope) { file }
         val viewModels = ViewModelStore()
         val viewModel = CounterViewModel(preferences)
+        val darkTheme = mutableStateOf(true)
         viewModels.put("tasbih", viewModel)
         fun text(id: Int) = context.getString(id)
         fun waitForCount(expected: Int) {
@@ -72,7 +75,7 @@ class TasbexScreenTest {
                 preferences.edit { it[intPreferencesKey("counter")] = 2 }
             }
             compose.setContent {
-                MuslimAppTheme(darkTheme = true) {
+                MuslimAppTheme(darkTheme = darkTheme.value) {
                     Surface {
                         Box(Modifier.fillMaxSize()) { TasbexScreen(viewModel) }
                     }
@@ -80,6 +83,10 @@ class TasbexScreenTest {
             }
             waitForCount(2)
             val counter = compose.onNodeWithContentDescription(text(R.string.dhikr))
+            assertDirectionalShadowAndPressGlow(counter)
+            compose.runOnIdle { darkTheme.value = false }
+            assertDirectionalShadowAndPressGlow(counter)
+            waitForCount(2)
             counter.performTouchInput { click() }
             waitForCount(3)
             counter.performTouchInput { click() }
@@ -163,6 +170,37 @@ class TasbexScreenTest {
         assertEquals(0.0, settled.glyphInk(leftColumns).weight, 0.01)
         val zero = settled.glyphInk(0 until settled.width)
         assertTrue("The final zero is centered", abs(zero.centerX - settled.width / 2.0) < settled.width * 0.01)
+    }
+
+    private fun assertDirectionalShadowAndPressGlow(counter: SemanticsNodeInteraction) {
+        val idle = counter.captureToImage()
+        val idlePixels = idle.toPixelMap()
+        val x = idle.width / 2
+        val inset = idle.height / 30
+        assertTrue(
+            "The shadow is darker below the shape than above it",
+            idlePixels[x, idle.height - 1 - inset].red < idlePixels[x, inset].red,
+        )
+
+        counter.performTouchInput { down(center) }
+        val pressed = counter.captureToImage()
+        counter.performTouchInput { cancel() }
+        val released = counter.captureToImage()
+
+        assertTrue("Press adds a warm rim", pressed.upperRimWarmth() > idle.upperRimWarmth() + 0.04f)
+        assertEquals("Releasing leaves the neutral shadow", idle.glyphFrameHash(), released.glyphFrameHash())
+    }
+
+    private fun ImageBitmap.upperRimWarmth(): Float {
+        val pixels = toPixelMap()
+        var warmth = 0f
+        for (y in 0 until height / 3 step 2) {
+            for (x in 0 until width step 2) {
+                val color = pixels[x, y]
+                warmth = maxOf(warmth, color.red - color.blue)
+            }
+        }
+        return warmth
     }
 
     private fun ImageBitmap.glyphInk(columns: IntRange): GlyphInk {
