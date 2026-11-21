@@ -131,4 +131,5 @@
     <string name="tasbih_decrement">Биттага камайтириш</string>
     <string name="tasbih_reset_short">Ноллаш</string>
     <string name="tasbih_reset_message">Жорий саноқ тарихга сақланади ва ҳисоб нолдан бошланади.</string>
+    <string name="tasbih_current_count">Жорий саноқ</string>
 </resources>

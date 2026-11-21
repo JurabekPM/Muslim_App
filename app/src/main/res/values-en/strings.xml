@@ -131,4 +131,5 @@
     <string name="tasbih_decrement">Decrease by one</string>
     <string name="tasbih_reset_short">Reset</string>
     <string name="tasbih_reset_message">The current count will be saved to history and the counter will start at zero.</string>
+    <string name="tasbih_current_count">Current count</string>
 </resources>

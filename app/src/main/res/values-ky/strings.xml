@@ -131,4 +131,5 @@
     <string name="tasbih_decrement">Бирге азайтуу</string>
     <string name="tasbih_reset_short">Нөлдөө</string>
     <string name="tasbih_reset_message">Учурдагы сан тарыхка сакталат жана эсеп нөлдөн башталат.</string>
+    <string name="tasbih_current_count">Учурдагы сан</string>
 </resources>

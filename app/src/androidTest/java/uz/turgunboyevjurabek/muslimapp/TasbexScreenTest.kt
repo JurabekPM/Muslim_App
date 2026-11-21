@@ -17,11 +17,13 @@ import androidx.compose.ui.test.click
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasScrollToIndexAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDialog
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToIndex
 import androidx.compose.ui.test.performTouchInput
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.edit
@@ -42,8 +44,10 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.CounterViewModel
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.DhikrSession
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.MuslimAppTheme
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedCounter
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.TasbexHistorySheet
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.TasbexScreen
 import java.io.File
 import java.util.UUID
@@ -102,6 +106,8 @@ class TasbexScreenTest {
 
             val reset = text(R.string.tasbih_reset_short)
             compose.onNodeWithText(reset).performClick()
+            compose.onNodeWithText(text(R.string.tasbih_current_count)).assertIsDisplayed()
+            compose.onNode(hasText("4") and hasAnyAncestor(isDialog())).assertIsDisplayed()
             compose.onNodeWithText(text(R.string.cancel)).performClick()
             waitForCount(4)
             assertEquals(emptyList<Any>(), viewModel.state.value?.history)
@@ -145,6 +151,36 @@ class TasbexScreenTest {
             scope.cancel()
             file.delete()
         }
+    }
+
+    @Test
+    fun historySheetKeepsCloseVisibleWhenScrollingManyEntries() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val history = mutableStateOf(emptyList<DhikrSession>())
+        val showing = mutableStateOf(true)
+        val darkTheme = mutableStateOf(true)
+        compose.setContent {
+            MuslimAppTheme(darkTheme = darkTheme.value) {
+                if (showing.value) TasbexHistorySheet(history.value) { showing.value = false }
+            }
+        }
+        val close = compose.onNodeWithText(context.getString(R.string.close))
+        compose.onNodeWithText(context.getString(R.string.no_dhikr_history)).assertIsDisplayed()
+        close.assertIsDisplayed()
+
+        compose.runOnIdle {
+            history.value = List(100) { index ->
+                DhikrSession(count = 101 + index, finishedAtMillis = 1_790_000_000_000L - index * 3_600_000L)
+            }
+        }
+        compose.onNodeWithText("101").assertIsDisplayed()
+        compose.onNode(hasScrollToIndexAction()).performScrollToIndex(99)
+        compose.onNodeWithText("200").assertIsDisplayed()
+        close.assertIsDisplayed()
+
+        compose.runOnIdle { darkTheme.value = false }
+        close.assertIsDisplayed().performClick()
+        close.assertDoesNotExist()
     }
 
     @Test

@@ -145,4 +145,5 @@
     <string name="tasbih_decrement">Уменьшить на один</string>
     <string name="tasbih_reset_short">Сбросить</string>
     <string name="tasbih_reset_message">Текущий счёт сохранится в истории, а счётчик начнёт с нуля.</string>
+    <string name="tasbih_current_count">Текущий счёт</string>
 </resources>

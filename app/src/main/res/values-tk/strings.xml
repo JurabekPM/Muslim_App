@@ -131,4 +131,5 @@
     <string name="tasbih_decrement">Bir san azaltmak</string>
     <string name="tasbih_reset_short">Nollamak</string>
     <string name="tasbih_reset_message">Häzirki san taryha ýazylar we hasap noldan başlar.</string>
+    <string name="tasbih_current_count">Häzirki san</string>
 </resources>

@@ -146,4 +146,5 @@
     <string name="tasbih_decrement">Bittaga kamaytirish</string>
     <string name="tasbih_reset_short">Nollash</string>
     <string name="tasbih_reset_message">Joriy sanoq tarixga saqlanadi va hisob noldan boshlanadi.</string>
+    <string name="tasbih_current_count">Joriy sanoq</string>
 </resources>

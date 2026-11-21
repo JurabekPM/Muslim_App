@@ -167,7 +167,7 @@ Yana uchta maket oq va qora mavzuda tayyorlandi.
 - [5 — Bosh barmoqqa yaqin](designs/tasbix-dialogs-5-bottom-sheet.png). Tarix pastdan ochiladi, nollash tasdig‘i pastda keng tugmalar bilan chiqadi.
 - [6 — Sokina](designs/tasbix-dialogs-6-quiet.png). Yengil ajratkichli tarix va ixcham nollash dialogi.
 
-Maketdagi fon, raqam va sanalar namunaviy. Tanlov kutilmoqda. Dialoglar hali ilovaga qo‘llanmagan.
+Foydalanuvchi Tarix uchun 3-maketdagi vaqt chizig‘i bilan pastdan ochiladigan sheetni, Nollash uchun 1-maketdagi ixcham dialogni tanladi. Tarixda uzun ro‘yxat LazyColumn ichida aylanadi, «Yopish» tugmasi pastda ko‘rinib turadi. Mavjud saqlash chegarasi 20 yozuv. Nollash joriy sanoqni ko‘rsatadi, bekor qilish va tasdiqlash tugmalari ajratilgan. Sanoq tarixga faqat tasdiqdan so‘ng qo‘shiladi. «Joriy sanoq» yorlig‘i sakkiz tilda bor. Debug build va unit testlar o‘tdi. Samsung SM_S916N’ga yangilanish o‘rnatildi. Boshqa ilova faol bo‘lgani uchun 100 yozuv bilan varaqlash va dialoglarning telefon sinovi hali bajarilmadi.
 
 ## Muhim kod yo‘llari
 

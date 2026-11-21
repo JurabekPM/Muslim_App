@@ -15,18 +15,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,7 +40,6 @@ import androidx.compose.ui.draw.innerShadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -65,7 +59,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filterIsInstance
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.CounterViewModel
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.DhikrSession
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedCounter
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedValueText
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.CounterTapCadence
@@ -73,9 +66,6 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.pressS
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.rememberPressScale
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.shimmers.ShimmerPlaceholder
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.shape.MorphPolygonShape
-import java.text.DateFormat
-import java.text.NumberFormat
-import java.util.Date
 
 private enum class TasbexDialog { History, Reset }
 
@@ -169,22 +159,14 @@ fun TasbexScreen(viewModel: CounterViewModel) {
     }
 
     when (dialog) {
-        TasbexDialog.History -> TasbexHistoryDialog(counter.history) { dialog = null }
-        TasbexDialog.Reset -> AlertDialog(
-            onDismissRequest = { dialog = null },
-            title = { Text(stringResource(R.string.reset_count)) },
-            text = { Text(stringResource(R.string.tasbih_reset_message)) },
-            confirmButton = {
-                TextButton(onClick = {
-                    tapCadence.reset()
-                    viewModel.clearCounter()
-                    dialog = null
-                }) {
-                    Text(stringResource(R.string.tasbih_reset_short))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { dialog = null }) { Text(stringResource(R.string.cancel)) }
+        TasbexDialog.History -> TasbexHistorySheet(counter.history) { dialog = null }
+        TasbexDialog.Reset -> TasbexResetDialog(
+            count = counter.count,
+            onDismiss = { dialog = null },
+            onConfirm = {
+                tapCadence.reset()
+                viewModel.clearCounter()
+                dialog = null
             },
         )
         null -> Unit
@@ -238,38 +220,6 @@ private fun TasbexAction(
             textAlign = TextAlign.Center,
         )
     }
-}
-
-@Composable
-private fun TasbexHistoryDialog(history: List<DhikrSession>, onDismiss: () -> Unit) {
-    val locale = LocalConfiguration.current.locales[0]
-    val dateFormat = remember(locale) { DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale) }
-    val numberFormat = remember(locale) { NumberFormat.getIntegerInstance(locale) }
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.dhikr_history)) },
-        text = {
-            if (history.isEmpty()) {
-                Text(stringResource(R.string.no_dhikr_history))
-            } else {
-                LazyColumn(Modifier.heightIn(max = 240.dp)) {
-                    items(history) { session ->
-                        Row(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(dateFormat.format(Date(session.finishedAtMillis)), Modifier.weight(1f))
-                            Text(numberFormat.format(session.count), style = MaterialTheme.typography.titleMedium)
-                        }
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.close)) }
-        },
-    )
 }
 
 @Composable
