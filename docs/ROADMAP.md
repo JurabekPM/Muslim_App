@@ -38,4 +38,6 @@ Har bosqich alohida branch va PR’da bajariladi. PR’da o‘zgarish, tekshiruv
 
 - [x] Google Play talabi tekshirildi va targetSdk 36 ga ko‘tarildi.
 - [x] Release APK va AAB yig‘ildi. Samsung’da AppBar/BottomNav insets, mavjud joylashuv ruxsatlari va asosiy ekranlar sinovdan o‘tdi.
-- [ ] Nashrga tayyorlash qaroridan keyin 16 KB qurilmada amaliy sinov, Play App Signing, maxfiylik siyosati, Data safety va hisobga tegishli test talablarini yakunlash.
+- [x] Maxfiylik siyosati va Data safety uchun loyihalar tayyorlandi. Menyuda maxfiylik matni sakkiz tilda ochiladi.
+- [x] Android 16 x86_64 emulyatorda 16 KB sahifada release APK ishga tushdi. APK va AAB joylashuvi tekshirildi.
+- [ ] Play Store’ga yuborishdan oldin maxfiylik siyosati uchun faol URL, xizmatlarning ma’lumot oqimi, Data safety javoblari, Play App Signing va hisobga tegishli sinov talablarini yakunlash.

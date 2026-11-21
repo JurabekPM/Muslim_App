@@ -132,4 +132,6 @@
     <string name="tasbih_reset_short">Nollamak</string>
     <string name="tasbih_reset_message">Häzirki san taryha ýazylar we hasap noldan başlar.</string>
     <string name="tasbih_current_count">Häzirki san</string>
+    <string name="privacy_policy">Gizlinlik syýasaty</string>
+    <string name="privacy_policy_summary">Ýerleşişe rugsat bermek hökmany däl. Kyblanyň ugry telefonda hasaplanýar. Häzirki sebiti anyklamagy saýlasaňyz, Android ulgamynyň ýerleşişi we salgyny anyklaýyş hyzmatlary ulanylýar. Sebiti el bilen hem saýlap bilersiňiz.\n\nNamaz wagtlaryny almak üçin saýlanan sebit we tertibiň döwri HTTPS arkaly namoz-vaqti.uz hyzmatyna iberilýär. Hyzmat birikmäniň IP salgysyny hem görüp biler.\n\nSebit, saklanan tertipler, zikr taryhy, sanaw, dil we tema programmada saklanýar. Android sazlamalara baglylykda ätiýaçlyk nusgasyny döredip biler. Telefondaky maglumatlary pozmak üçin Android sazlamalarynda programmanyň ýadyny arassalaň.</string>
 </resources>
