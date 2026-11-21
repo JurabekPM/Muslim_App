@@ -121,6 +121,8 @@ Tasbix uchun oq va qora temada uchta maket tayyorlandi. Ularda keng «Zikr +1» 
 
 Foydalanuvchi uchala maketdagi alohida katta «Zikr +1» tugmasi va bosish joyini noqulay deb topdi. [Bir qo‘lda sanash maketi](designs/tasbix-one-handed.png) oq va qora temada tayyorlandi. Katta sanoq va progress pastdagi keng kartada. Karta bo‘ylab bosish sanoqni oshiradi. «−1» va «Qayta boshlash» kartadan yuqorida. Maket bo‘yicha fikr kutilmoqda.
 
+Foydalanuvchi amaldagi Tasbix joylashuvini afzal ko‘rdi. [Yangilangan maket](designs/tasbix-current-refinement.png) katta sanoqni tepada, bosiladigan ko‘pburchakni pastda saqlaydi. Uning tepasida bir xil uslubdagi «Tarix», «−1» va «Nollash» ikonkalari bor. Bu maket muhokama uchun tayyorlandi.
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.
