@@ -120,4 +120,11 @@
         <item>Şe</item>
         <item>Ýe</item>
     </string-array>
+    <string name="menu">Menýu</string>
+    <string name="theme">Tema</string>
+    <string name="theme_system">Ulgam</string>
+    <string name="theme_light">Açyk</string>
+    <string name="theme_dark">Garaňky</string>
+    <string name="about_app">Programma barada</string>
+    <string name="about_app_description">Muslim App Özbegistanyň sebitleri üçin namaz wagtlaryny, kybla ugruny we tesbih hasaplaýjysyny bir ýere jemleýär.</string>
 </resources>

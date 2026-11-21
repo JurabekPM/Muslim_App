@@ -120,4 +120,11 @@
         <item>Ша</item>
         <item>Як</item>
     </string-array>
+    <string name="menu">Меню</string>
+    <string name="theme">Мавзу</string>
+    <string name="theme_system">Тизим</string>
+    <string name="theme_light">Оқ</string>
+    <string name="theme_dark">Қора</string>
+    <string name="about_app">Илова ҳақида</string>
+    <string name="about_app_description">Muslim App Ўзбекистон ҳудудлари учун намоз вақтлари, Қибла йўналиши ва тасбеҳ ҳисоблагичини бир жойга жамлайди.</string>
 </resources>

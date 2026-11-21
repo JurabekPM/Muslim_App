@@ -135,4 +135,11 @@
         <item>Sh</item>
         <item>Ya</item>
     </string-array>
+    <string name="menu">Menyu</string>
+    <string name="theme">Mavzu</string>
+    <string name="theme_system">Tizim</string>
+    <string name="theme_light">Oq</string>
+    <string name="theme_dark">Qora</string>
+    <string name="about_app">Ilova haqida</string>
+    <string name="about_app_description">Muslim App O‘zbekiston hududlari uchun namoz vaqtlari, Qibla yo‘nalishi va tasbeh hisoblagichini bir joyga jamlaydi.</string>
 </resources>

@@ -120,4 +120,11 @@
         <item>Сб</item>
         <item>Жс</item>
     </string-array>
+    <string name="menu">Мәзір</string>
+    <string name="theme">Тақырып</string>
+    <string name="theme_system">Жүйе</string>
+    <string name="theme_light">Жарық</string>
+    <string name="theme_dark">Қараңғы</string>
+    <string name="about_app">Қолданба туралы</string>
+    <string name="about_app_description">Muslim App Өзбекстан өңірлерінің намаз уақыттарын, құбыла бағытын және тәсбих санағышын біріктіреді.</string>
 </resources>

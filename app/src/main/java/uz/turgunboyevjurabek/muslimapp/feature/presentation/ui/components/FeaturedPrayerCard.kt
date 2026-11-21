@@ -201,9 +201,15 @@ private fun PrayerCardProgress(interval: PrayerInterval, modifier: Modifier = Mo
             .semantics { progressBarRangeInfo = ProgressBarRangeInfo(interval.fraction, 0f..1f) }
             .drawWithCache {
                 val trackColor = Color(0xFF46505C)
-                val fill = Brush.verticalGradient(
-                    listOf(progressGold, Color(0xFFDEAA4B), Color(0xFFBA812F)),
-                    endY = size.height,
+                val filled = size.width * fraction.value
+                val rtl = layoutDirection == LayoutDirection.Rtl
+                val tipRadius = minOf(size.height / 2f, filled)
+                val left = if (rtl) size.width - filled else -tipRadius
+                val fillSize = Size(filled + tipRadius, size.height)
+                val sunset = Brush.horizontalGradient(
+                    listOf(Color(0xFFEA6113), Color(0xFFF88F22), Color(0xFFFBB931), Color(0xFFFFE3B3)),
+                    startX = if (rtl) size.width else 0f,
+                    endX = if (rtl) size.width - filled else filled,
                 )
                 val lightColor = Color(0xFFFFF9E8)
                 val glowRadius = size.height * 0.6f
@@ -225,13 +231,8 @@ private fun PrayerCardProgress(interval: PrayerInterval, modifier: Modifier = Mo
                 onDrawBehind {
                     val phase = motion.value
                     drawRect(trackColor)
-                    val filled = size.width * fraction.value
-                    val rtl = layoutDirection == LayoutDirection.Rtl
-                    val tipRadius = minOf(size.height / 2f, filled)
-                    val left = if (rtl) size.width - filled else -tipRadius
-                    val fillSize = Size(filled + tipRadius, size.height)
                     if (filled > 0f) {
-                        drawRoundRect(fill, Offset(left, 0f), fillSize, CornerRadius(tipRadius))
+                        drawRoundRect(sunset, Offset(left, 0f), fillSize, CornerRadius(tipRadius))
                     }
                     for (sparkle in sparkles) {
                         val age = (phase + sparkle.phase) % 1f

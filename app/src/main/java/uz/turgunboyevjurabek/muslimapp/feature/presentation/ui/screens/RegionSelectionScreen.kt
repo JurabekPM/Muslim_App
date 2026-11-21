@@ -1,12 +1,6 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens
 
-import androidx.compose.ui.semantics.Role
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.AlertDialog
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.displayName
-import uz.turgunboyevjurabek.muslimapp.core.utils.AppLanguage
 import androidx.compose.ui.res.stringResource
 import android.content.pm.PackageManager
 import android.Manifest
@@ -21,8 +15,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -102,11 +94,8 @@ internal fun RegionSelectionScreen(
     selectRegionViewModel: SelectRegionViewModel,
     lookupLocation: suspend () -> RegionLocationResult,
     onClose: () -> Unit,
-    language: AppLanguage,
-    onLanguageChange: (AppLanguage) -> Unit,
 ) {
     val context = LocalContext.current
-    var choosingLanguage by rememberSaveable { mutableStateOf(false) }
     val colors = MaterialTheme.colorScheme
     val keyboard = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -200,7 +189,6 @@ internal fun RegionSelectionScreen(
         }
     }
 
-    val languageDescription = stringResource(R.string.language)
     Column(
         Modifier.fillMaxSize().safeDrawingPadding().imePadding(),
     ) {
@@ -232,12 +220,6 @@ internal fun RegionSelectionScreen(
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.SemiBold,
             )
-            TextButton(onClick = { choosingLanguage = true }, enabled = !saving) {
-                Text(
-                    language.label.substringBefore(" ("),
-                    Modifier.semantics { contentDescription = languageDescription },
-                )
-            }
         }
 
         LazyColumn(
@@ -338,36 +320,6 @@ internal fun RegionSelectionScreen(
                 }
             }
         }
-    }
-    if (choosingLanguage) {
-        AlertDialog(
-            onDismissRequest = { choosingLanguage = false },
-            title = { Text(stringResource(R.string.language)) },
-            text = {
-                Column(Modifier.verticalScroll(rememberScrollState())) {
-                    AppLanguage.entries.forEach { option ->
-                        Row(
-                            Modifier.fillMaxWidth().heightIn(min = 48.dp).selectable(
-                                selected = option == language,
-                                role = Role.RadioButton,
-                                onClick = {
-                                    choosingLanguage = false
-                                    onLanguageChange(option)
-                                },
-                            ),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        ) {
-                            RadioButton(selected = option == language, onClick = null)
-                            Text(option.label)
-                        }
-                    }
-                }
-            },
-            confirmButton = {
-                TextButton(onClick = { choosingLanguage = false }) { Text(stringResource(R.string.close)) }
-            },
-        )
     }
 }
 

@@ -120,4 +120,11 @@
         <item>Sat</item>
         <item>Sun</item>
     </string-array>
+    <string name="menu">Menu</string>
+    <string name="theme">Theme</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="about_app">About</string>
+    <string name="about_app_description">Muslim App brings together prayer times for Uzbekistan, the Qibla direction, and a tasbih counter.</string>
 </resources>

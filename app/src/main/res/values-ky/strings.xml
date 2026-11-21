@@ -120,4 +120,11 @@
         <item>Ише</item>
         <item>Жек</item>
     </string-array>
+    <string name="menu">Меню</string>
+    <string name="theme">Тема</string>
+    <string name="theme_system">Тутум</string>
+    <string name="theme_light">Жарык</string>
+    <string name="theme_dark">Караңгы</string>
+    <string name="about_app">Колдонмо жөнүндө</string>
+    <string name="about_app_description">Muslim App Өзбекстандын аймактарындагы намаз убакыттарын, кыбыла багытын жана тасбих эсептегичин бир жерге топтойт.</string>
 </resources>

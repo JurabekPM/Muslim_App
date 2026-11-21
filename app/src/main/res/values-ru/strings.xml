@@ -134,4 +134,11 @@
         <item>Сб</item>
         <item>Вс</item>
     </string-array>
+    <string name="menu">Меню</string>
+    <string name="theme">Тема</string>
+    <string name="theme_system">Система</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Тёмная</string>
+    <string name="about_app">О приложении</string>
+    <string name="about_app_description">Muslim App объединяет расписание намазов для регионов Узбекистана, направление киблы и счётчик тасбиха.</string>
 </resources>

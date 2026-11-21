@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.calculateStartPadding
@@ -18,7 +19,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -32,6 +37,8 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.Dayof7Scr
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.MainScreen
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.TasbexScreen
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.RegionSelectionScreen
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.MenuScreen
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.AppThemeMode
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.CounterViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.PrayerScheduleViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.SelectRegionViewModel
@@ -58,7 +65,14 @@ internal fun MuslimApp(
     language: AppLanguage,
     onLanguageChange: (AppLanguage) -> Unit,
 ) {
-    MuslimAppTheme {
+    val context = LocalContext.current
+    var theme by remember(context) { mutableStateOf(AppThemeMode.load(context)) }
+    val darkTheme = when (theme) {
+        AppThemeMode.System -> isSystemInDarkTheme()
+        AppThemeMode.Light -> false
+        AppThemeMode.Dark -> true
+    }
+    MuslimAppTheme(darkTheme = darkTheme) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
@@ -120,8 +134,6 @@ internal fun MuslimApp(
                             RegionSelectionScreen(
                                 selectRegionViewModel = regionViewModel,
                                 lookupLocation = regionLocationLookup::find,
-                                language = language,
-                                onLanguageChange = onLanguageChange,
                                 onClose = { navController.popBackStack() },
                             )
                         }
@@ -154,6 +166,21 @@ internal fun MuslimApp(
                                 schedule = scheduleViewModel,
                                 bottomPadding = dockPadding,
                                 topPadding = topPadding,
+                            )
+                        }
+                        composable(AppRoute.MENU) {
+                            MenuScreen(
+                                theme = theme,
+                                onThemeChange = {
+                                    if (theme != it) {
+                                        it.save(context)
+                                        theme = it
+                                    }
+                                },
+                                language = language,
+                                onLanguageChange = onLanguageChange,
+                                topPadding = topPadding,
+                                bottomPadding = dockPadding,
                             )
                         }
                         composable(AppRoute.QIBLA) { backStackEntry ->

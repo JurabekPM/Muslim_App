@@ -120,4 +120,11 @@
         <item>Шб</item>
         <item>Яш</item>
     </string-array>
+    <string name="menu">Меню</string>
+    <string name="theme">Мавзӯъ</string>
+    <string name="theme_system">Низом</string>
+    <string name="theme_light">Равшан</string>
+    <string name="theme_dark">Торик</string>
+    <string name="about_app">Дар бораи барнома</string>
+    <string name="about_app_description">Muslim App вақтҳои намоз дар минтақаҳои Ӯзбекистон, самти қибла ва ҳисобкунаки тасбеҳро дар як ҷо ҷамъ мекунад.</string>
 </resources>

@@ -53,7 +53,7 @@ Muslim App O‘zbekiston uchun namoz vaqtlari, tasbeh va Qibla funksiyalarini be
 
 - Namozga mos alohida fon rasmlari silliq almashadi. Matn uchun kontrast qoplamalari mavjud.
 - `FeaturedPrayerCard.kt` minimal balandligi 150 dp.
-- Progress kartaning eng pastki chetiga yopishgan, balandligi 12 dp. Kartaning radiusiga qirqiladi. To‘lgan qismning old uchi yumaloq.
+- Progress kartaning eng pastki chetiga yopishgan, balandligi 12 dp. Kartaning radiusiga qirqiladi. To‘lgan qismning old uchi yumaloq, Sunset gradienti to‘qsariqdan och oltinga o‘tadi.
 - Qolgan vaqt ixcham yoziladi. Alohida qora progress paneli olib tashlangan.
 - Telegram Stars videosi asosida mayda oltin uchqunlar va old uchida yumshoq pulsatsiyali oq nur qo‘shilgan. Qolgan vaqt kamayganda harakat tezlashadi.
 - Bugungi vaqtlar timeline’da ko‘rsatiladi. Joriy qatordagi vaqt vertikal markazga moslangan bo‘lishi kerak.
@@ -77,7 +77,7 @@ Muslim App O‘zbekiston uchun namoz vaqtlari, tasbeh va Qibla funksiyalarini be
 - Viloyatning o‘z jadvalini tanlash uchun ichki ro‘yxatda viloyat bo‘yicha qator ham mavjud.
 - GPS mos hududni tanlaydi va `Hozirgi joylashuv` belgisi chiqadi. Qo‘lda tanlanganda belgi mayin so‘nadi.
 - Hudud turini chapda qo‘shimcha badge qilib ko‘rsatish foydalanuvchi tomonidan bekor qilingan. Tur nom bilan bir matnda yoziladi.
-- Hozir til tanlash shu ekran yuqorisidagi tugma orqali dialogda ochiladi.
+- Til tanlash BottomNav’dagi Menyu ekraniga ko‘chirilgan.
 
 ### Sakkiz til va hudud nomlari
 
@@ -92,26 +92,22 @@ Muslim App O‘zbekiston uchun namoz vaqtlari, tasbeh va Qibla funksiyalarini be
 - Viloyat ichidagi qidiruv o‘sha hudud bilan cheklanadi. Asosiy ro‘yxatdagi qidiruv barcha hududlarni qamrab oladi.
 - Saqlangan slug va namoz jadvali identifikatorlarini tarjima qilmang.
 
-## Hozirgi ochiq dizayn vazifasi
+## Menyu va mavzu
 
-Foydalanuvchi BottomNav’da beshinchi `Menyu` bo‘limi bo‘lishini xohlaydi. Ichida `Ilova tili`, mavzu/tema almashtirish va `Ilova haqida` bo‘lishi kerak.
+BottomNav’da beshinchi `Menyu` bo‘limi bor. `MenuScreen.kt` da ixcham mavzu tanlovi, sakkiz til uchun dialog va `Ilova haqida` oynasi joylashgan. `AppThemeMode.kt` tanlovni `appearance/theme` prefida saqlaydi. Standart `Tizim` Android mavzusiga ergashadi, `Oq` va `Qora` esa ilova mavzusini darhol qo‘llaydi. Kunduz va tun manzaralari Compose Canvas’da chiziladi.
 
-Bu talab uchun maketlar tayyorlangan, implementatsiyaga hali yakuniy rozilik berilmagan. Amaldagi kodda BottomNav to‘rtta bo‘limdan iborat. `AppRoute` da Menyu yo‘q. Ilova hozir telefonning oq/qora temasiga moslashadi, alohida saqlanadigan System/Light/Dark tanlovi va About ekrani hali qo‘shilmagan.
-
-Foydalanuvchi avval 5-variantdagi mavzu preview’lariga yaqinroq, optimal va qulay variantlarni so‘ragan. So‘nggi yuborilgan uchta maket quyidagicha.
-
-- [7 — Ixcham namunalar](designs/menu-7-compact.png). Tizim/Oq/Qora uchun uchta kichik keng preview bir qatorda. Pastda til va ilova haqida. Assistant shu variantni tavsiya qilgan, foydalanuvchi hali tanlamagan.
+- [7 — Ixcham namunalar](designs/menu-7-compact.png). Tizim/Oq/Qora uchun uchta kichik keng namuna bir qatorda. Shu joylashuv tanlangan.
 - [8 — Bitta katta namuna](designs/menu-8-preview.png). Mavzu preview paneli va pastida segmented tanlov.
 - [9 — Qatorli tanlov](designs/menu-9-rows.png). Har rejim alohida keng qatorda kichik preview bilan.
 - [5 — Oldingi tayanch maket](designs/menu-5-theme-previews.png). Uchta balandroq mavzu preview’si, til va About qatorlari.
 
-2026-11-21 kuni oldingi dizayn tahlili asosida uchta yangi maket tayyorlandi. Ular muhokama uchun va hali tanlanmagan.
+2026-11-21 kuni oldingi dizayn tahlili asosida uchta maket tayyorlandi. Foydalanuvchi mavjud ko‘k-oltin palitra va glass navigatsiya bilan Home’dagi Sunset progressni hamda Menyu uchun kunduz va tun namunalarini tanladi.
 
 - [Asosiy ekran](designs/home-day-night.png). Oq va qora tema, Sunset progress, oltin bilan ajratilgan joriy namoz va eslatma belgilarining taklif etilgan joylashuvi.
 - [Menyu va mavzu](designs/menu-day-night.png). «Tizim / Oq / Qora» uchun kunduz va tun manzaralari, til, eslatmalar va ilova haqida qatorlari.
 - [Qibla va Ramazon](designs/qibla-ramadan-concept.png). Ka’ba belgili kompas va saharlik, iftor hamda qolgan vaqt uchun Ramazon konsepti.
 
-Maketdagi namoz vaqtlari, progress va sanoq vizual namunalardir. Bu ish faqat rasmlar va qayddan iborat. Ilova kodi tahrir qilinmadi, qurilmada tekshiruv talab qilinmadi.
+Maketdagi namoz vaqtlari, progress va sanoq vizual namunalardir. Eslatmalar, Hijriy sana va Ramazon funksiyalari hozircha konsept.
 
 Maketlar konsept rasmlaridir. Imagegen’dagi matn, tanlov holati yoki ayrim masofalar implementatsiyadagi qat’iy talab sifatida qabul qilinmasin. Besh bo‘limli nav uchun barcha sakkiz tilda uzun matn va katta font scale holatini hisobga olish kerak. Mavjud press/drag/filled-outline animatsiyalar saqlanishi talab etilgan.
 
@@ -123,7 +119,7 @@ Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.
 - `feature/presentation/navigation/AppRoute.kt` barqaror navigatsiya yo‘llari.
 - `feature/presentation/ui/components/MyTopBar.kt`, `MyBottomNavigationBar.kt` umumiy glass elementlar.
 - `feature/presentation/ui/components/FeaturedPrayerCard.kt`, `PrayerTimeline.kt` Home kartasi va vaqt chizig‘i.
-- `feature/presentation/ui/screens/RegionSelectionScreen.kt` hudud va hozirgi til dialogi.
+- `feature/presentation/ui/screens/RegionSelectionScreen.kt` hudud tanlash. `MenuScreen.kt` mavzu, til dialogi va ilova haqida oynasi.
 - `feature/domain/model/Regions.kt`, `RegionHierarchy.kt`, `RegionNames.kt`, `RegionSearchIndex.kt`, `RegionAddressMatcher.kt` hudud katalogi va mosliklar.
 - `feature/presentation/ui/components/LocalizedScheduleText.kt`, `ScheduleRegion.kt` tarjima qilingan jadval matnlari.
 - `feature/presentation/state/PrayerScheduleViewModel.kt` jadval va kesh holatlari.
@@ -132,6 +128,8 @@ Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.
 - `app/src/test` mavjud JUnit testlar.
 
 ## Build va qurilmada tekshirish
+
+Menyu va Sunset yangilanishida debug build va unit testlar o‘tdi. Samsung’da oq va qora Menyu ko‘rinishlari, qora mavzuning ilova qayta ochilganda saqlanishi, Tizim tanlovining belgilanishi va saqlanishi, til dialogi hamda «Ilova haqida» oynasi tekshirildi. Foydalanuvchi qolgan telefon tekshiruvlarini o‘zi bajarishini aytdi.
 
 Joriy versiyalarni Gradle fayllaridan tekshiring. Oxirgi holatda compileSdk 37, minSdk 24, targetSdk 34. Compose BOM 2026.09.00, Haze va haze-glass 2.1.0. Android Studio JBR bilan build ishlatilgan.
 

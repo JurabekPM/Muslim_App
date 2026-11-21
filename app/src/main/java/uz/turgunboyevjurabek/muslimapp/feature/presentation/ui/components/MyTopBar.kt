@@ -86,6 +86,7 @@ fun MyTopBar(
     onRegionClick: () -> Unit,
 ) {
     val onQiblaScreen = route == AppRoute.QIBLA
+    val onMenuScreen = route == AppRoute.MENU
     val colors = MaterialTheme.colorScheme
     val glassColor = colors.surface
     val darkGlass = glassColor.luminance() < 0.35f
@@ -152,12 +153,12 @@ fun MyTopBar(
             navigationIcon = {
                 if (onQiblaScreen) {
                     AppBarIconButton(R.drawable.ic_qibla_back, stringResource(R.string.back)) { navController.popBackStack() }
-                } else {
+                } else if (!onMenuScreen) {
                     AppBarIconButton(R.drawable.ic_qibla_location, stringResource(R.string.regions), onRegionClick)
                 }
             },
             actions = {
-                if (!onQiblaScreen) {
+                if (!onQiblaScreen && !onMenuScreen) {
                     AppBarIconButton(R.drawable.ic_qibla_kaaba, stringResource(R.string.qibla)) {
                         if (navController.currentDestination?.route != AppRoute.QIBLA) {
                             navController.navigate(AppRoute.QIBLA)

@@ -61,6 +61,7 @@ private val dockItems = listOf(
     BottomNavigationItem(R.string.tasbih, R.drawable.ic_nav_tasbex, R.drawable.ic_nav_tasbex_filled, AppRoute.TASBEX),
     BottomNavigationItem(R.string.weekly, R.drawable.ic_nav_week, R.drawable.ic_nav_week_filled, AppRoute.WEEKLY),
     BottomNavigationItem(R.string.monthly, R.drawable.ic_nav_month, R.drawable.ic_nav_month_filled, AppRoute.MONTHLY),
+    BottomNavigationItem(R.string.menu, R.drawable.ic_nav_menu, R.drawable.ic_nav_menu_filled, AppRoute.MENU),
 )
 private val dockShape = RoundedCornerShape(30.dp)
 
@@ -329,6 +330,9 @@ private fun DockTab(
             color = tint,
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight((500 + 100 * emphasis).roundToInt()),
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            maxLines = 2,
+            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
         )
     }
 }
