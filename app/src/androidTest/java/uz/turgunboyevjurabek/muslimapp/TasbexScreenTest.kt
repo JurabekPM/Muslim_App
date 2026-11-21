@@ -124,6 +124,20 @@ class TasbexScreenTest {
 
             counter.performTouchInput { click() }
             waitForCount(2)
+            counter.performTouchInput {
+                repeat(6) {
+                    click()
+                    advanceEventTime(45)
+                }
+            }
+            waitForCount(8)
+            compose.onNodeWithText("−1").performTouchInput {
+                repeat(6) {
+                    click()
+                    advanceEventTime(45)
+                }
+            }
+            waitForCount(2)
         } finally {
             compose.runOnIdle { viewModels.clear() }
             scope.cancel()

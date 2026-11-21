@@ -42,6 +42,7 @@ internal fun AnimatedCounter(
     modifier: Modifier = Modifier,
     style: TextStyle = MaterialTheme.typography.displayLarge,
     resetId: Long? = null,
+    rollDurationMillis: Int = 200,
 ) {
     val countText = count.toString()
     var roll by remember { mutableStateOf(CounterRoll.settled(count)) }
@@ -58,7 +59,7 @@ internal fun AnimatedCounter(
         val spec = if (isReset) {
             tween<Float>(1550, easing = LinearEasing)
         } else {
-            tween<Float>(200, easing = FastOutSlowInEasing)
+            tween<Float>(rollDurationMillis, easing = FastOutSlowInEasing)
         }
         progress.animateTo(1f, spec)
         roll = CounterRoll.settled(count)
@@ -81,10 +82,10 @@ internal fun AnimatedCounter(
         modifier = modifier
             .semantics { text = AnnotatedString(countText) }
             .fillMaxWidth()
-            .height(with(density) { digitHeight.toDp() } + 40.dp)
+            .height(with(density) { digitHeight.toDp() } + 64.dp)
             .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
             .drawWithCache {
-                val fadeDepth = minOf(30.dp.toPx() / size.height, 0.38f)
+                val fadeDepth = minOf(42.dp.toPx() / size.height, 0.4f)
                 val fade = Brush.verticalGradient(
                     0f to Color.Transparent,
                     (fadeDepth / 3f) to Color.Black.copy(alpha = 0.26f),

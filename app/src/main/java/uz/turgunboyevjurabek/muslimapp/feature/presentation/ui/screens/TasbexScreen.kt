@@ -1,5 +1,6 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens
 
+import android.os.SystemClock
 import android.view.HapticFeedbackConstants
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
@@ -34,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -70,6 +72,7 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.Co
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.DhikrSession
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedCounter
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedValueText
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.CounterTapCadence
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.pressScale
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.rememberPressScale
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.shimmers.ShimmerPlaceholder
@@ -96,18 +99,24 @@ fun TasbexScreen(viewModel: CounterViewModel) {
 
     var dialog by rememberSaveable { mutableStateOf<TasbexDialog?>(null) }
     val view = LocalView.current
+    val tapCadence = remember { CounterTapCadence() }
+    var rollDurationMillis by remember { mutableIntStateOf(CounterTapCadence.SlowDurationMillis) }
+    fun recordTap() {
+        rollDurationMillis = tapCadence.recordTap(SystemClock.uptimeMillis())
+    }
     BoxWithConstraints(Modifier.fillMaxSize()) {
         val compact = maxHeight < 620.dp
-        val counterSize = minOf(350.dp, maxWidth - 24.dp, maxHeight - 227.dp)
+        val counterSize = minOf(350.dp, maxWidth - 24.dp, maxHeight - 247.dp)
             .coerceAtLeast(48.dp)
 
         Column(
-            modifier = Modifier.align(Alignment.TopCenter).padding(top = if (compact) 4.dp else 38.dp),
+            modifier = Modifier.align(Alignment.TopCenter).padding(top = if (compact) 0.dp else 26.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             AnimatedCounter(
                 count = counter.count,
                 resetId = counter.history.firstOrNull()?.finishedAtMillis,
+                rollDurationMillis = rollDurationMillis,
                 style = MaterialTheme.typography.displayLarge.copy(
                     fontWeight = FontWeight.SemiBold,
                     fontFeatureSettings = "tnum",
@@ -137,7 +146,10 @@ fun TasbexScreen(viewModel: CounterViewModel) {
                     description = stringResource(R.string.tasbih_decrement),
                     modifier = Modifier.weight(1f),
                     enabled = counter.count > 0,
-                    onClick = viewModel::decrementCounter,
+                    onClick = {
+                        recordTap()
+                        viewModel.decrementCounter()
+                    },
                 )
                 TasbexAction(
                     icon = R.drawable.ic_tasbex_reset,
@@ -152,6 +164,7 @@ fun TasbexScreen(viewModel: CounterViewModel) {
                 topPadding = if (compact) 16.dp else 34.dp,
                 bottomPadding = if (compact) 12.dp else 30.dp,
                 onClick = {
+                    recordTap()
                     view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                     viewModel.incrementCounter()
                 },
@@ -167,6 +180,7 @@ fun TasbexScreen(viewModel: CounterViewModel) {
             text = { Text(stringResource(R.string.tasbih_reset_message)) },
             confirmButton = {
                 TextButton(onClick = {
+                    tapCadence.reset()
                     viewModel.clearCounter()
                     dialog = null
                 }) {

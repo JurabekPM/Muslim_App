@@ -149,6 +149,8 @@ Oq mavzuda bosilgandagi oltin yaltirashning eng yuqori opacity qiymati 0.48 dan 
 
 Tasbix soyasining ikki qatlami qo‘llandi. Yaqin soya 6 dp, keng soya 18 dp yoyiladi. Bosilganda ikkalasi konturga yaqinlashadi, keng qatlam yengilroq bo‘ladi. Oltin yaltirashning oq va qora mavzudagi sozlamalari saqlandi. Sanoq maydoni balandligi 24 dp kengaytirildi. Raqamlar tepa va pastda yumshoq so‘nadi hamda chizish maydonidan to‘liq chiqib ketadi. Debug build, unit testlar va Samsung SM_S916N’da uchta Tasbix testi o‘tdi. Oq va qora mavzuda soya ixchamlashishi, oltin yaltirash va raqamlarning ikki yo‘nalishdagi oraliq kadrlari tekshirildi.
 
+Tasbixda +1 va −1 raqam aylanishi oxirgi ikki bosish oralig‘iga mos ravishda 64–340 ms davom etadi. Birinchi bosish va uzoq pauzadan keyingi bosish 340 ms. Nollash avvalgi animatsiyani ishlatadi. Sanoqning tepa va pastki so‘nish maydoniga yana 24 dp qo‘shildi, gradient chuqurligi 30 dp dan 42 dp ga oshirildi. Debug build, 29 ta unit test va Samsung SM_S916N’da uchta Tasbix testi o‘tdi. Ketma-ket oltita +1 va oltita −1 saqlanishi hamda ikkala mavzuda yuqoriga va pastga harakat kadrlari tekshirildi.
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.
