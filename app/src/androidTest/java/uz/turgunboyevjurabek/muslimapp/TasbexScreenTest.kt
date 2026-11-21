@@ -106,7 +106,7 @@ class TasbexScreenTest {
     }
 
     @Test
-    fun resetFromThreeDigitsDrawsIntermediateFramesBeforeSettling() {
+    fun resetSlidesLeadingDigitsDownAndCentersTheLastZero() {
         val count = mutableIntStateOf(124)
         compose.setContent {
             MuslimAppTheme(darkTheme = true) {
@@ -118,11 +118,11 @@ class TasbexScreenTest {
         val before = compose.onNodeWithText("124").captureToImage()
         compose.mainClock.autoAdvance = false
         compose.runOnIdle { count.intValue = 0 }
-        compose.mainClock.advanceTimeBy(300)
+        compose.mainClock.advanceTimeBy(220)
         val rolling = compose.onNodeWithText("0").captureToImage()
-        compose.mainClock.advanceTimeBy(560)
+        compose.mainClock.advanceTimeBy(640)
         val late = compose.onNodeWithText("0").captureToImage()
-        compose.mainClock.advanceTimeBy(300)
+        compose.mainClock.advanceTimeBy(220)
         val settled = compose.onNodeWithText("0").captureToImage()
 
         assertEquals(before.width, rolling.width)
@@ -131,7 +131,36 @@ class TasbexScreenTest {
         assertNotEquals(late.glyphFrameHash(), settled.glyphFrameHash())
         assertTrue(rolling.hasClearEdges())
         assertTrue(late.hasClearEdges())
+
+        val leftColumns = 0 until (before.width / 2 - before.height / 4)
+        val initialLeading = before.glyphInk(leftColumns)
+        val slidingLeading = rolling.glyphInk(leftColumns)
+        assertTrue("Leading digits remain briefly visible", slidingLeading.weight > 0)
+        assertTrue("Leading digits slide down", slidingLeading.centerY > initialLeading.centerY + 1)
+        assertTrue("Leading digits fade", slidingLeading.weight < initialLeading.weight)
+        assertEquals(0.0, settled.glyphInk(leftColumns).weight, 0.01)
+        val zero = settled.glyphInk(0 until settled.width)
+        assertTrue("The final zero is centered", abs(zero.centerX - settled.width / 2.0) < settled.width * 0.01)
     }
+
+    private fun ImageBitmap.glyphInk(columns: IntRange): GlyphInk {
+        val pixels = toPixelMap()
+        val background = pixels[0, 0].red
+        var weight = 0.0
+        var weightedX = 0.0
+        var weightedY = 0.0
+        for (y in 0 until height) {
+            for (x in columns) {
+                val brightness = (pixels[x, y].red - background).coerceAtLeast(0f).toDouble()
+                weight += brightness
+                weightedX += x * brightness
+                weightedY += y * brightness
+            }
+        }
+        return GlyphInk(weight, weightedX / weight, weightedY / weight)
+    }
+
+    private data class GlyphInk(val weight: Double, val centerX: Double, val centerY: Double)
 
     private fun ImageBitmap.hasClearEdges(): Boolean {
         val pixels = toPixelMap()

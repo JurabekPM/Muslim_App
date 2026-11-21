@@ -33,6 +33,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import kotlin.math.abs
 import kotlin.math.floor
+import kotlin.math.roundToInt
 
 @Composable
 internal fun AnimatedCounter(
@@ -50,7 +51,7 @@ internal fun AnimatedCounter(
         val isReset = count == 0 && resetId != lastResetId
         lastResetId = resetId
         if (count == roll.target) return@LaunchedEffect
-        val next = roll.retarget(count, progress.value)
+        val next = roll.retarget(count, progress.value, isReset)
         progress.snapTo(0f)
         roll = next
         val duration = if (isReset) 1050 else 200
@@ -65,6 +66,7 @@ internal fun AnimatedCounter(
     val digitWidth = digits.maxOf { it.size.width }.toFloat()
     val digitHeight = digits.maxOf { it.size.height }.toFloat()
     val wheels = roll.wheels
+    val resetExit = roll.resetExit
     val width = digitWidth * wheels.size
     val color = LocalContentColor.current
     val density = LocalDensity.current
@@ -90,47 +92,50 @@ internal fun AnimatedCounter(
             },
     ) {
         val fraction = progress.value
-        val leadingAlpha = ((1f - fraction) * 3f).coerceIn(0f, 1f)
-        val hiddenWidth = (wheels.size - countText.length).coerceAtLeast(0) * digitWidth * (1f - leadingAlpha)
-        // The outgoing digits shift left as the surviving digits move to the center.
+        val exitProgress = resetExit?.progressAt(fraction)
+        val leadingAlpha = if (exitProgress == null) {
+            ((1f - fraction) * 3f).coerceIn(0f, 1f)
+        } else {
+            1f - exitProgress
+        }
+        val departingWidth =
+            (wheels.size - countText.length).coerceAtLeast(0) * digitWidth * (1f - leadingAlpha)
         val horizontalSpace = (size.width - 24.dp.toPx()).coerceAtLeast(0f)
-        val fit = minOf(1f, horizontalSpace / (width + hiddenWidth), size.height / digitHeight)
-        val left = (size.width - width - hiddenWidth) / 2f
+        val requiredWidth = if (resetExit == null) width + departingWidth else width
+        val fit = minOf(1f, horizontalSpace / requiredWidth, size.height / digitHeight)
+        val left = (size.width - width) / 2f
         val top = (size.height - digitHeight) / 2f
 
         scale(fit, pivot = center) {
-            wheels.forEachIndexed { place, wheel ->
-                val position = wheel.positionAt(fraction)
-                val lower = floor(position).toInt()
-                val offset = position - lower
-                val alpha = if (place >= countText.length) {
-                    leadingAlpha
-                } else {
-                    1f
-                }
-                val column = wheels.lastIndex - place
-                val columnLeft = left + column * digitWidth
-                val digit = digits[lower.mod(10)]
+            fun drawDigit(value: Int, x: Float, y: Float, alpha: Float) {
+                val digit = digits[value.mod(10)]
                 drawText(
                     textLayoutResult = digit,
                     color = color,
-                    topLeft = Offset(
-                        columnLeft + (digitWidth - digit.size.width) / 2f,
-                        top - offset * digitHeight,
-                    ),
+                    topLeft = Offset(x + (digitWidth - digit.size.width) / 2f, y),
                     alpha = alpha,
                 )
+            }
+
+            wheels.forEachIndexed { place, wheel ->
+                val isLeaving = place >= countText.length
+                val columnLeft = left + (wheels.lastIndex - place) * digitWidth
+                if (resetExit != null && exitProgress != null && isLeaving) {
+                    val digit = resetExit.digits.getOrNull(place)
+                    if (digit != null && leadingAlpha > 0f) {
+                        drawDigit(digit, columnLeft, top + digitHeight * 0.68f * exitProgress, leadingAlpha)
+                    }
+                    return@forEachIndexed
+                }
+
+                val x = columnLeft - departingWidth / 2f
+                val position = wheel.positionAt(fraction)
+                val lower = floor(position).toInt()
+                val offset = position - lower
+                val alpha = if (isLeaving) leadingAlpha else 1f
+                drawDigit(lower, x, top - offset * digitHeight, alpha)
                 if (offset > 0f) {
-                    val next = digits[(lower + 1).mod(10)]
-                    drawText(
-                        textLayoutResult = next,
-                        color = color,
-                        topLeft = Offset(
-                            columnLeft + (digitWidth - next.size.width) / 2f,
-                            top + (1f - offset) * digitHeight,
-                        ),
-                        alpha = alpha,
-                    )
+                    drawDigit(lower + 1, x, top + (1f - offset) * digitHeight, alpha)
                 }
             }
         }
@@ -141,11 +146,16 @@ internal data class DigitWheel(val start: Float, val end: Float) {
     fun positionAt(progress: Float): Float = start + (end - start) * progress
 }
 
+internal data class ResetDigitExit(val digits: List<Int>, val start: Float = 0f) {
+    fun progressAt(progress: Float): Float = start + (1f - start) * progress
+}
+
 internal class CounterRoll private constructor(
     val target: Int,
     val wheels: List<DigitWheel>,
+    val resetExit: ResetDigitExit? = null,
 ) {
-    fun retarget(count: Int, progress: Float): CounterRoll {
+    fun retarget(count: Int, progress: Float, isReset: Boolean = false): CounterRoll {
         var oldDigits = target
         var newDigits = count
         val wheelCount = maxOf(wheels.size, count.toString().length)
@@ -164,7 +174,12 @@ internal class CounterRoll private constructor(
             newDigits /= 10
             DigitWheel(current, oldDigit + steps)
         }
-        return CounterRoll(count, nextWheels)
+        val exit = if (isReset) {
+            ResetDigitExit(nextWheels.map { it.start.roundToInt().mod(10) })
+        } else {
+            resetExit?.copy(start = resetExit.progressAt(progress))
+        }
+        return CounterRoll(count, nextWheels, exit)
     }
 
     companion object {
