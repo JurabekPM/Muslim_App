@@ -1,6 +1,6 @@
 # Muslim App davom ettirish qaydi
 
-Oxirgi yangilanish 2026-11-18. Ushbu qayd foydalanuvchining suhbatdagi qarorlari va tekshirilgan kod holati asosida tuzildi. Keyingi ish tugagach qaydni yangilash uchun ildizdagi `AGENTS.md` ko‘rsatmalarini o‘qing.
+Oxirgi yangilanish 2026-11-21. Ushbu qayd foydalanuvchining suhbatdagi qarorlari va tekshirilgan kod holati asosida tuzildi. Keyingi ish tugagach qaydni yangilash uchun ildizdagi `AGENTS.md` ko‘rsatmalarini o‘qing.
 
 ## Qanday davom ettirish kerak
 
@@ -104,6 +104,14 @@ Foydalanuvchi avval 5-variantdagi mavzu preview’lariga yaqinroq, optimal va qu
 - [8 — Bitta katta namuna](designs/menu-8-preview.png). Mavzu preview paneli va pastida segmented tanlov.
 - [9 — Qatorli tanlov](designs/menu-9-rows.png). Har rejim alohida keng qatorda kichik preview bilan.
 - [5 — Oldingi tayanch maket](designs/menu-5-theme-previews.png). Uchta balandroq mavzu preview’si, til va About qatorlari.
+
+2026-11-21 kuni oldingi dizayn tahlili asosida uchta yangi maket tayyorlandi. Ular muhokama uchun va hali tanlanmagan.
+
+- [Asosiy ekran](designs/home-day-night.png). Oq va qora tema, Sunset progress, oltin bilan ajratilgan joriy namoz va eslatma belgilarining taklif etilgan joylashuvi.
+- [Menyu va mavzu](designs/menu-day-night.png). «Tizim / Oq / Qora» uchun kunduz va tun manzaralari, til, eslatmalar va ilova haqida qatorlari.
+- [Qibla va Ramazon](designs/qibla-ramadan-concept.png). Ka’ba belgili kompas va saharlik, iftor hamda qolgan vaqt uchun Ramazon konsepti.
+
+Maketdagi namoz vaqtlari, progress va sanoq vizual namunalardir. Bu ish faqat rasmlar va qayddan iborat. Ilova kodi tahrir qilinmadi, qurilmada tekshiruv talab qilinmadi.
 
 Maketlar konsept rasmlaridir. Imagegen’dagi matn, tanlov holati yoki ayrim masofalar implementatsiyadagi qat’iy talab sifatida qabul qilinmasin. Besh bo‘limli nav uchun barcha sakkiz tilda uzun matn va katta font scale holatini hisobga olish kerak. Mavjud press/drag/filled-outline animatsiyalar saqlanishi talab etilgan.
 
