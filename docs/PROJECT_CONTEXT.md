@@ -210,6 +210,8 @@ PR #7 masterga qo‘shildi va Android Studio nusxasi yangilandi. 5-bosqichda Com
 
 Yangilangan Gradle build Kotlin Gradle plugin va Compose compiler 2.4.21 ni tanlagani tasdiqlandi. Debug APK, AndroidTest APK va 36 ta unit test o‘tdi. Samsung SM_S916N’da oq va qora mavzuda Asosiy va 7 kunlik ekranlar, glass AppBar/BottomNav, ro‘yxatni varaqlash va karta soyasi ko‘rildi. Tasbix hamda Qiblaning 5 ta instrumentatsiya testi o‘tdi. Telefonning oldingi mavzusi tiklandi.
 
+PR #8 masterga qo‘shildi va Android Studio nusxasi yangilandi. 2026-11-21 kuni Retrofit va converter-gson 3.0.0, Hilt plagini, Android kutubxonasi va protsessori 2.60.1, Haze va haze-glass 2.1.0 Maven Central’dagi eng so‘nggi barqaror nashrlar ekani tasdiqlandi. Shu uch kutubxonaning amaldagi versiyalari PR #8 dagi Samsung sinovida ishlatilgan. Birlashtirilgan master’da debug build va 36 ta unit test o‘tdi. Kutubxona sozlamalariga o‘zgartirish talab qilinmadi. 5-bosqich yakunlandi.
+
 ## Build va qurilmada tekshirish
 
 AppBar soyasining pastki o‘tishi 68 dp gacha kengaytirildi. Debug build va unit testlar o‘tdi. Yangilangan APK Samsung SM_S916N’da o‘rnatilib, oq temada 7 kunlik ro‘yxat AppBar ostidan surilganda o‘tish tekshirildi.
