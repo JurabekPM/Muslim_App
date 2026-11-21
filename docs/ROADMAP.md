@@ -24,7 +24,7 @@ Har bosqich alohida branch va PR’da bajariladi. PR’da o‘zgarish, tekshiruv
 ## 4. Tasbix va hudud sozlamalarini saqlash
 
 - [x] Tasbix sanoqi, nollash va tarix saqlashini repository’ga ko‘chirish. Nollash paytida tarix va sanoq bitta saqlash operatsiyasida yangilanadi.
-- [ ] Hudud tanlashning DataStore kalitlari va GPS belgisi saqlashini data qatlamiga ajratish. Avvalgi tanlovlar saqlanadi.
+- [x] Hudud tanlashning DataStore kalitlari va GPS belgisi saqlashini data qatlamiga ajratish. Avvalgi tanlovlar saqlanadi.
 - [x] Samsung’da Tasbix dialoglari, raqam animatsiyasi, saqlangan sanoq va tarixni tekshirish. 100 ta namunaviy tarix yozuvi bilan varaqlash sinovi ham bor.
 
 ## 5. Barqaror kutubxona yangilanishlari
