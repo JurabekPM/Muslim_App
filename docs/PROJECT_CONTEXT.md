@@ -161,6 +161,12 @@ Tasbixning tez aylanishida joriy va keyingi raqam bitta razryadda birga yorqin t
 - [2 — Kartali](designs/tasbix-dialogs-2-cards.png). Tarix kartalarda, joriy sanoq kattaroq panelda.
 - [3 — Keng tugmalar](designs/tasbix-dialogs-3-stacked.png). Tarix vaqt chizig‘ida, nollash tugmalari vertikal joylashgan.
 
+Yana uchta maket oq va qora mavzuda tayyorlandi.
+
+- [4 — 143 → 0](designs/tasbix-dialogs-4-reset-preview.png). Tarix sana, vaqt va sanoq bilan tartiblangan. Nollashda natija oldindan ko‘rsatiladi.
+- [5 — Bosh barmoqqa yaqin](designs/tasbix-dialogs-5-bottom-sheet.png). Tarix pastdan ochiladi, nollash tasdig‘i pastda keng tugmalar bilan chiqadi.
+- [6 — Sokina](designs/tasbix-dialogs-6-quiet.png). Yengil ajratkichli tarix va ixcham nollash dialogi.
+
 Maketdagi fon, raqam va sanalar namunaviy. Tanlov kutilmoqda. Dialoglar hali ilovaga qo‘llanmagan.
 
 ## Muhim kod yo‘llari
