@@ -9,11 +9,11 @@ class CounterTapCadenceTest {
     fun durationFollowsRecentTapIntervals() {
         val cadence = CounterTapCadence()
 
-        assertEquals(340, cadence.recordTap(1_000))
+        assertEquals(460, cadence.recordTap(1_000))
         assertEquals(80, cadence.recordTap(1_100))
-        assertEquals(64, cadence.recordTap(1_140))
+        assertEquals(80, cadence.recordTap(1_140))
         assertEquals(240, cadence.recordTap(1_440))
-        assertEquals(340, cadence.recordTap(2_200))
+        assertEquals(460, cadence.recordTap(2_200))
     }
 
     @Test
@@ -24,6 +24,6 @@ class CounterTapCadenceTest {
 
         cadence.reset()
 
-        assertEquals(340, cadence.recordTap(1_150))
+        assertEquals(460, cadence.recordTap(1_150))
     }
 }

@@ -151,6 +151,8 @@ Tasbix soyasining ikki qatlami qo‘llandi. Yaqin soya 6 dp, keng soya 18 dp yoy
 
 Tasbixda +1 va −1 raqam aylanishi oxirgi ikki bosish oralig‘iga mos ravishda 64–340 ms davom etadi. Birinchi bosish va uzoq pauzadan keyingi bosish 340 ms. Nollash avvalgi animatsiyani ishlatadi. Sanoqning tepa va pastki so‘nish maydoniga yana 24 dp qo‘shildi, gradient chuqurligi 30 dp dan 42 dp ga oshirildi. Debug build, 29 ta unit test va Samsung SM_S916N’da uchta Tasbix testi o‘tdi. Ketma-ket oltita +1 va oltita −1 saqlanishi hamda ikkala mavzuda yuqoriga va pastga harakat kadrlari tekshirildi.
 
+Tasbixning tez aylanishida joriy va keyingi raqam bitta razryadda birga yorqin turmasligi uchun ularning shaffofligi navbat bilan pasayadi. Tepa-pastki gradient saqlandi. +1 va −1 animatsiyalari 80–460 ms oralig‘ida, yakka bosish 460 ms. Sanoq ostida doimiy markazlangan «Zikrni boshlang» yoki «Zikr davom etmoqda» yozuvi chiqadi. Sakkiz til resursi yangilandi. Debug build, unit testlar va Samsung SM_S916N’da uchta Tasbix testi o‘tdi. Tez +1/−1, oq va qora mavzudagi raqam kadrlari hamda ikkala yozuv holati tekshirildi.
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.

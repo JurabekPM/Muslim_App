@@ -74,8 +74,8 @@
     <string name="no_dhikr_history">Зикр тарихи ҳозирча мавжуд эмас</string>
     <string name="dhikr_history">Зикр тарихи</string>
     <string name="reset_count">Ҳисобни нолга тушириш</string>
-    <string name="new_dhikr">Янги зикр</string>
-    <string name="continue_dhikr">Аввалги зикрни давом эттиринг</string>
+    <string name="new_dhikr">Зикрни бошланг</string>
+    <string name="continue_dhikr">Зикр давом этмоқда</string>
     <string name="dhikr">Зикр</string>
     <string name="location_services_off">Жойлашув хизматлари ўчиқ</string>
     <string name="location_services_hint">Телефон созламаларида жойлашувни ёқинг.</string>

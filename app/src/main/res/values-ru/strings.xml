@@ -74,8 +74,8 @@
     <string name="no_dhikr_history">История зикра пока недоступна</string>
     <string name="dhikr_history">История зикра</string>
     <string name="reset_count">Сбросить счётчик</string>
-    <string name="new_dhikr">Новый зикр</string>
-    <string name="continue_dhikr">Продолжите предыдущий зикр</string>
+    <string name="new_dhikr">Начните зикр</string>
+    <string name="continue_dhikr">Зикр продолжается</string>
     <string name="dhikr">Зикр</string>
     <string name="location_services_off">Геолокация отключена</string>
     <string name="location_services_hint">Включите геолокацию в настройках телефона.</string>

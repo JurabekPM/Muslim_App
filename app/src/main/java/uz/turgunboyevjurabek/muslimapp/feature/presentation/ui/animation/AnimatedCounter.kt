@@ -47,6 +47,7 @@ internal fun AnimatedCounter(
     val countText = count.toString()
     var roll by remember { mutableStateOf(CounterRoll.settled(count)) }
     val progress = remember { Animatable(1f) }
+    var rapidRoll by remember { mutableStateOf(false) }
 
     var lastResetId by remember { mutableStateOf(resetId) }
     LaunchedEffect(count, resetId) {
@@ -56,6 +57,7 @@ internal fun AnimatedCounter(
         val next = roll.retarget(count, progress.value, isReset)
         progress.snapTo(0f)
         roll = next
+        rapidRoll = !isReset && rollDurationMillis <= 160
         val spec = if (isReset) {
             tween<Float>(1550, easing = LinearEasing)
         } else {
@@ -148,13 +150,14 @@ internal fun AnimatedCounter(
                 if (alpha <= 0f) return@forEachIndexed
                 fun drawWheelDigit(digitIndex: Int, glyphY: Float) {
                     val drop = if (leavingOnReset) wheel.terminalZeroDrop(digitIndex, position) else 0f
+                    val focus = if (rapidRoll && resetExit == null) digitRollVisibility(abs(position - digitIndex)) else 1f
                     val visibility = 1f - drop
-                    if (visibility > 0f) {
+                    if (visibility > 0f && focus > 0f) {
                         drawDigit(
                             digitIndex,
                             x,
                             glyphY + digitHeight * 0.55f * drop,
-                            alpha * visibility * visibility,
+                            alpha * visibility * visibility * focus,
                         )
                     }
                 }
@@ -165,6 +168,12 @@ internal fun AnimatedCounter(
             }
         }
     }
+}
+
+internal fun digitRollVisibility(distance: Float): Float {
+    // Fade neighboring glyphs as they exchange places, leaving one prominent glyph per slot.
+    val visible = ((0.54f - distance) / 0.20f).coerceIn(0f, 1f)
+    return visible * visible * (3f - 2f * visible)
 }
 
 internal data class DigitWheel(val start: Float, val end: Float) {

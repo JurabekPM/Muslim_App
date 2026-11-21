@@ -74,8 +74,8 @@
     <string name="no_dhikr_history">Зікір тарихы әзірге қолжетімсіз</string>
     <string name="dhikr_history">Зікір тарихы</string>
     <string name="reset_count">Санағышты нөлдеу</string>
-    <string name="new_dhikr">Жаңа зікір</string>
-    <string name="continue_dhikr">Алдыңғы зікірді жалғастырыңыз</string>
+    <string name="new_dhikr">Зікірді бастаңыз</string>
+    <string name="continue_dhikr">Зікір жалғасуда</string>
     <string name="dhikr">Зікір</string>
     <string name="location_services_off">Геолокация өшірулі</string>
     <string name="location_services_hint">Телефон баптауларында геолокацияны қосыңыз.</string>

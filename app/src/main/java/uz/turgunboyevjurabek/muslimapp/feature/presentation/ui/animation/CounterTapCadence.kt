@@ -9,8 +9,8 @@ internal class CounterTapCadence {
         if (previousTap == null) return SlowDurationMillis
 
         // Leave a little room for the digit to settle before the next tap.
-        val interval = (nowMillis - previousTap).coerceIn(0L, 425L)
-        return (interval * 4 / 5).toInt().coerceIn(64, SlowDurationMillis)
+        val interval = (nowMillis - previousTap).coerceIn(0L, 575L)
+        return (interval * 4 / 5).toInt().coerceIn(80, SlowDurationMillis)
     }
 
     fun reset() {
@@ -18,6 +18,6 @@ internal class CounterTapCadence {
     }
 
     companion object {
-        const val SlowDurationMillis = 340
+        const val SlowDurationMillis = 460
     }
 }

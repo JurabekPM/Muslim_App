@@ -74,8 +74,8 @@
     <string name="no_dhikr_history">Таърихи зикр ҳоло дастрас нест</string>
     <string name="dhikr_history">Таърихи зикр</string>
     <string name="reset_count">Ҳисобро ба сифр баргардондан</string>
-    <string name="new_dhikr">Зикри нав</string>
-    <string name="continue_dhikr">Зикри пешинаро идома диҳед</string>
+    <string name="new_dhikr">Зикрро оғоз кунед</string>
+    <string name="continue_dhikr">Зикр идома дорад</string>
     <string name="dhikr">Зикр</string>
     <string name="location_services_off">Хидмати ҷойгиршавӣ ғайрифаъол аст</string>
     <string name="location_services_hint">Муайян кардани ҷойгиршавиро дар танзимоти телефон фаъол кунед.</string>

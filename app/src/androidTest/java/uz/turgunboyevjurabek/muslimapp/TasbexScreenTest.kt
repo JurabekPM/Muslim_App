@@ -82,6 +82,7 @@ class TasbexScreenTest {
                 }
             }
             waitForCount(2)
+            compose.onNodeWithText(text(R.string.continue_dhikr)).assertIsDisplayed()
             val counter = compose.onNodeWithContentDescription(text(R.string.dhikr))
             assertDirectionalShadowAndPressGlow(counter)
             waitForCount(3)
@@ -108,6 +109,7 @@ class TasbexScreenTest {
             compose.onNodeWithText(reset).performClick()
             compose.onNode(hasText(reset) and hasAnyAncestor(isDialog())).performClick()
             waitForCount(0)
+            compose.onNodeWithText(text(R.string.new_dhikr)).assertIsDisplayed()
             assertEquals(0, runBlocking { preferences.data.first()[intPreferencesKey("counter")] })
             compose.onNodeWithText("−1").assertIsNotEnabled()
             assertEquals(4, viewModel.state.value?.history?.single()?.count)
@@ -195,7 +197,7 @@ class TasbexScreenTest {
         val darkTheme = mutableStateOf(true)
         compose.setContent {
             MuslimAppTheme(darkTheme = darkTheme.value) {
-                Surface { AnimatedCounter(count.intValue) }
+                Surface { AnimatedCounter(count.intValue, rollDurationMillis = 140) }
             }
         }
 

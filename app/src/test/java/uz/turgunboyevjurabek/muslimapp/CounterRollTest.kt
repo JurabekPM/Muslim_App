@@ -5,6 +5,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.CounterRoll
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.DigitWheel
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.digitRollVisibility
 import kotlin.math.floor
 
 class CounterRollTest {
@@ -29,6 +30,18 @@ class CounterRollTest {
             assertTrue(midpoint < wheel.start && midpoint > wheel.end)
             assertTrue(wheel.start - wheel.end <= 10f)
             assertEquals(0, wheel.end.toInt().mod(10))
+        }
+    }
+
+    @Test
+    fun neighboringDigitsDoNotBothDominateDuringFastRoll() {
+        assertEquals(1f, digitRollVisibility(0f), 0f)
+        assertEquals(0f, digitRollVisibility(1f), 0f)
+        for (step in 0..100) {
+            val fraction = step / 100f
+            val outgoing = digitRollVisibility(fraction)
+            val incoming = digitRollVisibility(1f - fraction)
+            assertTrue(minOf(outgoing, incoming) < 0.11f)
         }
     }
 

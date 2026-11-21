@@ -74,8 +74,8 @@
     <string name="no_dhikr_history">Dhikr history is currently unavailable</string>
     <string name="dhikr_history">Dhikr history</string>
     <string name="reset_count">Reset counter</string>
-    <string name="new_dhikr">New dhikr</string>
-    <string name="continue_dhikr">Continue previous dhikr</string>
+    <string name="new_dhikr">Start dhikr</string>
+    <string name="continue_dhikr">Dhikr in progress</string>
     <string name="dhikr">Dhikr</string>
     <string name="location_services_off">Location services are off</string>
     <string name="location_services_hint">Enable location services in your phone settings.</string>

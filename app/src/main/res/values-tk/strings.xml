@@ -74,8 +74,8 @@
     <string name="no_dhikr_history">Zikir taryhy häzir elýeterli däl</string>
     <string name="dhikr_history">Zikir taryhy</string>
     <string name="reset_count">Hasaby nola getirmek</string>
-    <string name="new_dhikr">Täze zikir</string>
-    <string name="continue_dhikr">Öňki zikiri dowam etdiriň</string>
+    <string name="new_dhikr">Zikire başlaň</string>
+    <string name="continue_dhikr">Zikir dowam edýär</string>
     <string name="dhikr">Zikir</string>
     <string name="location_services_off">Ýerleşiş hyzmatlary öçük</string>
     <string name="location_services_hint">Telefonyň sazlamalarynda ýerleşişi açyň.</string>

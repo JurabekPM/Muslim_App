@@ -74,8 +74,8 @@
     <string name="no_dhikr_history">Зикир тарыхы азырынча жеткиликсиз</string>
     <string name="dhikr_history">Зикир тарыхы</string>
     <string name="reset_count">Эсептегичти нөлгө коюу</string>
-    <string name="new_dhikr">Жаңы зикир</string>
-    <string name="continue_dhikr">Мурунку зикирди улантыңыз</string>
+    <string name="new_dhikr">Зикирди баштаңыз</string>
+    <string name="continue_dhikr">Зикир уланууда</string>
     <string name="dhikr">Зикир</string>
     <string name="location_services_off">Жайгашкан жерди аныктоо өчүк</string>
     <string name="location_services_hint">Телефондун жөндөөлөрүнөн жайгашкан жерди аныктоону күйгүзүңүз.</string>

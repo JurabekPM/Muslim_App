@@ -2,11 +2,8 @@ package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens
 
 import android.os.SystemClock
 import android.view.HapticFeedbackConstants
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -64,7 +61,6 @@ import androidx.graphics.shapes.Morph
 import androidx.graphics.shapes.RoundedPolygon
 import androidx.graphics.shapes.circle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filterIsInstance
 import uz.turgunboyevjurabek.muslimapp.R
@@ -278,24 +274,14 @@ private fun TasbexHistoryDialog(history: List<DhikrSession>, onDismiss: () -> Un
 
 @Composable
 private fun CounterMessage(hasCount: Boolean) {
-    var showText by remember { mutableStateOf(true) }
-    LaunchedEffect(Unit) {
-        delay(8000L)
-        showText = false
-    }
-    AnimatedVisibility(
-        visible = showText,
-        enter = slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(3000)),
-        exit = slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(3000)),
-    ) {
-        AnimatedValueText(
-            text = stringResource(if (hasCount) R.string.continue_dhikr else R.string.new_dhikr),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            contentAlignment = Alignment.Center,
-        )
-    }
+    AnimatedValueText(
+        text = stringResource(if (hasCount) R.string.continue_dhikr else R.string.new_dhikr),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        style = MaterialTheme.typography.labelLarge,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        textAlign = TextAlign.Center,
+        contentAlignment = Alignment.Center,
+    )
 }
 
 @Composable
