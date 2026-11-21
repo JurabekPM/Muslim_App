@@ -220,6 +220,8 @@ PR #9 masterga qo‘shildi va Android Studio nusxasi fast-forward qilindi. 6-bos
 
 Android 16 x86_64 emulyatorda haqiqiy sahifa o‘lchami `16384` bayt edi. Sahifa moslik rejimi o‘chirildi va mahalliy sinov imzosi qo‘yilgan release APK o‘rnatilib, asosiy Activity sovuq ishga tushdi. APK’ning `zipalign -P 16` sinovi va AAB ichidagi ARM64 hamda x86_64 kutubxonalarining 16 KB ELF tekshiruvi o‘tdi. Debug va release build, release AAB hamda 36 ta unit test o‘tdi. Alohida `lintRelease` oldingi kodda oltita xatoni ko‘rsatdi. Ular API 26 chaqiruvlari va `app_name` tarjimasi bilan bog‘liq.
 
+PR #10 masterga qo‘shildi va Android Studio nusxasi fast-forward qilindi. Kalendar loyihadagi Java vaqt API desugaring’idan foydalanadi va ortiqcha API 26 cheklovlari olib tashlandi. Qibla tebranishi uchun Android 7.0 va 7.1 ga mos chaqiruv qo‘shildi. «Muslim App» tarjima qilinmaydigan brend nomi sifatida belgilandi. `lintRelease` 0 ta xato va avvalgi 49 ta ogohlantirish bilan o‘tdi. Debug APK, release APK, AAB va 36 ta unit test muvaffaqiyatli yakunlandi.
+
 Play Store’ga hozircha nashr qilinmaydi. Yuborishdan oldin tasdiqlangan maxfiylik siyosatining ommaviy URL’i, Data safety javoblari, upload kaliti bilan imzolangan AAB, Play App Signing va hisob turiga tegishli sinov talablari qoladi. [Target API](https://developer.android.com/google/play/requirements/target-sdk) · [16 KB](https://developer.android.com/guide/practices/page-sizes) · [App signing](https://developer.android.com/studio/publish/app-signing) · [Maxfiylik va Data safety](https://support.google.com/googleplay/android-developer/answer/10144311).
 
 ## Build va qurilmada tekshirish

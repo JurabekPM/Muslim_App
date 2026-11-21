@@ -4,8 +4,6 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.schedu
 import androidx.compose.ui.res.stringResource
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedValueText
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.PressIconButton
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import uz.turgunboyevjurabek.muslimapp.R
 import java.time.YearMonth
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun Header(
     yearMonth: YearMonth,
