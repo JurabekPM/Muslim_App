@@ -36,5 +36,6 @@ Har bosqich alohida branch va PR’da bajariladi. PR’da o‘zgarish, tekshiruv
 
 ## 6. Play Store uchun tayyorgarlik
 
-- [ ] Nashr rejalashtirilsa, targetSdk’ni Google Play talabi va amaldagi Android versiyasiga mos ko‘tarish. Ish boshlanishida talabni qayta tekshirish.
-- [ ] Release build, AppBar/BottomNav insets, ruxsatlar va asosiy ekranlarni sinash. Nashrga tayyorlash va nashr qilish qarorini alohida olish.
+- [x] Google Play talabi tekshirildi va targetSdk 36 ga ko‘tarildi.
+- [x] Release APK va AAB yig‘ildi. Samsung’da AppBar/BottomNav insets, mavjud joylashuv ruxsatlari va asosiy ekranlar sinovdan o‘tdi.
+- [ ] Nashrga tayyorlash qaroridan keyin 16 KB qurilmada amaliy sinov, Play App Signing, maxfiylik siyosati, Data safety va hisobga tegishli test talablarini yakunlash.
