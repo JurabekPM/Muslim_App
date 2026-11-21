@@ -72,8 +72,8 @@ import uz.turgunboyevjurabek.muslimapp.feature.data.network.InternetConnection
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.screenFadeInMillis
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.screenFadeOutMillis
 
-private val glassFadeOverlap = 22.dp
-private val glassFadeAboveEdge = 24.dp
+private val glassFadeOverlap = 32.dp
+private val glassFadeAboveEdge = 36.dp
 
 @Composable
 fun MyTopBar(
@@ -123,8 +123,8 @@ fun MyTopBar(
                 .drawWithCache {
                     val fadeStart = (size.height - (glassFadeAboveEdge + glassFadeOverlap).toPx())
                         .coerceAtLeast(0f)
-                    val fadeStops = Array(13) { index ->
-                        val progress = index / 12f
+                    val fadeStops = Array(21) { index ->
+                        val progress = index / 20f
                         val eased = progress * progress * (3f - 2f * progress)
                         progress to Color.Black.copy(alpha = 1f - eased)
                     }
