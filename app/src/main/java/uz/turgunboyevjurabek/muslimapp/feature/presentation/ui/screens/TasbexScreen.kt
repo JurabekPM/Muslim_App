@@ -32,6 +32,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,9 +43,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.draw.innerShadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
-import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
@@ -55,7 +56,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.Morph
@@ -98,11 +98,11 @@ fun TasbexScreen(viewModel: CounterViewModel) {
     val view = LocalView.current
     BoxWithConstraints(Modifier.fillMaxSize()) {
         val compact = maxHeight < 620.dp
-        val counterSize = minOf(350.dp, maxWidth - 24.dp, maxHeight - 215.dp)
+        val counterSize = minOf(350.dp, maxWidth - 24.dp, maxHeight - 227.dp)
             .coerceAtLeast(48.dp)
 
         Column(
-            modifier = Modifier.align(Alignment.TopCenter).padding(top = if (compact) 16.dp else 50.dp),
+            modifier = Modifier.align(Alignment.TopCenter).padding(top = if (compact) 4.dp else 38.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             AnimatedCounter(
@@ -313,7 +313,12 @@ private fun ShapeCount(
     val dark = colors.background.luminance() < 0.3f
     val shape = MorphPolygonShape(morph, progress.value)
     val pressScale = rememberPressScale(interactionSource)
-    val shadowColor = if (dark) Color.Black.copy(alpha = 0.64f) else colors.onSurface.copy(alpha = 0.22f)
+    val pressure by remember(pressScale) {
+        derivedStateOf { ((1f - pressScale.value) / 0.06f).coerceIn(0f, 1f) }
+    }
+    val shadowColor = if (dark) Color.Black else colors.onSurface
+    val ambientOpacity = if (dark) 0.46f else 0.15f
+    val contactOpacity = if (dark) 0.44f else 0.15f
     val gold = if (dark) colors.tertiary else Color(0xFFB98525)
     val glowOpacity = if (dark) 0.48f else 0.62f
     val label = stringResource(R.string.dhikr)
@@ -334,21 +339,25 @@ private fun ShapeCount(
             modifier = Modifier
                 .size(shapeSize)
                 .pressScale(pressScale)
-                .dropShadow(
-                    shape = shape,
-                    shadow = Shadow(
-                        radius = 16.dp,
-                        color = shadowColor,
-                        offset = DpOffset(0.dp, 8.dp),
-                    ),
-                )
+                .dropShadow(shape) {
+                    color = shadowColor
+                    radius = 18.dp.toPx()
+                    offset = Offset(0f, (9.dp - 6.dp * pressure).toPx())
+                    alpha = ambientOpacity * (1f - 0.38f * pressure)
+                }
+                .dropShadow(shape) {
+                    color = shadowColor
+                    radius = 6.dp.toPx()
+                    offset = Offset(0f, (4.dp - 3.dp * pressure).toPx())
+                    alpha = contactOpacity
+                }
                 .clip(shape)
                 .background(colors.surfaceColorAtElevation(10.dp))
                 .innerShadow(shape) {
                     color = gold
                     radius = 5.dp.toPx()
                     spread = 1.5.dp.toPx()
-                    alpha = ((1f - pressScale.value) / 0.06f).coerceIn(0f, 1f) * glowOpacity
+                    alpha = pressure * glowOpacity
                 },
             contentAlignment = Alignment.Center,
         ) {

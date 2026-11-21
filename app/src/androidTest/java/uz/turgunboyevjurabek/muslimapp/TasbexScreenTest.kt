@@ -175,6 +175,39 @@ class TasbexScreenTest {
         assertTrue("The final zero is centered", abs(zero.centerX - settled.width / 2.0) < settled.width * 0.01)
     }
 
+    @Test
+    fun risingAndFallingDigitsFadeThroughClearEdgesInBothThemes() {
+        val count = mutableIntStateOf(4)
+        val darkTheme = mutableStateOf(true)
+        compose.setContent {
+            MuslimAppTheme(darkTheme = darkTheme.value) {
+                Surface { AnimatedCounter(count.intValue) }
+            }
+        }
+
+        listOf(true, false).forEach { dark ->
+            compose.mainClock.autoAdvance = true
+            compose.runOnIdle { darkTheme.value = dark }
+            val still = compose.onNodeWithText("4").captureToImage()
+            compose.mainClock.autoAdvance = false
+
+            compose.runOnIdle { count.intValue = 5 }
+            compose.mainClock.advanceTimeBy(112)
+            val rising = compose.onNodeWithText("5").captureToImage()
+            compose.mainClock.advanceTimeBy(160)
+
+            compose.runOnIdle { count.intValue = 4 }
+            compose.mainClock.advanceTimeBy(112)
+            val falling = compose.onNodeWithText("4").captureToImage()
+            compose.mainClock.advanceTimeBy(160)
+
+            assertNotEquals(still.glyphFrameHash(), rising.glyphFrameHash())
+            assertNotEquals(still.glyphFrameHash(), falling.glyphFrameHash())
+            assertTrue(rising.hasClearEdges())
+            assertTrue(falling.hasClearEdges())
+        }
+    }
+
     private fun assertDirectionalShadowAndPressGlow(counter: SemanticsNodeInteraction) {
         val idle = counter.captureToImage()
         val idlePixels = idle.toPixelMap()
@@ -187,6 +220,11 @@ class TasbexScreenTest {
 
         counter.performTouchInput { down(center) }
         val pressed = counter.captureToImage()
+        val lowerProbe = idle.height - 1 - inset
+        assertTrue(
+            "Press pulls the lower shadow closer to the button",
+            pressed.toPixelMap()[x, lowerProbe].red > idlePixels[x, lowerProbe].red,
+        )
         counter.performTouchInput { up() }
         val released = counter.captureToImage()
 

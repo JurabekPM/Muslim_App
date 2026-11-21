@@ -81,13 +81,18 @@ internal fun AnimatedCounter(
         modifier = modifier
             .semantics { text = AnnotatedString(countText) }
             .fillMaxWidth()
-            .height(with(density) { digitHeight.toDp() } + 16.dp)
+            .height(with(density) { digitHeight.toDp() } + 40.dp)
             .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
             .drawWithCache {
+                val fadeDepth = minOf(30.dp.toPx() / size.height, 0.38f)
                 val fade = Brush.verticalGradient(
                     0f to Color.Transparent,
-                    0.18f to Color.Black,
-                    0.82f to Color.Black,
+                    (fadeDepth / 3f) to Color.Black.copy(alpha = 0.26f),
+                    (fadeDepth * 2f / 3f) to Color.Black.copy(alpha = 0.74f),
+                    fadeDepth to Color.Black,
+                    (1f - fadeDepth) to Color.Black,
+                    (1f - fadeDepth * 2f / 3f) to Color.Black.copy(alpha = 0.74f),
+                    (1f - fadeDepth / 3f) to Color.Black.copy(alpha = 0.26f),
                     1f to Color.Transparent,
                     endY = size.height,
                 )
@@ -111,7 +116,10 @@ internal fun AnimatedCounter(
         val requiredWidth = if (resetExit == null) width + departingWidth else width
         val fit = minOf(1f, horizontalSpace / requiredWidth, size.height / digitHeight)
         val left = (size.width - width) / 2f
+        if (fit <= 0f) return@Canvas
         val top = (size.height - digitHeight) / 2f
+        // A digit enters and leaves beyond the visible mask at either end of a turn.
+        val wheelTravel = size.height / (2f * fit) + digitHeight / 2f
 
         scale(fit, pivot = center) {
             fun drawDigit(value: Int, x: Float, y: Float, alpha: Float) {
@@ -129,7 +137,9 @@ internal fun AnimatedCounter(
                 val columnLeft = left + (wheels.lastIndex - place) * digitWidth
                 val leavingOnReset = exitProgress != null && isLeaving
                 val x = if (leavingOnReset) columnLeft else columnLeft - departingWidth / 2f
-                val y = if (leavingOnReset) top + digitHeight * 0.68f * (exitProgress ?: 0f) else top
+                val exitDrop = if (leavingOnReset) digitHeight * 0.68f * (exitProgress ?: 0f) else 0f
+                val y = top + exitDrop
+                val travel = wheelTravel + exitDrop
                 val position = wheel.positionAt(wheelProgress)
                 val lower = floor(position).toInt()
                 val offset = position - lower
@@ -147,9 +157,9 @@ internal fun AnimatedCounter(
                         )
                     }
                 }
-                drawWheelDigit(lower, y - offset * digitHeight)
+                drawWheelDigit(lower, y - offset * travel)
                 if (offset > 0f) {
-                    drawWheelDigit(lower + 1, y + (1f - offset) * digitHeight)
+                    drawWheelDigit(lower + 1, y + (1f - offset) * travel)
                 }
             }
         }

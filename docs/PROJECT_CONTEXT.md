@@ -147,6 +147,8 @@ Tasbix tugmasida soya ko‘pburchak va doira konturiga ergashadi. 16 dp yoyilish
 
 Oq mavzuda bosilgandagi oltin yaltirashning eng yuqori opacity qiymati 0.48 dan 0.62 ga ko‘tarildi. Qora mavzuda 0.48 saqlandi. Debug build va unit testlar o‘tdi. Samsung SM_S916N’da oq va qora mavzuda soya, bosilgandagi yaltirash va qo‘yib yuborgandagi so‘nish qayta tekshirildi. Soyani yaqin ingichka va uzoq yumshoq qatlamlardan qilish hamda bosishda ularni ixchamlashtirish taklif qilindi.
 
+Tasbix soyasining ikki qatlami qo‘llandi. Yaqin soya 6 dp, keng soya 18 dp yoyiladi. Bosilganda ikkalasi konturga yaqinlashadi, keng qatlam yengilroq bo‘ladi. Oltin yaltirashning oq va qora mavzudagi sozlamalari saqlandi. Sanoq maydoni balandligi 24 dp kengaytirildi. Raqamlar tepa va pastda yumshoq so‘nadi hamda chizish maydonidan to‘liq chiqib ketadi. Debug build, unit testlar va Samsung SM_S916N’da uchta Tasbix testi o‘tdi. Oq va qora mavzuda soya ixchamlashishi, oltin yaltirash va raqamlarning ikki yo‘nalishdagi oraliq kadrlari tekshirildi.
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.
