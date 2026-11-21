@@ -185,6 +185,10 @@ Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.
 - `feature/data/location` sensorlar va GPS.
 - `app/src/test` mavjud JUnit testlar.
 
+## Rivojlantirish yo‘li
+
+[Arxitektura auditi bo‘yicha vaqtinchalik reja](ROADMAP.md) faqat 2026-11-21 kungi tavsiyalar uchun PR’lar tartibini belgilaydi. Avval Android CI, so‘ng kesh, domen modellari, Tasbix va hudud sozlamalari, kutubxonalar hamda Play Store tayyorgarligi. PR’lar masterga tasdiqdan keyin qo‘shiladi. 1-bosqichda GitHub Actions masterga ochilgan PR va masterga push bo‘lganda debug build hamda unit testlarni ishga tushiradi. Mahalliy debug build va 30 ta unit test o‘tdi. GitHub’dagi bajarilish holati PR tekshiruvlarida ko‘rinadi.
+
 ## Build va qurilmada tekshirish
 
 AppBar soyasining pastki o‘tishi 68 dp gacha kengaytirildi. Debug build va unit testlar o‘tdi. Yangilangan APK Samsung SM_S916N’da o‘rnatilib, oq temada 7 kunlik ro‘yxat AppBar ostidan surilganda o‘tish tekshirildi.
