@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -143,8 +144,8 @@ fun myBottomNavigationBar(
     val dockRim = remember(darkDock, colors.outline) {
         Brush.verticalGradient(
             listOf(
-                Color.White.copy(alpha = if (darkDock) 0.28f else 0.63f),
-                colors.outline.copy(alpha = 0.32f),
+                Color.White.copy(alpha = if (darkDock) 0.17f else 0.63f),
+                colors.outline.copy(alpha = if (darkDock) 0.22f else 0.32f),
             ),
         )
     }
@@ -160,8 +161,8 @@ fun myBottomNavigationBar(
                 )
             }
             edgeSoftness(1.dp)
-            specularIntensity(0.28f)
-            ambientResponse(0.16f)
+            specularIntensity(if (darkDock) 0.16f else 0.28f)
+            ambientResponse(if (darkDock) 0.08f else 0.16f)
         }
     }
     val lensFill = remember(indicatorFill, darkDock) {
@@ -194,8 +195,12 @@ fun myBottomNavigationBar(
                 Modifier.matchParentSize()
                     .shadow(3.dp, dockShape, clip = false)
                     .clip(dockShape)
-                    .hazeGlass(input = dockInput, style = dockGlass)
-                    .border(0.75.dp, dockRim, dockShape),
+                    .border(0.75.dp, dockRim, dockShape)
+                    .drawWithContent {
+                        drawContent()
+                        if (darkDock) drawRect(colors.surfaceContainerLow.copy(alpha = 0.82f))
+                    }
+                    .hazeGlass(input = dockInput, style = dockGlass),
             )
             BoxWithConstraints(modifier = Modifier.padding(4.dp)) {
                 val spacing = 3.dp

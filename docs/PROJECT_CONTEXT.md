@@ -28,8 +28,8 @@ Bu qayd butun suhbatning so‘zma-so‘z nusxasi emas. Kod, Git tarixi, muhim ta
 Muslim App O‘zbekiston uchun namoz vaqtlari, tasbeh va Qibla funksiyalarini beradi. Kotlin va Jetpack Compose ishlatiladi. Foydalanuvchi ilovaning tez, yengil, aniq va qotishsiz ishlashini birinchi o‘ringa qo‘yadi.
 
 - Ranglar navy/slate, iliq oltin/saffron, oq temada ivory fon. Amaldagi rang qiymatlarini `feature/presentation/theme` dan oling.
-- AppBar glass, sahifaga singishgan. Pastki burchak radiusi olib tashlangan. Pastki xiralik cheti yumshoq so‘nishi kerak.
-- BottomNav ajralib turadigan oval glass shaklda. Kontent uning orqasidan ko‘rinadi. Tanlov silliq siljiydi.
+- AppBar glass, sahifaga singishgan. Pastki burchak radiusi olib tashlangan va fon pastga qarab yumshoq so‘nadi. Qora temada oynaning xiraligi 10 dp va ustidagi to‘q ko‘k qatlam kulrang tusni pasaytiradi.
+- BottomNav ajralib turadigan oval glass shaklda. Kontent uning orqasidan ko‘rinadi. Tanlov silliq siljiydi. Qora temada to‘q ko‘k qoplama va mayinroq yaltirash och kulrang tusni pasaytiradi.
 - Tugmalarda mayin ichkariga bosilish hissi bor. Indikator ustida ham bosilish sezilishi kerak.
 - BottomNav istalgan bo‘limidan bosib sudraganda indikator barmoqqa ergashadi. Belgilar vaqtincha tanlangan joyga mos ajraladi. Ekran barmoq qo‘yib yuborilganda almashadi.
 - Tanlangan ikonlar filled, tanlanmaganlari outlined. Almashish animatsiyali. Mavjud vector drawable tizimidan foydalaning.
@@ -128,6 +128,8 @@ Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.
 - `app/src/test` mavjud JUnit testlar.
 
 ## Build va qurilmada tekshirish
+
+Qora AppBar va BottomNav ranglari yangilangach debug build va unit testlar o‘tdi. Telefonda ranglarni foydalanuvchi tekshiradi.
 
 Menyu va Sunset yangilanishida debug build va unit testlar o‘tdi. Samsung’da oq va qora Menyu ko‘rinishlari, qora mavzuning ilova qayta ochilganda saqlanishi, Tizim tanlovining belgilanishi va saqlanishi, til dialogi hamda «Ilova haqida» oynasi tekshirildi. Foydalanuvchi qolgan telefon tekshiruvlarini o‘zi bajarishini aytdi.
 

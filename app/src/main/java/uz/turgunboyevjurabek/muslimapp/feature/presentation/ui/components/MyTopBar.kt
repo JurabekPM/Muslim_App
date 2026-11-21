@@ -96,7 +96,12 @@ fun MyTopBar(
             shape(RoundedCornerShape(0.dp))
             backgroundColor(glassColor.copy(alpha = 0.76f))
             tint(glassColor.copy(alpha = if (darkGlass) 0.69f else 0.63f))
-            optics { copy(blurRadius = OpticalSizeValue.Fixed(16.dp), refractionDisplacement = 0.dp) }
+            optics {
+                copy(
+                    blurRadius = OpticalSizeValue.Fixed(if (darkGlass) 10.dp else 16.dp),
+                    refractionDisplacement = 0.dp,
+                )
+            }
             specularIntensity(0f)
             ambientResponse(0f)
             edgeShadow(Color.Transparent)
@@ -130,6 +135,7 @@ fun MyTopBar(
                     )
                     onDrawWithContent {
                         drawContent()
+                        if (darkGlass) drawRect(glassColor.copy(alpha = 0.80f))
                         drawRect(fade, blendMode = BlendMode.DstIn)
                     }
                 }
