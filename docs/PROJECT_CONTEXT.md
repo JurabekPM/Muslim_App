@@ -50,6 +50,15 @@ Muslim App O‘zbekiston uchun namoz vaqtlari, tasbeh va Qibla funksiyalarini be
 - 7 kunlik kartalar animatsiya bilan ochilib yopiladi.
 - 30 kunlik kalendar va vaqt kartalari oval. Yuqori va yon chetlari kesilmasin. Boshqa sana tanlanganda ham bugungi sana bilinib tursin.
 
+Android instrumentatsiya testi namunaviy jadvallarni amaldagi repository orqali DataStore’ga yozadi. Skript emulyatordagi ilova jarayonini to‘xtatib, internet yo‘qligini tekshiradi. Test qayta ochilgan ilovada kunlik, 7 kunlik va oylik namoz vaqtlarini solishtiradi. Test uchun Muslim App o‘rnatilmagan emulyatordan foydalaning.
+
+```powershell
+.\gradlew.bat :app:assembleDebug :app:assembleDebugAndroidTest
+.\scripts\test-offline-prayer-schedules.ps1 -Serial emulator-5554
+```
+
+Android 16 emulatorida ilova jarayoni to‘xtatildi va faol tarmoq yo‘qligi tasdiqlandi. Ilova qayta ochilganda kunlik jadval, 7 kunlik jadvalning birinchi va oxirgi kuni, hamda oylik jadvaldagi tanlangan kunning oltita namoz vaqti keshdagi namunalar bilan mos keldi. Shu sinovdan keyin emulyator yopildi. Keyingi qurilma sinovlari ulangan Samsung’da bajariladi.
+
 ### Home va progress
 
 - Namozga mos alohida fon rasmlari silliq almashadi. Matn uchun kontrast qoplamalari mavjud.
