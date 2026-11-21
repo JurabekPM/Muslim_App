@@ -20,14 +20,9 @@ data class DhikrSession(val count: Int, val finishedAtMillis: Long)
 
 data class TasbihState(val count: Int, val history: List<DhikrSession>)
 
-class CounterViewModel(
-    private val dataStore: DataStore<Preferences>,
-    private val testCount: Int? = null,
-) : ViewModel() {
+class CounterViewModel(private val dataStore: DataStore<Preferences>) : ViewModel() {
     private val counterKey = intPreferencesKey("counter")
     private val historyKey = stringPreferencesKey("dhikr_history")
-
-    val canSetTestCount: Boolean get() = testCount != null
 
     val state: StateFlow<TasbihState?> = dataStore.data
         .catch { error ->
@@ -35,7 +30,7 @@ class CounterViewModel(
         }
         .map { preferences ->
             TasbihState(
-                count = preferences.currentCount(),
+                count = preferences[counterKey] ?: 0,
                 history = decodeHistory(preferences[historyKey]),
             )
         }
@@ -44,7 +39,7 @@ class CounterViewModel(
     fun incrementCounter() {
         viewModelScope.launch {
             dataStore.edit { preferences ->
-                val count = preferences.currentCount()
+                val count = preferences[counterKey] ?: 0
                 if (count < Int.MAX_VALUE) preferences[counterKey] = count + 1
             }
         }
@@ -53,7 +48,7 @@ class CounterViewModel(
     fun decrementCounter() {
         viewModelScope.launch {
             dataStore.edit { preferences ->
-                val count = preferences.currentCount()
+                val count = preferences[counterKey] ?: 0
                 if (count > 0) preferences[counterKey] = count - 1
             }
         }
@@ -62,7 +57,7 @@ class CounterViewModel(
     fun clearCounter() {
         viewModelScope.launch {
             dataStore.edit { preferences ->
-                val count = preferences.currentCount()
+                val count = preferences[counterKey] ?: 0
                 if (count <= 0) return@edit
 
                 val session = DhikrSession(count, System.currentTimeMillis())
@@ -74,15 +69,6 @@ class CounterViewModel(
             }
         }
     }
-
-    fun setTestCount() {
-        val count = testCount ?: return
-        viewModelScope.launch {
-            dataStore.edit { preferences -> preferences[counterKey] = count }
-        }
-    }
-
-    private fun Preferences.currentCount(): Int = this[counterKey] ?: testCount ?: 0
 
     private fun decodeHistory(value: String?): List<DhikrSession> =
         value.orEmpty().lineSequence().mapNotNull { line ->

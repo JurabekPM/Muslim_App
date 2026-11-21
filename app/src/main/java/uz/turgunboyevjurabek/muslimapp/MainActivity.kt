@@ -8,7 +8,6 @@ import android.animation.StateListAnimator
 import android.content.DialogInterface
 import android.view.View
 import android.content.Context
-import android.content.pm.ApplicationInfo
 import android.content.Intent
 import android.location.LocationManager
 import android.os.Build
@@ -63,12 +62,7 @@ class MainActivity : ComponentActivity() {
         val qiblaViewModel by viewModels<QiblaViewModel>()
         val scheduleViewModel by viewModels<PrayerScheduleViewModel>()
         val counterViewModel by viewModels<CounterViewModel> {
-            viewModelFactory {
-                initializer {
-                    val isDebug = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
-                    CounterViewModel(dataStore, testCount = if (isDebug) 1234 else null)
-                }
-            }
+            viewModelFactory { initializer { CounterViewModel(dataStore) } }
         }
         val regionViewModel by viewModels<SelectRegionViewModel> {
             viewModelFactory { initializer { SelectRegionViewModel(dataStoreRegion) } }
