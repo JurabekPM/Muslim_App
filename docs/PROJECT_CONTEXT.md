@@ -193,6 +193,8 @@ Debug APK, test APK va 37 ta unit test o‘tdi. `lintRelease` 0 xato va avvalgi 
 
 PR #17 dagi vizual sayqalda Sunset chizig‘i 7 dp dan 9 dp ga qalinlashdi. Tashqi chiziq tugma chetiga tutashadi. Bosilgandagi oltin nur pastki ichki qirra bo‘ylab tarqaladi, tashqi soyaning yoyilishi bosilganda qisqaradi. Samsung SM-S916N’da 6 ta Tasbix testi o‘tdi. Oq va qora mavzudagi bosilgan kadrlar ko‘rildi, mavjud sanoq va tarix fayli saqlandi. Build, 37 ta unit test va 0 xatoli `lintRelease` o‘tdi.
 
+Sanoq maqsadi tanlanganda bosishdagi oltin nur pastki ichki qirrada kuchaytirildi. Nur gradienti yuqoriga qarab so‘nadi. Samsung SM-S916N’dagi oldingi va yangi oq hamda qora kadrlar solishtirildi. Ikkala mavzuda ham qirradagi nur kuchaygani ko‘rindi. 6 ta qurilma testi, 37 ta unit test va `lintRelease` o‘tdi.
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.

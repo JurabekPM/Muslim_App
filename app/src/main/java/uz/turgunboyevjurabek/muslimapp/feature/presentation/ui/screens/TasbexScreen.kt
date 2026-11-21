@@ -42,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.draw.innerShadow
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
@@ -305,6 +306,13 @@ private fun ShapeCount(
     val contactOpacity = if (dark) 0.44f else 0.15f
     val gold = if (dark) colors.tertiary else Color(0xFFB98525)
     val glowOpacity = if (dark) 0.48f else 0.62f
+    val lowerRimGlow = remember(gold) {
+        Brush.verticalGradient(
+            0.45f to Color.Transparent,
+            0.75f to gold.copy(alpha = 0.5f),
+            1f to gold,
+        )
+    }
     val label = stringResource(R.string.dhikr)
     val hasOutline = fraction != null
     val progressOutline = if (fraction == null) {
@@ -347,11 +355,18 @@ private fun ShapeCount(
                 .clip(shape)
                 .background(colors.surfaceColorAtElevation(10.dp))
                 .innerShadow(shape) {
-                    color = gold
-                    radius = (if (hasOutline) 13.dp else 5.dp).toPx()
-                    spread = (if (hasOutline) 1.dp else 1.5.dp).toPx()
-                    if (hasOutline) offset = Offset(0f, -5.dp.toPx())
-                    alpha = pressure * glowOpacity * if (hasOutline) 0.72f else 1f
+                    if (hasOutline) {
+                        brush = lowerRimGlow
+                        radius = 17.dp.toPx()
+                        spread = 2.dp.toPx()
+                        offset = Offset(0f, -8.dp.toPx())
+                        alpha = pressure * if (dark) 0.90f else 0.82f
+                    } else {
+                        color = gold
+                        radius = 5.dp.toPx()
+                        spread = 1.5.dp.toPx()
+                        alpha = pressure * glowOpacity
+                    }
                 }
                 .then(progressOutline),
             contentAlignment = Alignment.Center,
