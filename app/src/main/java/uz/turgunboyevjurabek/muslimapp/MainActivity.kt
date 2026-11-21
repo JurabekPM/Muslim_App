@@ -52,14 +52,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val dataStore = (application as MyApplication).dataStore
         val dataStoreRegion = (application as MyApplication).dataStoreRegion
 
         val qiblaViewModel by viewModels<QiblaViewModel>()
         val scheduleViewModel by viewModels<PrayerScheduleViewModel>()
-        val counterViewModel by viewModels<CounterViewModel> {
-            viewModelFactory { initializer { CounterViewModel(dataStore) } }
-        }
+        val counterViewModel by viewModels<CounterViewModel>()
         val regionViewModel by viewModels<SelectRegionViewModel> {
             viewModelFactory { initializer { SelectRegionViewModel(dataStoreRegion) } }
         }
