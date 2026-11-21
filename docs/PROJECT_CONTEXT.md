@@ -224,6 +224,10 @@ PR #10 masterga qo‘shildi va Android Studio nusxasi fast-forward qilindi. Kale
 
 PR #11 da «Menyu → Maxfiylik siyosati» bandi dialogga ulandi. Android 16 emulyatorda standart tarmoq o‘chiq holda `PrivacyPolicyTest` o‘tdi. Test dialog sarlavhasi, to‘liq matni va yopilishini tekshiradi.
 
+PR #11 masterga qo‘shildi va Android Studio nusxasi fast-forward qilindi. AAB til bo‘yicha ajratilmaydi va ilova ichidagi sakkiz til birga paketlanadi. Ishlatilmayotgan resurslar va bir xil launcher ikonka nusxalari olib tashlandi. Launcher’ning mavjud shaffof logosi mavzuli ikonka qatlami sifatida ishlatiladi. Til va mavzu sozlamalari AndroidX KTX orqali avvalgi saqlash kalitlariga yoziladi.
+
+`lintRelease` 0 ta xato ko‘rsatdi, ogohlantirishlar 49 tadan 4 taga tushdi. `OldTargetApi` ogohlantirishi bilan `targetSdk 36` joriy Google Play talabiga mos holda saqlandi. Qolgan uchta `PluralsCandidate` qisqa vaqt birliklariga tegishli. Ularning sakkiz tildagi yozilishi son bilan o‘zgarmaydi. Debug APK, release APK, AAB va 36 ta unit test o‘tdi. AAB ichidagi sakkiz til va 16 KB joylashuvi hamda APK ichidagi mavzuli ikonka qatlami tekshirildi.
+
 Play Store’ga hozircha nashr qilinmaydi. Yuborishdan oldin tasdiqlangan maxfiylik siyosatining ommaviy URL’i, Data safety javoblari, upload kaliti bilan imzolangan AAB, Play App Signing va hisob turiga tegishli sinov talablari qoladi. [Target API](https://developer.android.com/google/play/requirements/target-sdk) · [16 KB](https://developer.android.com/guide/practices/page-sizes) · [App signing](https://developer.android.com/studio/publish/app-signing) · [Maxfiylik va Data safety](https://support.google.com/googleplay/android-developer/answer/10144311).
 
 ## Build va qurilmada tekshirish

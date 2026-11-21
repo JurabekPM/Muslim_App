@@ -2,6 +2,7 @@ package uz.turgunboyevjurabek.muslimapp.core.utils
 
 import android.content.Context
 import android.content.res.Configuration
+import androidx.core.content.edit
 import java.util.Locale
 
 internal enum class AppLanguage(val tag: String, val label: String) {
@@ -23,8 +24,9 @@ internal enum class AppLanguage(val tag: String, val label: String) {
     }
 
     fun save(context: Context) {
-        context.getSharedPreferences("app_language", Context.MODE_PRIVATE)
-            .edit().putString("tag", tag).apply()
+        context.getSharedPreferences("app_language", Context.MODE_PRIVATE).edit {
+            putString("tag", tag)
+        }
     }
 
     companion object {

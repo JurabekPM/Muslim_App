@@ -32,7 +32,6 @@
     <string name="until_prayer">%1$s namazyna çenli %2$s</string>
     <string name="location_permission">Takyk ýerleşişe rugsat beriň ýa-da sanawdan sebit saýlaň.</string>
     <string name="region_save_failed">Sebiti ýatda saklap bolmady. Täzeden saýlaň.</string>
-    <string name="location_off">Telefonyň sazlamalarynda ýerleşişi açyň.</string>
     <string name="location_no_fix">Ýerleşiş kesgitlenmedi. Gaýtadan synanyşyň.</string>
     <string name="location_no_address">Salgy kesgitlenmedi. Interneti barlaň ýa-da sebit saýlaň.</string>
     <string name="location_no_match">Gabat gelýän şäher ýa-da etrap tapylmady. Sanawdan sebit saýlaň.</string>

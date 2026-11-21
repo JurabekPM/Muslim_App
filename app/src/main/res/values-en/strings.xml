@@ -32,7 +32,6 @@
     <string name="until_prayer">%2$s until %1$s</string>
     <string name="location_permission">Allow precise location or choose a region from the list.</string>
     <string name="region_save_failed">Could not save the region. Choose it again.</string>
-    <string name="location_off">Enable location in your phone settings.</string>
     <string name="location_no_fix">Could not find your location. Try again.</string>
     <string name="location_no_address">Could not find the address. Check your connection or choose a region.</string>
     <string name="location_no_match">No matching city or district. Choose a region from the list.</string>

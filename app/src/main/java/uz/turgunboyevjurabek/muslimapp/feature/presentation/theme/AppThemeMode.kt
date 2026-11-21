@@ -2,6 +2,7 @@ package uz.turgunboyevjurabek.muslimapp.feature.presentation.theme
 
 import android.content.Context
 import androidx.annotation.StringRes
+import androidx.core.content.edit
 import uz.turgunboyevjurabek.muslimapp.R
 
 private const val preferencesName = "appearance"
@@ -13,8 +14,9 @@ internal enum class AppThemeMode(val key: String, @StringRes val label: Int) {
     Dark("dark", R.string.theme_dark);
 
     fun save(context: Context) {
-        context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE)
-            .edit().putString(themeKey, key).apply()
+        context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit {
+            putString(themeKey, key)
+        }
     }
 
     companion object {

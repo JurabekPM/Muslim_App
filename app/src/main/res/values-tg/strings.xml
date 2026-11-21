@@ -32,7 +32,6 @@
     <string name="until_prayer">То намози %1$s — %2$s</string>
     <string name="location_permission">Ба муайян кардани ҷойгиршавии дақиқ иҷозат диҳед ё минтақаро аз рӯйхат интихоб кунед.</string>
     <string name="region_save_failed">Минтақаро захира кардан муяссар нашуд. Аз нав интихоб кунед.</string>
-    <string name="location_off">Муайян кардани ҷойгиршавиро дар танзимоти телефон фаъол кунед.</string>
     <string name="location_no_fix">Ҷойгиршавӣ муайян нашуд. Дубора кӯшиш кунед.</string>
     <string name="location_no_address">Нишонӣ муайян нашуд. Интернетро санҷед ё минтақаро интихоб кунед.</string>
     <string name="location_no_match">Шаҳр ё ноҳияи мувофиқ ёфт нашуд. Минтақаро аз рӯйхат интихоб кунед.</string>

@@ -32,7 +32,6 @@
     <string name="until_prayer">%1$s намазына чейин %2$s</string>
     <string name="location_permission">Так жайгашкан жерди аныктоого уруксат бериңиз же аймакты тизмеден тандаңыз.</string>
     <string name="region_save_failed">Аймакты сактоо мүмкүн болгон жок. Кайра тандаңыз.</string>
-    <string name="location_off">Телефондун жөндөөлөрүнөн жайгашкан жерди аныктоону күйгүзүңүз.</string>
     <string name="location_no_fix">Жайгашкан жер аныкталган жок. Кайра аракет кылыңыз.</string>
     <string name="location_no_address">Дарек аныкталган жок. Интернетти текшериңиз же аймакты тандаңыз.</string>
     <string name="location_no_match">Туура келген шаар же район табылган жок. Аймакты тизмеден тандаңыз.</string>

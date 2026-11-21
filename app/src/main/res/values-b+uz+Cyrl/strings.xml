@@ -32,7 +32,6 @@
     <string name="until_prayer">%1$sгача %2$s</string>
     <string name="location_permission">Аниқ жойлашувга рухсат беринг ёки ҳудудни рўйхатдан танланг.</string>
     <string name="region_save_failed">Ҳудудни сақлаб бўлмади. Қайта танланг.</string>
-    <string name="location_off">Телефон созламаларида жойлашувни ёқинг.</string>
     <string name="location_no_fix">Жойлашув аниқланмади. Қайта уриниб кўринг.</string>
     <string name="location_no_address">Манзил аниқланмади. Интернетни текширинг ёки ҳудудни танланг.</string>
     <string name="location_no_match">Мос шаҳар ёки туман топилмади. Ҳудудни рўйхатдан танланг.</string>
