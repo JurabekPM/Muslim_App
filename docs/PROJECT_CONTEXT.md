@@ -179,6 +179,10 @@ Yana uchta maket oq va qora mavzuda tayyorlandi.
 
 Foydalanuvchi Tarix uchun 3-maketdagi vaqt chizig‘i bilan pastdan ochiladigan sheetni, Nollash uchun 1-maketdagi ixcham dialogni tanladi. Tarixda uzun ro‘yxat LazyColumn ichida aylanadi, «Yopish» tugmasi pastda ko‘rinib turadi. Mavjud saqlash chegarasi 20 yozuv. Nollash joriy sanoqni ko‘rsatadi, bekor qilish va tasdiqlash tugmalari ajratilgan. Sanoq tarixga faqat tasdiqdan so‘ng qo‘shiladi. «Joriy sanoq» yorlig‘i sakkiz tilda bor. Debug build va unit testlar o‘tdi. Samsung SM_S916N’ga yangilanish o‘rnatildi. Boshqa ilova faol bo‘lgani uchun 100 yozuv bilan varaqlash va dialoglarning telefon sinovi hali bajarilmadi.
 
+[Tasdiqlangan oylar bo‘yicha tarix maketi](designs/tasbix-history-by-month.png) oq va qora mavzuda qo‘llandi. Eng yangi yozuvli oy ochiq turadi. Boshqa oy tanlanganda ro‘yxat va oy belgisi animatsiya bilan o‘zgaradi. Oy qatorida yozuvlar soni, ochiq bo‘limda kun, vaqt va zikr soni chiqadi. «Sana tanlash» orqali faqat yozuv bor kun tanlanadi va ro‘yxat o‘sha kunga o‘tadi. «Yopish» tugmasi pastda turadi. Tarixning 20 yozuvlik chegarasi olib tashlandi. Mavjud DataStore fayli, kaliti va yozuvlar formati saqlandi.
+
+Debug APK, test APK va 36 ta unit test o‘tdi. `lintRelease` 0 xato va avvalgi 4 ta ogohlantirish bilan yakunlandi. Samsung SM-S916N’da 5 ta Tasbix testi, jumladan oq va qora mavzuda boshqa oyni ochish va sana tanlash, hamda 100 yozuvda «Yopish» tugmasining ko‘rinib turishi tekshirildi. Qurilmaning Tasbix saqlov fayli xeshi yakuniy APK o‘rnatilishidan oldin, keyin va sinovdan so‘ng bir xil bo‘ldi. Eski formatdagi 20 ta namuna yozuvi yangi nollashdan keyin ham saqlanib, testda qayta ochildi.
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.

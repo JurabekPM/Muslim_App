@@ -148,4 +148,10 @@
     <string name="tasbih_current_count">Joriy sanoq</string>
     <string name="privacy_policy">Maxfiylik siyosati</string>
     <string name="privacy_policy_summary">Joylashuv ruxsati ixtiyoriy. Qibla yo‘nalishi telefonda hisoblanadi. Hozirgi hududni aniqlashni tanlasangiz, Android joylashuv va manzilni aniqlash xizmatlaridan foydalaniladi. Hududni qo‘lda ham tanlashingiz mumkin.\n\nNamoz vaqtlarini olish uchun tanlangan hudud va jadval davri namoz-vaqti.uz xizmatiga HTTPS orqali yuboriladi. Xizmat ulanishning IP manzilini ham ko‘rishi mumkin.\n\nHudud, jadval keshi, zikr tarixi, sanoq, til va mavzu ilova xotirasida saqlanadi. Android sozlamalaringizga qarab ular zaxiralanishi mumkin. Telefondagilarni Android sozlamalarida ilova xotirasini tozalab o‘chirishingiz mumkin.</string>
+    <string name="tasbih_history_select_date">Sana tanlash</string>
+    <string name="tasbih_history_open_date">O‘tish</string>
+    <plurals name="tasbih_history_entries">
+        <item quantity="one">%d yozuv</item>
+        <item quantity="other">%d yozuv</item>
+    </plurals>
 </resources>

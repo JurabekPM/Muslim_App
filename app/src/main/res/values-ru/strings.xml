@@ -147,4 +147,12 @@
     <string name="tasbih_current_count">Текущий счёт</string>
     <string name="privacy_policy">Политика конфиденциальности</string>
     <string name="privacy_policy_summary">Разрешение на доступ к местоположению предоставляется по желанию. Направление киблы рассчитывается на телефоне. При определении текущего региона используются службы геолокации и поиска адреса Android. Регион также можно выбрать вручную.\n\nДля получения времени намазов выбранный регион и период расписания передаются сервису namoz-vaqti.uz по HTTPS. Сервис также может видеть IP-адрес подключения.\n\nРегион, кеш расписаний, история зикра, счётчик, язык и тема хранятся в приложении. В зависимости от настроек Android может создать резервную копию. Чтобы удалить данные с телефона, очистите хранилище приложения в настройках Android.</string>
+    <string name="tasbih_history_select_date">Выбрать дату</string>
+    <string name="tasbih_history_open_date">Перейти</string>
+    <plurals name="tasbih_history_entries">
+        <item quantity="one">%d запись</item>
+        <item quantity="few">%d записи</item>
+        <item quantity="many">%d записей</item>
+        <item quantity="other">%d записи</item>
+    </plurals>
 </resources>
