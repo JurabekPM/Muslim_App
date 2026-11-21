@@ -4,8 +4,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.Regions
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.daily.Bugungi
-import uz.turgunboyevjurabek.muslimapp.feature.domain.model.monthly.BirOylik
-import uz.turgunboyevjurabek.muslimapp.feature.domain.model.weekly.Birhaftalik
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.monthly.BirOylikItem
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.weekly.BirhaftalikItem
 import java.time.LocalDate
 import java.time.YearMonth
 
@@ -16,8 +16,8 @@ interface PrayerScheduleRepository {
 
 data class PrayerSchedules(
     val daily: PrayerScheduleSource<ScheduleDay, Bugungi>,
-    val weekly: PrayerScheduleSource<ScheduleDay, Birhaftalik>,
-    val monthly: PrayerScheduleSource<ScheduleMonth, BirOylik>,
+    val weekly: PrayerScheduleSource<ScheduleDay, List<BirhaftalikItem>>,
+    val monthly: PrayerScheduleSource<ScheduleMonth, List<BirOylikItem>>,
 )
 
 data class ScheduleDay(val region: Regions, val date: LocalDate)

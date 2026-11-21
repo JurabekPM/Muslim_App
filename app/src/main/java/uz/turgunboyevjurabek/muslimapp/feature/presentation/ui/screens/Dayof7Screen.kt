@@ -157,8 +157,8 @@ private fun WeekDayCard(day: BirhaftalikItem, expanded: Boolean, onClick: () -> 
             ) {
                 val times = day.times
                 PrayerScheduleRows(
-                    times?.tongSaharlik, times?.quyosh, times?.peshin,
-                    times?.asr, times?.shomIftor, times?.hufton,
+                    times?.bomdod, times?.quyosh, times?.peshin,
+                    times?.asr, times?.shom, times?.xufton,
                     rowHeight = 36.dp,
                 )
             }

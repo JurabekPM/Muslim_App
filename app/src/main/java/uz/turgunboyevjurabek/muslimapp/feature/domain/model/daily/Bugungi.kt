@@ -1,19 +1,14 @@
 package uz.turgunboyevjurabek.muslimapp.feature.domain.model.daily
 
-
-import com.google.gson.annotations.SerializedName
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.HijriDate
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.PrayerTimes
 
 data class Bugungi(
-    @SerializedName("date")
-    var date: String?=null,
-    @SerializedName("hijri_date")
-    var hijriDate: HijriDate?=null,
-    @SerializedName("region")
-    var region: String?=null,
-    @SerializedName("times")
-    var times: Times?=null,
-    @SerializedName("weekday")
-    var weekday: String?=null,
+    val date: String? = null,
+    val hijriDate: HijriDate? = null,
+    val region: String? = null,
+    val times: PrayerTimes? = null,
+    val weekday: String? = null,
     val featuredPrayer: String? = null,
     val featuredTime: String? = null,
     val featuredIsCurrent: Boolean = false,
