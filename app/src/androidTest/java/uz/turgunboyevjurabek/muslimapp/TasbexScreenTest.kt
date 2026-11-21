@@ -408,6 +408,7 @@ class TasbexScreenTest {
     }
 
     private fun assertSunsetPress(counter: SemanticsNodeInteraction, fraction: Float) {
+        assertTouchRimLight(counter)
         val progress = SemanticsMatcher.expectValue(
             SemanticsProperties.ProgressBarRangeInfo,
             ProgressBarRangeInfo(fraction, 0f..1f),
@@ -430,6 +431,44 @@ class TasbexScreenTest {
         assertTrue("The Sunset tip flashes on initial press", flashPixels > idle.pearlPixelsAtRim())
         assertTrue("The Sunset tip flash fades during a hold", flashPixels > pressed.pearlPixelsAtRim())
         assertNotEquals(idle.glyphFrameHash(), pressed.glyphFrameHash())
+    }
+
+    private fun assertTouchRimLight(counter: SemanticsNodeInteraction) {
+        for (left in listOf(true, false)) {
+            val direction = if (left) -1f else 1f
+            compose.mainClock.autoAdvance = false
+            val (flash, held) = try {
+                counter.performTouchInput { down(center + Offset(direction * center.x / 2f, 0f)) }
+                compose.mainClock.advanceTimeBy(112)
+                val flash = counter.captureToImage()
+                compose.mainClock.advanceTimeBy(288)
+                val held = counter.captureToImage()
+                counter.performTouchInput { cancel() }
+                flash to held
+            } finally {
+                compose.mainClock.autoAdvance = true
+            }
+            val touchedGlow = flash.rimWarmth(left) - held.rimWarmth(left)
+            val oppositeGlow = flash.rimWarmth(!left) - held.rimWarmth(!left)
+            val side = if (left) "left" else "right"
+            assertTrue(
+                "The $side rim is lit and fades during a hold (touched=$touchedGlow, opposite=$oppositeGlow)",
+                touchedGlow > 4f && touchedGlow > oppositeGlow + 4f,
+            )
+        }
+    }
+
+    private fun ImageBitmap.rimWarmth(left: Boolean): Float {
+        val pixels = toPixelMap()
+        val firstColumn = if (left) 0 else width * 2 / 3
+        var warmth = 0f
+        for (y in height * 2 / 5 until height * 3 / 5 step 3) {
+            for (x in firstColumn until firstColumn + width / 3 step 3) {
+                val pixel = pixels[x, y]
+                warmth += pixel.red - pixel.blue
+            }
+        }
+        return warmth
     }
 
     private fun ImageBitmap.pearlPixelsAtRim(): Int {

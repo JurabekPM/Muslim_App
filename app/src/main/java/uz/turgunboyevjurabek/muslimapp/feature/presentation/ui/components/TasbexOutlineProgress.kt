@@ -2,13 +2,9 @@ package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components
 
 import android.graphics.Matrix
 import android.graphics.SweepGradient
-import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.interaction.InteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -23,8 +19,6 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.filterIsInstance
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.rememberSunsetProgressPhase
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.sunsetProgressColors
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.sunsetProgressLight
@@ -40,19 +34,12 @@ internal fun Modifier.tasbexOutlineProgress(
     fraction: Float,
     dark: Boolean,
     glowColor: Color,
-    interactionSource: InteractionSource,
+    pressLight: TasbexPressLight,
 ): Modifier {
     val visibleFraction = animateFloatAsState(fraction, tween(280), label = "Tasbix progress")
     val motion = rememberSunsetProgressPhase(2_500)
     val sparklePhases = remember { Random(23).run { List(26) { nextFloat() } } }
     val trackColor = if (dark) Color(0xFF46505C) else Color(0xFFC7CECF)
-    val pressFlash = remember(interactionSource) { Animatable(0f) }
-    LaunchedEffect(interactionSource) {
-        interactionSource.interactions.filterIsInstance<PressInteraction.Press>().collectLatest {
-            pressFlash.animateTo(1f, tween(45))
-            pressFlash.animateTo(0f, tween(255))
-        }
-    }
 
     return drawWithCache {
         val shortSide = size.minDimension
@@ -111,7 +98,7 @@ internal fun Modifier.tasbexOutlineProgress(
                 val pulse = 0.8f + 0.2f * sin(2 * PI * phase).toFloat()
                 drawCircle(tipGlow, radius = strokeWidth / 2f, center = tip, alpha = pulse)
             }
-            val flash = pressFlash.value
+            val flash = pressLight.opacity
             if (filled > 0f && flash > 0f) {
                 drawPath(segment, pressTipGlow, alpha = flash, style = stroke)
                 drawCircle(Color.White, radius = strokeWidth * 0.16f, center = tip, alpha = flash)
@@ -120,7 +107,7 @@ internal fun Modifier.tasbexOutlineProgress(
     }
 }
 
-private fun PathMeasure.nearestDistance(point: Offset): Float {
+internal fun PathMeasure.nearestDistance(point: Offset): Float {
     val sampleStep = length / 128
     return (0 until 128).minBy { index ->
         val offset = getPosition(index * sampleStep) - point

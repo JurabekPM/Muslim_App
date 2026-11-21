@@ -1,6 +1,6 @@
 # Muslim App davom ettirish qaydi
 
-Oxirgi yangilanish 2026-11-21. Ushbu qayd foydalanuvchining suhbatdagi qarorlari va tekshirilgan kod holati asosida tuzildi. Keyingi ish tugagach qaydni yangilash uchun ildizdagi `AGENTS.md` ko‘rsatmalarini o‘qing.
+Oxirgi yangilanish 2026-11-22. Ushbu qayd foydalanuvchining suhbatdagi qarorlari va tekshirilgan kod holati asosida tuzildi. Keyingi ish tugagach qaydni yangilash uchun ildizdagi `AGENTS.md` ko‘rsatmalarini o‘qing.
 
 ## Qanday davom ettirish kerak
 
@@ -199,9 +199,13 @@ Bosish animatsiyasi uchun [6-variant](designs/tasbix-bead-glow.png) tanlandi. Ka
 
 Samsung SM-S916N’da 6 ta Tasbix testi o‘tdi. Oq va qora mavzuda maqsadli hamda Erkin rejimdagi donalar yaltirashi, Sunset konturi va bosishdan keyingi tiklanish tekshirildi. Mavjud sanoq va tarix fayli saqlandi. Debug build, 37 ta unit test va `lintRelease` o‘tdi.
 
-Sunset uchun [progress uchi varianti](designs/tasbix-sunset-tip.png) tanlandi. Tugma bosilganda progress uchidagi qisqa oq-oltin chaqnash chiziq ichida ko‘rinib, taxminan 300 ms da so‘nadi. Tez bosishlarda nur joriy yorqinlikdan yangilanadi. [Qo‘shimcha nur maketlari](designs/tasbix-sunset-press-options.png) yuqori chapdan boshlab progress konturi, tugma tagi, barcha tomon va barmoq tekkan tomondagi qisqa yoyni ko‘rsatadi. Tashqi nur dizayni tanlanishi kutilmoqda.
+Sunset uchun [progress uchi varianti](designs/tasbix-sunset-tip.png) tanlandi. Tugma bosilganda progress uchidagi qisqa oq-oltin chaqnash chiziq ichida ko‘rinib, taxminan 300 ms da so‘nadi. Tez bosishlarda nur joriy yorqinlikdan yangilanadi. [Qo‘shimcha nur maketlari](designs/tasbix-sunset-press-options.png) yuqori chapdan boshlab progress konturi, tugma tagi, barcha tomon va barmoq tekkan tomondagi qisqa yoyni ko‘rsatadi.
 
 Samsung’da `TasbexScreenTest` sinfidagi 6 ta sinov o‘tdi. Oq va qora mavzuda progress uchi bosish boshida yorishishi va bosib turilganda so‘nishi tekshirildi. Telefonda sanoq va tarix fayli saqlandi. Debug APK, 37 ta unit test va `lintRelease` muvaffaqiyatli yakunlandi (0 xato, 4 ogohlantirish).
+
+Tashqi nur uchun avval 4-variant tanlandi. Barmoq tekkan tomonga eng yaqin qirrada qisqa Sunset yoyi paydo bo‘ladi, tugmaning shakliga ergashadi va mayin so‘nadi. Markazga bosilganda nur pastki qirrada chiqadi. Erkin rejimda ham qirra yaltiraydi. Progress uchidagi chaqnash shu bosish animatsiyasidan foydalanadi. Keyin 1-variantni, ya’ni to‘lgan progress konturi bo‘ylab nurni, taqqoslash uchun sinash rejalashtirilgan.
+
+Samsung SM-S916N’da 6 ta Tasbix sinovi o‘tdi. Oq va qora mavzuda chap hamda o‘ng bosishlar mos qirrani yoritishi, ushlab turilganda nur so‘nishi va progress uchidagi chaqnash ishlashi kadrlar orqali tekshirildi. Haqiqiy sanoq va tarix fayli saqlandi. Debug va test APK’lari yig‘ildi, 37 ta unit test hamda `lintRelease` o‘tdi (0 xato, 4 ogohlantirish).
 
 ## Muhim kod yo‘llari
 

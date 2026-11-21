@@ -56,6 +56,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.Morph
@@ -72,9 +73,11 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.Animate
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.CounterTapCadence
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.pressScale
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.rememberPressScale
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.rememberTasbexPressLight
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.TasbexPressIcon
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.shimmers.ShimmerPlaceholder
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.tasbexOutlineProgress
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.tasbexTouchRimLight
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.shape.MorphPolygonShape
 
 private enum class TasbexDialog { History, Reset, Goal }
@@ -161,6 +164,7 @@ fun TasbexScreen(viewModel: CounterViewModel) {
                     .coerceAtLeast(0.dp)
                 ShapeCount(
                     shapeSize = shapeSize,
+                    touchCenter = DpOffset(maxWidth / 2, topPadding + shapeSize / 2),
                     topPadding = topPadding,
                     bottomPadding = bottomPadding,
                     fraction = counter.target?.let { counter.count.coerceAtMost(it).toFloat() / it },
@@ -270,6 +274,7 @@ private fun CounterMessage(hasCount: Boolean, resetId: Long?) {
 @Composable
 private fun ShapeCount(
     shapeSize: Dp,
+    touchCenter: DpOffset,
     topPadding: Dp,
     bottomPadding: Dp,
     fraction: Float?,
@@ -279,6 +284,7 @@ private fun ShapeCount(
         Morph(RoundedPolygon(12, rounding = CornerRounding(0.2f)), RoundedPolygon.circle(15))
     }
     val interactionSource = remember { MutableInteractionSource() }
+    val pressLight = rememberTasbexPressLight(interactionSource)
     val progress = remember { Animatable(0f) }
     LaunchedEffect(interactionSource) {
         interactionSource.interactions.filterIsInstance<PressInteraction>().collectLatest { press ->
@@ -309,7 +315,7 @@ private fun ShapeCount(
     val progressOutline = if (fraction == null) {
         Modifier
     } else {
-        Modifier.tasbexOutlineProgress(shape, fraction, dark, gold, interactionSource)
+        Modifier.tasbexOutlineProgress(shape, fraction, dark, gold, pressLight)
     }
     Box(
         modifier = Modifier
@@ -343,6 +349,7 @@ private fun ShapeCount(
                     offset = Offset(0f, (4.dp - 3.dp * pressure).toPx())
                     alpha = contactOpacity
                 }
+                .tasbexTouchRimLight(shape, touchCenter, dark, pressLight)
                 .clip(shape)
                 .background(colors.surfaceColorAtElevation(10.dp))
                 .then(progressOutline),
