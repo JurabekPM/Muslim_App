@@ -145,6 +145,8 @@ Sinov uchun 1234 boshlang‘ich qiymati va uzoq bosish orqali 1234 qo‘yish ama
 
 Tasbix tugmasida soya ko‘pburchak va doira konturiga ergashadi. 16 dp yoyilish va 8 dp pastga siljish bor. Soya sanoqqa bog‘liq emas. Bosish animatsiyasi tugma chetida mayin oltin yaltirash beradi va qo‘yib yuborilganda so‘nadi. Debug build va unit testlar o‘tdi. Samsung SM_S916N’dagi birinchi sinov tugma foni oltin yaltirashni yopayotganini ko‘rsatdi. Chizish tartibi tuzatildi. Yangilangan APK o‘rnatildi va oq hamda qora mavzuda soyaning pastga yo‘nalishi, bosilgandagi oltin yaltirash, qo‘yib yuborilgandagi so‘nish va sanoq tekshirildi. Ikkita Tasbix instrumentatsiya testi o‘tdi.
 
+Oq mavzuda bosilgandagi oltin yaltirashning eng yuqori opacity qiymati 0.48 dan 0.62 ga ko‘tarildi. Qora mavzuda 0.48 saqlandi. Debug build va unit testlar o‘tdi. Samsung SM_S916N’da oq va qora mavzuda soya, bosilgandagi yaltirash va qo‘yib yuborgandagi so‘nish qayta tekshirildi. Soyani yaqin ingichka va uzoq yumshoq qatlamlardan qilish hamda bosishda ularni ixchamlashtirish taklif qilindi.
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.

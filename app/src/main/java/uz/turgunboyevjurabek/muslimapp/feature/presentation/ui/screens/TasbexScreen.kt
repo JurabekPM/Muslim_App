@@ -315,6 +315,7 @@ private fun ShapeCount(
     val pressScale = rememberPressScale(interactionSource)
     val shadowColor = if (dark) Color.Black.copy(alpha = 0.64f) else colors.onSurface.copy(alpha = 0.22f)
     val gold = if (dark) colors.tertiary else Color(0xFFB98525)
+    val glowOpacity = if (dark) 0.48f else 0.62f
     val label = stringResource(R.string.dhikr)
     Box(
         modifier = Modifier
@@ -347,7 +348,7 @@ private fun ShapeCount(
                     color = gold
                     radius = 5.dp.toPx()
                     spread = 1.5.dp.toPx()
-                    alpha = ((1f - pressScale.value) / 0.06f).coerceIn(0f, 1f) * 0.48f
+                    alpha = ((1f - pressScale.value) / 0.06f).coerceIn(0f, 1f) * glowOpacity
                 },
             contentAlignment = Alignment.Center,
         ) {
