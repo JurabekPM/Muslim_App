@@ -438,27 +438,32 @@ class TasbexScreenTest {
     }
 
     private fun assertTouchRimLight(counter: SemanticsNodeInteraction) {
-        for (left in listOf(true, false)) {
-            val direction = if (left) -1f else 1f
-            compose.mainClock.autoAdvance = false
-            val (held, ended) = try {
-                counter.performTouchInput { down(center + Offset(direction * center.x / 2f, 0f)) }
-                compose.mainClock.advanceTimeBy(800)
-                val held = counter.captureToImage()
-                counter.performTouchInput { cancel() }
-                compose.mainClock.advanceTimeBy(384)
-                held to counter.captureToImage()
-            } finally {
-                compose.mainClock.autoAdvance = true
+        compose.mainClock.autoAdvance = false
+        val (heldLeft, heldRight, ended) = try {
+            counter.performTouchInput { down(center - Offset(center.x / 2f, 0f)) }
+            compose.mainClock.advanceTimeBy(800)
+            val heldLeft = counter.captureToImage()
+            counter.performTouchInput {
+                moveTo(center + Offset(0f, center.y / 2f))
             }
-            val touchedGlow = held.rimWarmth(left) - ended.rimWarmth(left)
-            val oppositeGlow = held.rimWarmth(!left) - ended.rimWarmth(!left)
-            val side = if (left) "left" else "right"
-            assertTrue(
-                "The $side rim stays lit while held and then fades (touched=$touchedGlow, opposite=$oppositeGlow)",
-                touchedGlow > 4f && touchedGlow > oppositeGlow + 4f,
-            )
+            compose.mainClock.advanceTimeBy(160)
+            counter.performTouchInput {
+                moveTo(center + Offset(center.x / 2f, 0f))
+            }
+            compose.mainClock.advanceTimeBy(224)
+            val heldRight = counter.captureToImage()
+            counter.performTouchInput { up() }
+            compose.mainClock.advanceTimeBy(384)
+            Triple(heldLeft, heldRight, counter.captureToImage())
+        } finally {
+            compose.mainClock.autoAdvance = true
         }
+        val leftTravel = heldLeft.rimWarmth(left = true) - heldRight.rimWarmth(left = true)
+        val rightTravel = heldRight.rimWarmth(left = false) - heldLeft.rimWarmth(left = false)
+        val rightFade = heldRight.rimWarmth(left = false) - ended.rimWarmth(left = false)
+        assertTrue("The glow travels with one held pointer (left=$leftTravel, right=$rightTravel)",
+            leftTravel > 10f && rightTravel > 10f)
+        assertTrue("The glow fades after releasing a drag (right=$rightFade)", rightFade > 10f)
     }
 
     private fun ImageBitmap.rimWarmth(left: Boolean): Float {

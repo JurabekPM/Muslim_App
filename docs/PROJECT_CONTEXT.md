@@ -211,6 +211,10 @@ Samsung SM-S916N’da 6 ta Tasbix sinovi o‘tdi. Oq va qora mavzuda chap hamda 
 
 Samsung SM-S916N’da takroriy sinovda 6 ta Tasbix testi o‘tdi. Oq va qora mavzuda chap va o‘ng qirra 800 ms bosib turilganda yoniq qolgani, bosish tugagach so‘ngani, donalar yaltirashi 448 ms da ko‘ringani va progress uchidagi oq nuqta ajralishi kadrlar bo‘yicha tasdiqlandi. Haqiqiy sanoq va tarix fayli xeshi mos keldi. Debug va test APK’lari, 37 ta unit test va `lintRelease` o‘tdi (0 xato, avvalgi 4 ogohlantirish).
 
+1- va 4-variantlar Samsung’da bir xil 24/33 sanoqda oq va qora mavzuda solishtirilgach, foydalanuvchi 4-variantni tanladi. Oq mavzuda qirra nuri va progress uchida to‘qroq Sunset aksenti ishlatiladi. Katta tugma bosib sudralganda nur barmoq yo‘nalishiga qarab qirra bo‘ylab eng qisqa yo‘ldan silliq siljiydi. Barmoq markazdan o‘tganda oxirgi yo‘nalish saqlanadi. Oddiy bosish bir marta sanaydi. Sudrash tugaganda nur so‘nadi va sanoq o‘zgarmaydi. [Taqqoslash sinovi PR #18](https://github.com/JurabekPM/Muslim_App/pull/18).
+
+Samsung SM-S916N’da 6 ta Tasbix testi o‘tdi. Oq va qora mavzuda bitta ushlab turilgan barmoq bilan chapdan past orqali o‘ngga sudrash, chap va o‘ng qirraning navbat bilan yorishishi hamda barmoq qo‘yib yuborilgandan keyingi so‘nish kadrlar bo‘yicha tekshirildi. Sudrashdan keyingi sanoq va oddiy bosishdagi bitta qo‘shish tasdiqlandi. Qurilmadagi asl sanoq va tarix fayli xeshi mos keldi. Debug va test APK’lari, 37 ta unit test va `lintRelease` o‘tdi (0 xato, avvalgi 4 ogohlantirish).
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.

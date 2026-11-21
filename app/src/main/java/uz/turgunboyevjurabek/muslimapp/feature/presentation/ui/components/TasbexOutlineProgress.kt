@@ -67,7 +67,7 @@ internal fun Modifier.tasbexOutlineProgress(
             center = tip,
             radius = strokeWidth / 2f,
         )
-        val pressHead = sunsetProgressColors[if (dark) 2 else 1]
+        val pressHead = if (dark) sunsetProgressColors[2] else Color(0xFFDE6927)
         val haloRadius = strokeWidth * 2.65f
         val pressHalo = Brush.radialGradient(
             0f to pressHead.copy(alpha = 0.75f),

@@ -34,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -77,6 +78,7 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.rememb
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.TasbexPressIcon
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.shimmers.ShimmerPlaceholder
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.tasbexOutlineProgress
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.tasbexCountGestures
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.tasbexTouchRimLight
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.shape.MorphPolygonShape
 
@@ -285,6 +287,7 @@ private fun ShapeCount(
     }
     val interactionSource = remember { MutableInteractionSource() }
     val pressLight = rememberTasbexPressLight(interactionSource)
+    val onTap = rememberUpdatedState(onClick)
     val progress = remember { Animatable(0f) }
     LaunchedEffect(interactionSource) {
         interactionSource.interactions.filterIsInstance<PressInteraction>().collectLatest { press ->
@@ -324,6 +327,7 @@ private fun ShapeCount(
                 contentDescription = label
                 if (fraction != null) progressBarRangeInfo = ProgressBarRangeInfo(fraction, 0f..1f)
             }
+            .tasbexCountGestures(touchCenter, interactionSource, pressLight, onTap)
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
@@ -349,7 +353,7 @@ private fun ShapeCount(
                     offset = Offset(0f, (4.dp - 3.dp * pressure).toPx())
                     alpha = contactOpacity
                 }
-                .tasbexTouchRimLight(shape, touchCenter, dark, pressLight)
+                .tasbexTouchRimLight(shape, dark, pressLight)
                 .clip(shape)
                 .background(colors.surfaceColorAtElevation(10.dp))
                 .then(progressOutline),
