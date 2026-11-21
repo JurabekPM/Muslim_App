@@ -135,9 +135,21 @@ internal fun AnimatedCounter(
                 val offset = position - lower
                 val alpha = if (isLeaving) leadingAlpha else 1f
                 if (alpha <= 0f) return@forEachIndexed
-                drawDigit(lower, x, y - offset * digitHeight, alpha)
+                fun drawWheelDigit(digitIndex: Int, glyphY: Float) {
+                    val drop = if (leavingOnReset) wheel.terminalZeroDrop(digitIndex, position) else 0f
+                    val visibility = 1f - drop
+                    if (visibility > 0f) {
+                        drawDigit(
+                            digitIndex,
+                            x,
+                            glyphY + digitHeight * 0.55f * drop,
+                            alpha * visibility * visibility,
+                        )
+                    }
+                }
+                drawWheelDigit(lower, y - offset * digitHeight)
                 if (offset > 0f) {
-                    drawDigit(lower + 1, x, y + (1f - offset) * digitHeight, alpha)
+                    drawWheelDigit(lower + 1, y + (1f - offset) * digitHeight)
                 }
             }
         }
@@ -146,6 +158,12 @@ internal fun AnimatedCounter(
 
 internal data class DigitWheel(val start: Float, val end: Float) {
     fun positionAt(progress: Float): Float = start + (end - start) * progress
+
+    fun terminalZeroDrop(digitIndex: Int, position: Float): Float {
+        if (digitIndex.toFloat() != end || digitIndex.mod(10) != 0) return 0f
+        // Release the final zero while it is still rolling into the digit slot.
+        return (1f - abs(position - end)).coerceIn(0f, 1f)
+    }
 }
 
 private val resetRollEasing = CubicBezierEasing(0.35f, 0.2f, 0.65f, 1f)

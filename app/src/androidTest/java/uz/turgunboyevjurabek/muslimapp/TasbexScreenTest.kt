@@ -123,7 +123,7 @@ class TasbexScreenTest {
 
     @Test
     fun resetSlidesLeadingDigitsDownAndCentersTheLastZero() {
-        val count = mutableIntStateOf(124)
+        val count = mutableIntStateOf(1234)
         compose.setContent {
             MuslimAppTheme(darkTheme = true) {
                 Surface {
@@ -131,7 +131,7 @@ class TasbexScreenTest {
                 }
             }
         }
-        val before = compose.onNodeWithText("124").captureToImage()
+        val before = compose.onNodeWithText("1234").captureToImage()
         compose.mainClock.autoAdvance = false
         compose.runOnIdle { count.intValue = 0 }
         compose.mainClock.advanceTimeBy(300)
@@ -140,7 +140,9 @@ class TasbexScreenTest {
         val rolling = compose.onNodeWithText("0").captureToImage()
         compose.mainClock.advanceTimeBy(440)
         val leaving = compose.onNodeWithText("0").captureToImage()
-        compose.mainClock.advanceTimeBy(460)
+        compose.mainClock.advanceTimeBy(192)
+        val zerosLanded = compose.onNodeWithText("0").captureToImage()
+        compose.mainClock.advanceTimeBy(268)
         val settled = compose.onNodeWithText("0").captureToImage()
 
         assertEquals(before.width, rolling.width)
@@ -156,8 +158,7 @@ class TasbexScreenTest {
         val beforeExit = rolling.glyphInk(leftColumns)
         val slidingLeading = leaving.glyphInk(leftColumns)
         assertTrue("Leading digits are still present halfway through reset", beforeExit.weight > 0)
-        assertTrue("Leading digits remain briefly visible", slidingLeading.weight > 0)
-        assertTrue("Leading digits slide down", slidingLeading.centerY > beforeExit.centerY + 1)
+        assertEquals("Completed leading zeros leave immediately", 0.0, zerosLanded.glyphInk(leftColumns).weight, 0.01)
         assertTrue("Leading digits fade", slidingLeading.weight < beforeExit.weight)
         assertEquals(0.0, settled.glyphInk(leftColumns).weight, 0.01)
         val zero = settled.glyphInk(0 until settled.width)

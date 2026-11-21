@@ -4,6 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.CounterRoll
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.DigitWheel
 import kotlin.math.floor
 
 class CounterRollTest {
@@ -29,6 +30,16 @@ class CounterRollTest {
             assertTrue(wheel.start - wheel.end <= 10f)
             assertEquals(0, wheel.end.toInt().mod(10))
         }
+    }
+
+    @Test
+    fun onlyTerminalZeroDropsAsItArrives() {
+        val wheel = DigitWheel(start = 0f, end = -10f)
+
+        assertEquals(0f, wheel.terminalZeroDrop(digitIndex = 0, position = 0f), 0f)
+        assertEquals(0f, wheel.terminalZeroDrop(digitIndex = -9, position = -9.5f), 0f)
+        assertEquals(0.5f, wheel.terminalZeroDrop(digitIndex = -10, position = -9.5f), 0f)
+        assertEquals(1f, wheel.terminalZeroDrop(digitIndex = -10, position = -10f), 0f)
     }
 
     @Test

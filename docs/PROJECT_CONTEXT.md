@@ -139,6 +139,8 @@ Nollanish animatsiyasini ko‘rish uchun debug versiyada saqlangan sanoq bo‘lm
 
 Debug versiyada katta Tasbix tugmasini uzoq bosish sinov uchun joriy sanoqni 1234 ga qo‘yadi. Bu amal tarixga yozuv qo‘shmaydi. Qisqa bosish sanoqni bittaga oshiradi. Release versiyada sinov amali faol emas. Debug build va unit testlar o‘tdi. Samsung SM_S916N’da uzoq bosish bilan 1234 ga o‘tish, keyingi qisqa bosishda 1235 chiqishi va tarix saqlanishi tekshirildi.
 
+1234 → 0 nollanish videosida bir nechta yakuniy nol yonma-yon ko‘ringani aniqlandi. Endi chapdagi yakuniy nollar razryadga kirayotganda pastga tushib so‘nadi. Birlik noli markazda qoladi. Debug build va unit testlar o‘tdi. Samsung SM_S916N’da ikkita Tasbix testi o‘tdi, jumladan 1234 → 0 animatsiyasining yakuniga yaqin kadrda chap nollar qolmasligi tekshirildi.
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.
