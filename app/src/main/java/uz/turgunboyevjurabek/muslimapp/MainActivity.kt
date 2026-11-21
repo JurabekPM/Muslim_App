@@ -20,10 +20,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
-import uz.turgunboyevjurabek.muslimapp.core.MyApplication
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.CounterViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.PrayerScheduleViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.SelectRegionViewModel
@@ -52,14 +49,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val dataStoreRegion = (application as MyApplication).dataStoreRegion
-
         val qiblaViewModel by viewModels<QiblaViewModel>()
         val scheduleViewModel by viewModels<PrayerScheduleViewModel>()
         val counterViewModel by viewModels<CounterViewModel>()
-        val regionViewModel by viewModels<SelectRegionViewModel> {
-            viewModelFactory { initializer { SelectRegionViewModel(dataStoreRegion) } }
-        }
+        val regionViewModel by viewModels<SelectRegionViewModel>()
 
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)

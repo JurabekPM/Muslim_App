@@ -72,9 +72,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.RegionGpsState
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.RegionHierarchy
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.RegionSelection
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.RegionSearchIndex
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.Regions
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.RegionSelection
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.SelectRegionViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.pressScale
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.rememberPressScale
