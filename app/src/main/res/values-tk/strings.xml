@@ -148,4 +148,13 @@
         <item quantity="one">%d gezek</item>
         <item quantity="other">%d gezek</item>
     </plurals>
+    <string name="tasbih_feedback_settings">Ses we yrgyldy</string>
+    <string name="tasbih_tap_sound">Basma sesi</string>
+    <string name="tasbih_tap_vibration">Basylanda yrgyldy</string>
+    <string name="tasbih_completion_sound">Maksada ýetilende ses</string>
+    <string name="tasbih_completion_vibration">Maksada ýetilende yrgyldy</string>
+    <plurals name="tasbih_goal_completed">
+        <item quantity="one">%1$d zikir ýerine ýetirildi</item>
+        <item quantity="other">%1$d zikir ýerine ýetirildi</item>
+    </plurals>
 </resources>

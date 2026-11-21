@@ -1,11 +1,12 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens
 
-import android.os.Build
 import android.os.SystemClock
-import android.view.HapticFeedbackConstants
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -43,14 +44,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
-import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.contentDescription
@@ -70,10 +71,11 @@ import kotlinx.coroutines.flow.filterIsInstance
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.CounterViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedCounter
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedValueText
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.CounterTapCadence
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.PressIconButton
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.pressScale
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.rememberPressScale
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.rememberTasbexFeedback
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.rememberTasbexPressLight
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.TasbexPressIcon
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.shimmers.ShimmerPlaceholder
@@ -82,7 +84,7 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.tasbex
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.tasbexTouchRimLight
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.shape.MorphPolygonShape
 
-private enum class TasbexDialog { History, Reset, Goal }
+private enum class TasbexDialog { History, Reset, Goal, Feedback }
 
 @Composable
 fun TasbexScreen(viewModel: CounterViewModel) {
@@ -99,8 +101,16 @@ fun TasbexScreen(viewModel: CounterViewModel) {
     }
 
     var dialog by rememberSaveable { mutableStateOf<TasbexDialog?>(null) }
+    var completedTarget by remember { mutableStateOf<Int?>(null) }
     val resetId = counter.history.firstOrNull()?.finishedAtMillis
-    val view = LocalView.current
+    val feedbackPlayer = rememberTasbexFeedback(counter.feedback)
+    val feedback by rememberUpdatedState(counter.feedback)
+    LaunchedEffect(completedTarget) {
+        if (completedTarget != null) {
+            delay(2_300)
+            completedTarget = null
+        }
+    }
     val tapCadence = remember { CounterTapCadence() }
     var rollDurationMillis by remember { mutableIntStateOf(CounterTapCadence.SlowDurationMillis) }
     fun recordTap() {
@@ -113,7 +123,20 @@ fun TasbexScreen(viewModel: CounterViewModel) {
             modifier = Modifier.fillMaxSize().padding(top = if (compact) 0.dp else 6.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            TasbexGoalPicker(counter.target) { dialog = TasbexDialog.Goal }
+            Box(Modifier.fillMaxWidth().padding(horizontal = 12.dp)) {
+                Box(Modifier.align(Alignment.Center).padding(horizontal = 48.dp)) {
+                    TasbexGoalPicker(counter.target) { dialog = TasbexDialog.Goal }
+                }
+                Box(Modifier.align(Alignment.CenterEnd)) {
+                    PressIconButton(onClick = { dialog = TasbexDialog.Feedback }) {
+                        Icon(
+                            painterResource(R.drawable.ic_tasbex_feedback),
+                            contentDescription = stringResource(R.string.tasbih_feedback_settings),
+                            tint = MaterialTheme.colorScheme.tertiary,
+                        )
+                    }
+                }
+            }
             AnimatedCounter(
                 count = counter.count,
                 resetId = resetId,
@@ -123,7 +146,7 @@ fun TasbexScreen(viewModel: CounterViewModel) {
                     fontFeatureSettings = "tnum",
                 ),
             )
-            CounterMessage(hasCount = counter.count > 0, resetId = resetId)
+            CounterMessage(hasCount = counter.count > 0, resetId = resetId, completedTarget = completedTarget)
 
             Spacer(Modifier.height(if (compact) 10.dp else 14.dp))
             Row(
@@ -173,14 +196,8 @@ fun TasbexScreen(viewModel: CounterViewModel) {
                     onClick = {
                         recordTap()
                         viewModel.incrementCounter { reachedTarget ->
-                            if (view.isAttachedToWindow) {
-                                val feedback = when {
-                                    !reachedTarget -> HapticFeedbackConstants.KEYBOARD_TAP
-                                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> HapticFeedbackConstants.CONFIRM
-                                    else -> HapticFeedbackConstants.LONG_PRESS
-                                }
-                                view.performHapticFeedback(feedback)
-                            }
+                            if (reachedTarget != null) completedTarget = reachedTarget
+                            feedbackPlayer.play(feedback, completed = reachedTarget != null)
                         }
                     },
                 )
@@ -190,12 +207,17 @@ fun TasbexScreen(viewModel: CounterViewModel) {
 
     when (dialog) {
         TasbexDialog.History -> TasbexHistorySheet(counter.history) { dialog = null }
-        TasbexDialog.Goal -> TasbexGoalSheet(counter.target, onDismiss = { dialog = null }, onSelect = viewModel::setTarget)
+        TasbexDialog.Goal -> TasbexGoalSheet(counter.target, onDismiss = { dialog = null }) {
+            completedTarget = null
+            viewModel.setTarget(it)
+        }
+        TasbexDialog.Feedback -> TasbexFeedbackSheet(counter.feedback, viewModel::setFeedback) { dialog = null }
         TasbexDialog.Reset -> TasbexResetDialog(
             count = counter.count,
             onDismiss = { dialog = null },
             onConfirm = {
                 tapCadence.reset()
+                completedTarget = null
                 viewModel.clearCounter()
                 dialog = null
             },
@@ -254,23 +276,35 @@ private fun TasbexAction(
 }
 
 @Composable
-private fun CounterMessage(hasCount: Boolean, resetId: Long?) {
+private fun CounterMessage(hasCount: Boolean, resetId: Long?, completedTarget: Int?) {
     var visible by remember(resetId) { mutableStateOf(true) }
     LaunchedEffect(resetId) {
         delay(5_000)
         visible = false
     }
-    val opacity = animateFloatAsState(if (visible) 1f else 0f, tween(280), label = "Tasbix hint")
-    AnimatedValueText(
-        text = stringResource(if (hasCount) R.string.continue_dhikr else R.string.new_dhikr),
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-            .then(if (visible) Modifier else Modifier.clearAndSetSemantics {})
-            .graphicsLayer { alpha = opacity.value },
-        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        textAlign = TextAlign.Center,
+    val message = when {
+        completedTarget != null ->
+            pluralStringResource(R.plurals.tasbih_goal_completed, completedTarget, completedTarget) to true
+        visible -> stringResource(if (hasCount) R.string.continue_dhikr else R.string.new_dhikr) to false
+        else -> " " to false
+    }
+    AnimatedContent(
+        targetState = message,
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         contentAlignment = Alignment.Center,
-    )
+        transitionSpec = { fadeIn(tween(180)) togetherWith fadeOut(tween(240)) },
+        label = "Tasbix message",
+    ) { (text, complete) ->
+        val colors = MaterialTheme.colorScheme
+        Text(
+            text = text,
+            modifier = if (complete) Modifier.semantics { liveRegion = LiveRegionMode.Polite } else Modifier,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = if (complete) FontWeight.SemiBold else FontWeight.Medium,
+            color = if (complete) colors.tertiary else colors.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+    }
 }
 
 @Composable

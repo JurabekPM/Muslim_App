@@ -148,4 +148,13 @@
         <item quantity="one">%d жолу</item>
         <item quantity="other">%d жолу</item>
     </plurals>
+    <string name="tasbih_feedback_settings">Үн жана титирөө</string>
+    <string name="tasbih_tap_sound">Басуу үнү</string>
+    <string name="tasbih_tap_vibration">Баскандагы титирөө</string>
+    <string name="tasbih_completion_sound">Максатка жеткендеги үн</string>
+    <string name="tasbih_completion_vibration">Максатка жеткендеги титирөө</string>
+    <plurals name="tasbih_goal_completed">
+        <item quantity="one">%1$d зикир аткарылды</item>
+        <item quantity="other">%1$d зикир аткарылды</item>
+    </plurals>
 </resources>

@@ -163,4 +163,13 @@
         <item quantity="one">%d marta</item>
         <item quantity="other">%d marta</item>
     </plurals>
+    <string name="tasbih_feedback_settings">Ovoz va tebranish</string>
+    <string name="tasbih_tap_sound">Bosish ovozi</string>
+    <string name="tasbih_tap_vibration">Bosish tebranishi</string>
+    <string name="tasbih_completion_sound">Yakun ovozi</string>
+    <string name="tasbih_completion_vibration">Yakun tebranishi</string>
+    <plurals name="tasbih_goal_completed">
+        <item quantity="one">%1$d ta zikr bajarildi</item>
+        <item quantity="other">%1$d ta zikr bajarildi</item>
+    </plurals>
 </resources>

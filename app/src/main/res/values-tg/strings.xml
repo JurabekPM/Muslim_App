@@ -146,4 +146,12 @@
     <plurals name="tasbih_count_times">
         <item quantity="other">%d маротиба</item>
     </plurals>
+    <string name="tasbih_feedback_settings">Садо ва ларзиш</string>
+    <string name="tasbih_tap_sound">Садои пахш</string>
+    <string name="tasbih_tap_vibration">Ларзиш ҳангоми пахш</string>
+    <string name="tasbih_completion_sound">Садои анҷом</string>
+    <string name="tasbih_completion_vibration">Ларзиши анҷом</string>
+    <plurals name="tasbih_goal_completed">
+        <item quantity="other">%1$d зикр иҷро шуд</item>
+    </plurals>
 </resources>

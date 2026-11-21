@@ -13,13 +13,14 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import uz.turgunboyevjurabek.muslimapp.feature.data.repository.DataStoreTasbihRepository
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.DhikrSession
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.TasbihFeedbackOption
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.TasbihState
 import java.io.File
 
@@ -105,11 +106,11 @@ class TasbihRepositoryTest {
         val initialJob = Job()
         try {
             val repository = DataStoreTasbihRepository(open(file, initialJob))
-            assertFalse(repository.increment())
+            assertNull(repository.increment())
             repository.setTarget(3)
             assertEquals(TasbihState(1, emptyList(), target = 3), repository.state.first())
             val results = List(3) { async { repository.increment() } }.awaitAll()
-            assertEquals(1, results.count { it })
+            assertEquals(listOf(3), results.filterNotNull())
             assertEquals(4, repository.state.first().count)
         } finally {
             initialJob.cancelAndJoin()
@@ -121,15 +122,44 @@ class TasbihRepositoryTest {
             assertEquals(TasbihState(4, emptyList(), target = 3), repository.state.first())
             repository.decrement()
             repository.decrement()
-            assertFalse(repository.increment())
+            assertNull(repository.increment())
             repository.reset()
             assertEquals(3, repository.state.first().target)
             assertEquals(3, repository.state.first().history.single().count)
-            repeat(2) { assertFalse(repository.increment()) }
-            assertTrue(repository.increment())
+            repeat(2) { assertNull(repository.increment()) }
+            assertEquals(3, repository.increment())
             repository.setTarget(null)
             assertEquals(null, repository.state.first().target)
             assertEquals(3, repository.state.first().count)
+        } finally {
+            reopenJob.cancelAndJoin()
+        }
+    }
+
+    @Test
+    fun feedbackOptionsAreIndependentAndSurviveResetAndReopen() = runBlocking {
+        val file = File(folder.root, "feedback.preferences_pb")
+        val expected = setOf(TasbihFeedbackOption.TapSound, TasbihFeedbackOption.CompletionSound)
+        val initialJob = Job()
+        try {
+            val repository = DataStoreTasbihRepository(open(file, initialJob))
+            assertEquals(TasbihFeedbackOption.defaults, repository.state.first().feedback)
+            TasbihFeedbackOption.entries.map { option ->
+                async { repository.setFeedback(option, option in expected) }
+            }.awaitAll()
+            repository.increment()
+            repository.reset()
+            assertEquals(expected, repository.state.first().feedback)
+        } finally {
+            initialJob.cancelAndJoin()
+        }
+
+        val reopenJob = Job()
+        try {
+            val state = DataStoreTasbihRepository(open(file, reopenJob)).state.first()
+            assertEquals(expected, state.feedback)
+            assertEquals(0, state.count)
+            assertEquals(1, state.history.single().count)
         } finally {
             reopenJob.cancelAndJoin()
         }

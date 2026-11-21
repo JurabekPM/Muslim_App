@@ -148,4 +148,13 @@
         <item quantity="one">%d рет</item>
         <item quantity="other">%d рет</item>
     </plurals>
+    <string name="tasbih_feedback_settings">Дыбыс және діріл</string>
+    <string name="tasbih_tap_sound">Басу дыбысы</string>
+    <string name="tasbih_tap_vibration">Басу кезіндегі діріл</string>
+    <string name="tasbih_completion_sound">Мақсатқа жеткендегі дыбыс</string>
+    <string name="tasbih_completion_vibration">Мақсатқа жеткендегі діріл</string>
+    <plurals name="tasbih_goal_completed">
+        <item quantity="one">%1$d зікір орындалды</item>
+        <item quantity="other">%1$d зікір орындалды</item>
+    </plurals>
 </resources>
