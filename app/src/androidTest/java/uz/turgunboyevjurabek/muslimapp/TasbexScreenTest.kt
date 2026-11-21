@@ -413,13 +413,36 @@ class TasbexScreenTest {
             ProgressBarRangeInfo(fraction, 0f..1f),
         )
         val idle = counter.assert(progress).captureToImage()
-        counter.performTouchInput { down(center) }
+        compose.mainClock.autoAdvance = false
+        val flash = try {
+            counter.performTouchInput { down(center) }
+            compose.mainClock.advanceTimeBy(96)
+            counter.captureToImage()
+        } finally {
+            compose.mainClock.autoAdvance = true
+        }
         val pressed = counter.assert(progress).captureToImage()
         counter.performTouchInput { up() }
         assertTrue("Idle contour has the Sunset fill", idle.hasSunsetStroke())
         assertTrue("Pressed contour has the Sunset fill", pressed.hasSunsetStroke())
         assertTrue("Press lights the beads inside the Sunset contour", pressed.highlightedBeadPixels() > idle.highlightedBeadPixels())
+        val flashPixels = flash.pearlPixelsAtRim()
+        assertTrue("The Sunset tip flashes on initial press", flashPixels > idle.pearlPixelsAtRim())
+        assertTrue("The Sunset tip flash fades during a hold", flashPixels > pressed.pearlPixelsAtRim())
         assertNotEquals(idle.glyphFrameHash(), pressed.glyphFrameHash())
+    }
+
+    private fun ImageBitmap.pearlPixelsAtRim(): Int {
+        val pixels = toPixelMap()
+        var brightPixels = 0
+        for (y in 0 until height step 2) {
+            for (x in 0 until width step 2) {
+                if (abs(x - width / 2) < width / 6 && abs(y - height / 2) < height / 6) continue
+                val pixel = pixels[x, y]
+                if (pixel.red > 0.98f && pixel.green > 0.98f && pixel.blue > 0.96f) brightPixels++
+            }
+        }
+        return brightPixels
     }
 
     private fun ImageBitmap.hasSunsetStroke(): Boolean {

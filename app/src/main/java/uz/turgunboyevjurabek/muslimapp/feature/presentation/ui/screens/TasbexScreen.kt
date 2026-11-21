@@ -309,7 +309,7 @@ private fun ShapeCount(
     val progressOutline = if (fraction == null) {
         Modifier
     } else {
-        Modifier.tasbexOutlineProgress(shape, fraction, dark, gold)
+        Modifier.tasbexOutlineProgress(shape, fraction, dark, gold, interactionSource)
     }
     Box(
         modifier = Modifier

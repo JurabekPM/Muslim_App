@@ -199,6 +199,10 @@ Bosish animatsiyasi uchun [6-variant](designs/tasbix-bead-glow.png) tanlandi. Ka
 
 Samsung SM-S916N’da 6 ta Tasbix testi o‘tdi. Oq va qora mavzuda maqsadli hamda Erkin rejimdagi donalar yaltirashi, Sunset konturi va bosishdan keyingi tiklanish tekshirildi. Mavjud sanoq va tarix fayli saqlandi. Debug build, 37 ta unit test va `lintRelease` o‘tdi.
 
+Sunset uchun [progress uchi varianti](designs/tasbix-sunset-tip.png) tanlandi. Tugma bosilganda progress uchidagi qisqa oq-oltin chaqnash chiziq ichida ko‘rinib, taxminan 300 ms da so‘nadi. Tez bosishlarda nur joriy yorqinlikdan yangilanadi. [Qo‘shimcha nur maketlari](designs/tasbix-sunset-press-options.png) yuqori chapdan boshlab progress konturi, tugma tagi, barcha tomon va barmoq tekkan tomondagi qisqa yoyni ko‘rsatadi. Tashqi nur dizayni tanlanishi kutilmoqda.
+
+Samsung’da `TasbexScreenTest` sinfidagi 6 ta sinov o‘tdi. Oq va qora mavzuda progress uchi bosish boshida yorishishi va bosib turilganda so‘nishi tekshirildi. Telefonda sanoq va tarix fayli saqlandi. Debug APK, 37 ta unit test va `lintRelease` muvaffaqiyatli yakunlandi (0 xato, 4 ogohlantirish).
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.
