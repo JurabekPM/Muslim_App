@@ -342,13 +342,13 @@ private fun ShapeCount(
                     ),
                 )
                 .clip(shape)
+                .background(colors.surfaceColorAtElevation(10.dp))
                 .innerShadow(shape) {
                     color = gold
                     radius = 5.dp.toPx()
                     spread = 1.5.dp.toPx()
                     alpha = ((1f - pressScale.value) / 0.06f).coerceIn(0f, 1f) * 0.48f
-                }
-                .background(colors.surfaceColorAtElevation(10.dp)),
+                },
             contentAlignment = Alignment.Center,
         ) {
             Icon(

@@ -84,8 +84,11 @@ class TasbexScreenTest {
             waitForCount(2)
             val counter = compose.onNodeWithContentDescription(text(R.string.dhikr))
             assertDirectionalShadowAndPressGlow(counter)
+            waitForCount(3)
             compose.runOnIdle { darkTheme.value = false }
             assertDirectionalShadowAndPressGlow(counter)
+            waitForCount(4)
+            runBlocking { preferences.edit { it[intPreferencesKey("counter")] = 2 } }
             waitForCount(2)
             counter.performTouchInput { click() }
             waitForCount(3)
@@ -184,10 +187,12 @@ class TasbexScreenTest {
 
         counter.performTouchInput { down(center) }
         val pressed = counter.captureToImage()
-        counter.performTouchInput { cancel() }
+        counter.performTouchInput { up() }
         val released = counter.captureToImage()
 
-        assertTrue("Press adds a warm rim", pressed.upperRimWarmth() > idle.upperRimWarmth() + 0.04f)
+        val idleWarmth = idle.upperRimWarmth()
+        val pressedWarmth = pressed.upperRimWarmth()
+        assertTrue("Press adds a warm rim ($idleWarmth → $pressedWarmth)", pressedWarmth > idleWarmth + 0.04f)
         assertEquals("Releasing leaves the neutral shadow", idle.glyphFrameHash(), released.glyphFrameHash())
     }
 
