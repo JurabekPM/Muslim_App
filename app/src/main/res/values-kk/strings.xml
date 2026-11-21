@@ -32,7 +32,6 @@
     <string name="until_prayer">%1$s намазына дейін %2$s</string>
     <string name="location_permission">Нақты геолокацияға рұқсат беріңіз немесе өңірді тізімнен таңдаңыз.</string>
     <string name="region_save_failed">Өңірді сақтау мүмкін болмады. Қайта таңдаңыз.</string>
-    <string name="location_off">Телефон баптауларында геолокацияны қосыңыз.</string>
     <string name="location_no_fix">Орналасқан жер анықталмады. Қайталап көріңіз.</string>
     <string name="location_no_address">Мекенжай анықталмады. Интернетті тексеріңіз немесе өңірді таңдаңыз.</string>
     <string name="location_no_match">Сәйкес қала немесе аудан табылмады. Өңірді тізімнен таңдаңыз.</string>

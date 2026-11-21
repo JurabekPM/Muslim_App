@@ -73,7 +73,7 @@ internal fun titleForRoute(route: String?): Int = when (route) {
 }
 
 @Composable
-fun myBottomNavigationBar(
+fun MyBottomNavigationBar(
     navController: NavController,
     backdrop: HazeState,
     modifier: Modifier = Modifier,

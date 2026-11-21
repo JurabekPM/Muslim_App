@@ -32,7 +32,6 @@
     <string name="until_prayer">До %1$s — %2$s</string>
     <string name="location_permission">Разрешите точное местоположение или выберите регион из списка.</string>
     <string name="region_save_failed">Не удалось сохранить регион. Выберите его снова.</string>
-    <string name="location_off">Включите геолокацию в настройках телефона.</string>
     <string name="location_no_fix">Не удалось определить местоположение. Повторите попытку.</string>
     <string name="location_no_address">Не удалось определить адрес. Проверьте интернет или выберите регион.</string>
     <string name="location_no_match">Город или район не найден. Выберите регион из списка.</string>

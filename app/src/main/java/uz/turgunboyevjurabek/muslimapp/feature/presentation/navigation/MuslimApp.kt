@@ -46,7 +46,7 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.MuslimAppTheme
 import uz.turgunboyevjurabek.muslimapp.feature.data.location.QiblaSensors
 import uz.turgunboyevjurabek.muslimapp.feature.data.location.RegionLocationLookup
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MyTopBar
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.myBottomNavigationBar
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MyBottomNavigationBar
 
 @Composable
 internal fun MuslimApp(
@@ -100,7 +100,7 @@ internal fun MuslimApp(
                     }
                 },
                 bottomBar = {
-                    if (!selectingRegion) myBottomNavigationBar(
+                    if (!selectingRegion) MyBottomNavigationBar(
                         navController = navController,
                         backdrop = chromeBackdrop,
                     )

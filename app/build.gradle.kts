@@ -43,6 +43,12 @@ android {
     buildFeatures {
         compose = true
     }
+    bundle {
+        language {
+            // Keep every language available to the in-app picker while offline.
+            enableSplit = false
+        }
+    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"

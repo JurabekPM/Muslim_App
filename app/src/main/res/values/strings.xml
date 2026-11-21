@@ -33,7 +33,6 @@
     <string name="until_prayer">%1$sgacha %2$s</string>
     <string name="location_permission">Aniq joylashuvga ruxsat bering yoki hududni ro‘yxatdan tanlang.</string>
     <string name="region_save_failed">Hududni saqlab bo‘lmadi. Qayta tanlang.</string>
-    <string name="location_off">Telefon sozlamalarida joylashuvni yoqing.</string>
     <string name="location_no_fix">Joylashuv aniqlanmadi. Qayta urinib ko‘ring.</string>
     <string name="location_no_address">Manzil aniqlanmadi. Internetni tekshiring yoki hududni tanlang.</string>
     <string name="location_no_match">Mos shahar yoki tuman topilmadi. Hududni ro‘yxatdan tanlang.</string>
