@@ -12,7 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toPixelMap
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertIsNotSelected
@@ -30,6 +34,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
+import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
@@ -109,7 +114,6 @@ class TasbexScreenTest {
             assertDirectionalShadowAndPressGlow(counter)
             waitForCount(3)
             compose.runOnIdle { darkTheme.value = false }
-            assertCaptionAboveActions(R.string.continue_dhikr, 3)
             assertDirectionalShadowAndPressGlow(counter)
             waitForCount(4)
             runBlocking { preferences.edit { it[intPreferencesKey("counter")] = 2 } }
@@ -166,6 +170,76 @@ class TasbexScreenTest {
             }
             waitForCount(2)
         } finally {
+            compose.runOnIdle { viewModels.clear() }
+            scope.cancel()
+            file.delete()
+        }
+    }
+
+    @Test
+    fun selectsGoalsAndDrawsSunsetOnThePressingShapeInBothThemes() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+        val file = File(context.cacheDir, "${UUID.randomUUID()}.preferences_pb")
+        val store = PreferenceDataStoreFactory.create(scope = scope) { file }
+        val viewModels = ViewModelStore()
+        val viewModel = CounterViewModel(DataStoreTasbihRepository(store))
+        viewModels.put("tasbih", viewModel)
+        val darkTheme = mutableStateOf(true)
+
+        fun text(id: Int) = context.getString(id)
+        fun times(count: Int) = context.resources.getQuantityString(R.plurals.tasbih_count_times, count, count)
+        fun waitForTarget(target: Int?, count: Int) {
+            compose.waitUntil(5_000) { viewModel.state.value?.let { it.target == target && it.count == count } == true }
+        }
+        val counter = compose.onNodeWithContentDescription(text(R.string.dhikr))
+
+        try {
+            runBlocking { store.edit { it[intPreferencesKey("counter")] = 18 } }
+            compose.setContent {
+                MuslimAppTheme(darkTheme = darkTheme.value) {
+                    Surface {
+                        Box(Modifier.fillMaxSize().padding(vertical = 48.dp)) { TasbexScreen(viewModel) }
+                    }
+                }
+            }
+            waitForTarget(null, 18)
+            val hint = compose.onNodeWithText(text(R.string.continue_dhikr))
+            hint.assertIsDisplayed()
+            compose.mainClock.autoAdvance = false
+            compose.mainClock.advanceTimeBy(5_500)
+            hint.assertDoesNotExist()
+            compose.mainClock.autoAdvance = true
+
+            val free = compose.onNodeWithText(text(R.string.tasbih_free_count))
+            free.performClick()
+            compose.onNodeWithText(times(33)).performClick()
+            waitForTarget(33, 18)
+            assertSunsetPress(counter, 18f / 33)
+            waitForTarget(33, 19)
+
+            compose.runOnIdle { darkTheme.value = false }
+            compose.onNodeWithText(times(33)).performClick()
+            compose.onNodeWithText(times(99)).performClick()
+            waitForTarget(99, 19)
+            compose.onNodeWithText(times(99)).performClick()
+            compose.onNodeWithText(text(R.string.tasbih_custom_count)).performClick()
+            val value = compose.onNodeWithText(text(R.string.tasbih_enter_count))
+            val save = compose.onNodeWithText(text(R.string.tasbih_save_count))
+            value.performTextReplacement("0")
+            save.assertIsNotEnabled()
+            value.performTextReplacement("54")
+            save.performClick()
+
+            waitForTarget(54, 19)
+            assertSunsetPress(counter, 19f / 54)
+            waitForTarget(54, 20)
+            compose.onNodeWithText(times(54)).performClick()
+            free.performClick()
+            waitForTarget(null, 20)
+            counter.assert(SemanticsMatcher.keyNotDefined(SemanticsProperties.ProgressBarRangeInfo))
+        } finally {
+            compose.mainClock.autoAdvance = true
             compose.runOnIdle { viewModels.clear() }
             scope.cancel()
             file.delete()
@@ -333,6 +407,105 @@ class TasbexScreenTest {
         }
     }
 
+    private fun assertSunsetPress(counter: SemanticsNodeInteraction, fraction: Float) {
+        assertTouchRimLight(counter)
+        val progress = SemanticsMatcher.expectValue(
+            SemanticsProperties.ProgressBarRangeInfo,
+            ProgressBarRangeInfo(fraction, 0f..1f),
+        )
+        val idle = counter.assert(progress).captureToImage()
+        compose.mainClock.autoAdvance = false
+        val (flash, swept, held) = try {
+            counter.performTouchInput { down(center) }
+            compose.mainClock.advanceTimeBy(128)
+            val flash = counter.captureToImage()
+            compose.mainClock.advanceTimeBy(320)
+            val swept = counter.captureToImage()
+            compose.mainClock.advanceTimeBy(352)
+            val held = counter.captureToImage()
+            counter.performTouchInput { up() }
+            Triple(flash, swept, held)
+        } finally {
+            compose.mainClock.autoAdvance = true
+        }
+        assertTrue("Idle contour has the Sunset fill", idle.hasSunsetStroke())
+        assertTrue("Pressed contour has the Sunset fill", held.hasSunsetStroke())
+        assertTrue("The slower bead sweep is still visible at 448 ms", swept.highlightedBeadPixels() > held.highlightedBeadPixels())
+        val flashPixels = flash.pearlPixelsAtRim()
+        assertTrue("The Sunset tip has a distinct bright head on press", flashPixels > idle.pearlPixelsAtRim() + 20)
+        assertTrue("The Sunset tip settles after its initial flash", flashPixels > held.pearlPixelsAtRim())
+        assertNotEquals(idle.glyphFrameHash(), held.glyphFrameHash())
+    }
+
+    private fun assertTouchRimLight(counter: SemanticsNodeInteraction) {
+        compose.mainClock.autoAdvance = false
+        val (heldLeft, heldRight, ended) = try {
+            counter.performTouchInput { down(center - Offset(center.x / 2f, 0f)) }
+            compose.mainClock.advanceTimeBy(800)
+            val heldLeft = counter.captureToImage()
+            counter.performTouchInput {
+                moveTo(center + Offset(0f, center.y / 2f))
+            }
+            compose.mainClock.advanceTimeBy(160)
+            counter.performTouchInput {
+                moveTo(center + Offset(center.x / 2f, 0f))
+            }
+            compose.mainClock.advanceTimeBy(224)
+            val heldRight = counter.captureToImage()
+            counter.performTouchInput { up() }
+            compose.mainClock.advanceTimeBy(384)
+            Triple(heldLeft, heldRight, counter.captureToImage())
+        } finally {
+            compose.mainClock.autoAdvance = true
+        }
+        val leftTravel = heldLeft.rimWarmth(left = true) - heldRight.rimWarmth(left = true)
+        val rightTravel = heldRight.rimWarmth(left = false) - heldLeft.rimWarmth(left = false)
+        val rightFade = heldRight.rimWarmth(left = false) - ended.rimWarmth(left = false)
+        assertTrue("The glow travels with one held pointer (left=$leftTravel, right=$rightTravel)",
+            leftTravel > 10f && rightTravel > 10f)
+        assertTrue("The glow fades after releasing a drag (right=$rightFade)", rightFade > 10f)
+    }
+
+    private fun ImageBitmap.rimWarmth(left: Boolean): Float {
+        val pixels = toPixelMap()
+        val firstColumn = if (left) 0 else width * 2 / 3
+        var warmth = 0f
+        for (y in height * 2 / 5 until height * 3 / 5 step 3) {
+            for (x in firstColumn until firstColumn + width / 3 step 3) {
+                val pixel = pixels[x, y]
+                warmth += pixel.red - pixel.blue
+            }
+        }
+        return warmth
+    }
+
+    private fun ImageBitmap.pearlPixelsAtRim(): Int {
+        val pixels = toPixelMap()
+        var brightPixels = 0
+        for (y in 0 until height step 2) {
+            for (x in 0 until width step 2) {
+                if (abs(x - width / 2) < width / 6 && abs(y - height / 2) < height / 6) continue
+                val pixel = pixels[x, y]
+                if (pixel.red > 0.98f && pixel.green > 0.98f && pixel.blue > 0.96f) brightPixels++
+            }
+        }
+        return brightPixels
+    }
+
+    private fun ImageBitmap.hasSunsetStroke(): Boolean {
+        val pixels = toPixelMap()
+        var coloredPixels = 0
+        for (y in 0 until height step 3) {
+            for (x in 0 until width step 3) {
+                val pixel = pixels[x, y]
+                if (pixel.red > 0.65f && pixel.red - pixel.green > 0.16f && pixel.green - pixel.blue > 0.14f) {
+                    coloredPixels++
+                }
+            }
+        }
+        return coloredPixels > 30
+    }
+
     private fun assertDirectionalShadowAndPressGlow(counter: SemanticsNodeInteraction) {
         val idle = counter.captureToImage()
         val idlePixels = idle.toPixelMap()
@@ -343,8 +516,14 @@ class TasbexScreenTest {
             idlePixels[x, idle.height - 1 - inset].red < idlePixels[x, inset].red,
         )
 
-        counter.performTouchInput { down(center) }
-        val pressed = counter.captureToImage()
+        compose.mainClock.autoAdvance = false
+        val pressed = try {
+            counter.performTouchInput { down(center) }
+            compose.mainClock.advanceTimeBy(352)
+            counter.captureToImage()
+        } finally {
+            compose.mainClock.autoAdvance = true
+        }
         val lowerProbe = idle.height - 1 - inset
         assertTrue(
             "Press pulls the lower shadow closer to the button",
@@ -353,22 +532,22 @@ class TasbexScreenTest {
         counter.performTouchInput { up() }
         val released = counter.captureToImage()
 
-        val idleWarmth = idle.upperRimWarmth()
-        val pressedWarmth = pressed.upperRimWarmth()
-        assertTrue("Press adds a warm rim ($idleWarmth → $pressedWarmth)", pressedWarmth > idleWarmth + 0.04f)
+        assertTrue("Press lights the beads", pressed.highlightedBeadPixels() > idle.highlightedBeadPixels())
         assertEquals("Releasing leaves the neutral shadow", idle.glyphFrameHash(), released.glyphFrameHash())
     }
 
-    private fun ImageBitmap.upperRimWarmth(): Float {
+    private fun ImageBitmap.highlightedBeadPixels(): Int {
         val pixels = toPixelMap()
-        var warmth = 0f
-        for (y in 0 until height / 3 step 2) {
-            for (x in 0 until width step 2) {
+        var highlighted = 0
+        for (y in height * 5 / 12 until height * 7 / 12) {
+            for (x in width * 5 / 12 until width * 7 / 12) {
                 val color = pixels[x, y]
-                warmth = maxOf(warmth, color.red - color.blue)
+                if (color.red > 0.94f && color.green > 0.85f && color.blue > 0.72f && color.red - color.blue > 0.04f) {
+                    highlighted++
+                }
             }
         }
-        return warmth
+        return highlighted
     }
 
     private fun ImageBitmap.glyphInk(columns: IntRange): GlyphInk {
