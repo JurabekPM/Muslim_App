@@ -18,8 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.launch
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.sunsetProgressLight
 import kotlin.math.abs
@@ -33,19 +34,15 @@ private val beadCenters = listOf(
 
 @Composable
 internal fun TasbexPressIcon(interactionSource: InteractionSource, tint: Color, glow: Color) {
-    val phase = remember(interactionSource) { Animatable(2f) }
+    val phase = remember(interactionSource) { Animatable(1f) }
     LaunchedEffect(interactionSource) {
-        interactionSource.interactions.filterIsInstance<PressInteraction>().collectLatest { interaction ->
-            when (interaction) {
-                is PressInteraction.Press -> {
+        var sweep: Job? = null
+        interactionSource.interactions.filterIsInstance<PressInteraction.Press>().collect {
+            if (sweep?.isActive != true) {
+                sweep = launch {
                     phase.snapTo(0f)
-                    phase.animateTo(1f, tween(220, easing = LinearEasing))
+                    phase.animateTo(1f, tween(650, easing = LinearEasing))
                 }
-                is PressInteraction.Release -> {
-                    if (phase.value < 1f) phase.animateTo(1f, tween(120, easing = LinearEasing))
-                    phase.animateTo(2f, tween(160))
-                }
-                is PressInteraction.Cancel -> phase.snapTo(2f)
             }
         }
     }
@@ -56,22 +53,30 @@ internal fun TasbexPressIcon(interactionSource: InteractionSource, tint: Color, 
         modifier = Modifier.size(46.dp).drawWithCache {
             val unit = size.minDimension / 24f
             val centers = beadCenters.map { it * unit }
-            val haloRadius = 2.8f * unit
-            val ring = Stroke(width = 1.05f * unit)
+            val haloRadius = 3.1f * unit
+            val ring = Stroke(width = 1.2f * unit)
             val halos = centers.map { center ->
-                Brush.radialGradient(listOf(glow.copy(alpha = 0.70f), Color.Transparent), center, haloRadius)
+                Brush.radialGradient(
+                    0f to sunsetProgressLight.copy(alpha = 0.80f),
+                    0.50f to glow.copy(alpha = 0.52f),
+                    1f to Color.Transparent,
+                    center = center,
+                    radius = haloRadius,
+                )
             }
             onDrawWithContent {
                 drawContent()
                 val position = phase.value
-                if (position >= 2f) return@onDrawWithContent
-                val head = position.coerceAtMost(1f) * (centers.lastIndex + 2) - 2f
-                val opacity = (2f - position).coerceAtMost(1f)
+                if (position >= 1f) return@onDrawWithContent
+                val spread = 2.5f
+                val head = position * (centers.lastIndex + spread * 2f) - spread
                 centers.forEachIndexed { index, center ->
-                    val light = (1f - abs(index - head) / 2.2f).coerceAtLeast(0f) * opacity
+                    val proximity = (1f - abs(index - head) / spread).coerceIn(0f, 1f)
+                    val light = proximity * proximity * (3f - 2f * proximity)
                     if (light > 0f) {
                         drawCircle(halos[index], haloRadius, center, alpha = light)
-                        drawCircle(sunsetProgressLight, 1.15f * unit, center, alpha = light, style = ring)
+                        drawCircle(sunsetProgressLight, 1.2f * unit, center, alpha = light, style = ring)
+                        drawCircle(Color.White, 0.57f * unit, center, alpha = light * 0.82f)
                     }
                 }
             }

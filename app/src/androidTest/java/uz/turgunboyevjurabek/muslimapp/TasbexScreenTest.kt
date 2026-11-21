@@ -415,44 +415,47 @@ class TasbexScreenTest {
         )
         val idle = counter.assert(progress).captureToImage()
         compose.mainClock.autoAdvance = false
-        val flash = try {
+        val (flash, swept, held) = try {
             counter.performTouchInput { down(center) }
-            compose.mainClock.advanceTimeBy(96)
-            counter.captureToImage()
+            compose.mainClock.advanceTimeBy(128)
+            val flash = counter.captureToImage()
+            compose.mainClock.advanceTimeBy(320)
+            val swept = counter.captureToImage()
+            compose.mainClock.advanceTimeBy(352)
+            val held = counter.captureToImage()
+            counter.performTouchInput { up() }
+            Triple(flash, swept, held)
         } finally {
             compose.mainClock.autoAdvance = true
         }
-        val pressed = counter.assert(progress).captureToImage()
-        counter.performTouchInput { up() }
         assertTrue("Idle contour has the Sunset fill", idle.hasSunsetStroke())
-        assertTrue("Pressed contour has the Sunset fill", pressed.hasSunsetStroke())
-        assertTrue("Press lights the beads inside the Sunset contour", pressed.highlightedBeadPixels() > idle.highlightedBeadPixels())
+        assertTrue("Pressed contour has the Sunset fill", held.hasSunsetStroke())
+        assertTrue("The slower bead sweep is still visible at 448 ms", swept.highlightedBeadPixels() > held.highlightedBeadPixels())
         val flashPixels = flash.pearlPixelsAtRim()
-        assertTrue("The Sunset tip flashes on initial press", flashPixels > idle.pearlPixelsAtRim())
-        assertTrue("The Sunset tip flash fades during a hold", flashPixels > pressed.pearlPixelsAtRim())
-        assertNotEquals(idle.glyphFrameHash(), pressed.glyphFrameHash())
+        assertTrue("The Sunset tip has a distinct bright head on press", flashPixels > idle.pearlPixelsAtRim() + 20)
+        assertTrue("The Sunset tip settles after its initial flash", flashPixels > held.pearlPixelsAtRim())
+        assertNotEquals(idle.glyphFrameHash(), held.glyphFrameHash())
     }
 
     private fun assertTouchRimLight(counter: SemanticsNodeInteraction) {
         for (left in listOf(true, false)) {
             val direction = if (left) -1f else 1f
             compose.mainClock.autoAdvance = false
-            val (flash, held) = try {
+            val (held, ended) = try {
                 counter.performTouchInput { down(center + Offset(direction * center.x / 2f, 0f)) }
-                compose.mainClock.advanceTimeBy(112)
-                val flash = counter.captureToImage()
-                compose.mainClock.advanceTimeBy(288)
+                compose.mainClock.advanceTimeBy(800)
                 val held = counter.captureToImage()
                 counter.performTouchInput { cancel() }
-                flash to held
+                compose.mainClock.advanceTimeBy(384)
+                held to counter.captureToImage()
             } finally {
                 compose.mainClock.autoAdvance = true
             }
-            val touchedGlow = flash.rimWarmth(left) - held.rimWarmth(left)
-            val oppositeGlow = flash.rimWarmth(!left) - held.rimWarmth(!left)
+            val touchedGlow = held.rimWarmth(left) - ended.rimWarmth(left)
+            val oppositeGlow = held.rimWarmth(!left) - ended.rimWarmth(!left)
             val side = if (left) "left" else "right"
             assertTrue(
-                "The $side rim is lit and fades during a hold (touched=$touchedGlow, opposite=$oppositeGlow)",
+                "The $side rim stays lit while held and then fades (touched=$touchedGlow, opposite=$oppositeGlow)",
                 touchedGlow > 4f && touchedGlow > oppositeGlow + 4f,
             )
         }
@@ -508,8 +511,14 @@ class TasbexScreenTest {
             idlePixels[x, idle.height - 1 - inset].red < idlePixels[x, inset].red,
         )
 
-        counter.performTouchInput { down(center) }
-        val pressed = counter.captureToImage()
+        compose.mainClock.autoAdvance = false
+        val pressed = try {
+            counter.performTouchInput { down(center) }
+            compose.mainClock.advanceTimeBy(352)
+            counter.captureToImage()
+        } finally {
+            compose.mainClock.autoAdvance = true
+        }
         val lowerProbe = idle.height - 1 - inset
         assertTrue(
             "Press pulls the lower shadow closer to the button",

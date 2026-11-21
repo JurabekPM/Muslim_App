@@ -11,7 +11,6 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathMeasure
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.StrokeCap
@@ -61,23 +60,30 @@ internal fun Modifier.tasbexOutlineProgress(
         val startAngle = (measure.getPosition(start) - center).angleDegrees()
         val tipAngle = (tip - center).angleDegrees()
         val endAngle = if (filled == length) 1f else ((tipAngle - startAngle + 360f) % 360f / 360f)
-        val segment = if (filled == length) contour else Path().apply {
-            measure.getSegment(start, minOf(start + filled, length), this, startWithMoveTo = true)
-            if (start + filled > length) {
-                measure.getSegment(0f, start + filled - length, this, startWithMoveTo = false)
-            }
-        }
+        val segment = if (filled == length) contour else measure.wrappedSegment(start, filled)
         val sunset = if (filled > 0f) sunsetSweep(center, startAngle, endAngle.coerceAtLeast(0.001f)) else null
         val tipGlow = Brush.radialGradient(
             listOf(sunsetProgressLight, Color.Transparent),
             center = tip,
             radius = strokeWidth / 2f,
         )
-        val pressTipGlow = Brush.radialGradient(
-            listOf(Color.White, sunsetProgressLight.copy(alpha = 0.75f), Color.Transparent),
+        val pressHead = sunsetProgressColors[if (dark) 2 else 1]
+        val haloRadius = strokeWidth * 2.65f
+        val pressHalo = Brush.radialGradient(
+            0f to pressHead.copy(alpha = 0.75f),
+            0.43f to pressHead.copy(alpha = 0.37f),
+            1f to Color.Transparent,
             center = tip,
-            radius = strokeWidth * 1.65f,
+            radius = haloRadius,
         )
+        val tail = minOf(filled, strokeWidth * 4f)
+        val pressTail = measure.wrappedSegment(start + filled - tail, tail)
+        val tailGlow = Brush.radialGradient(
+            listOf(sunsetProgressLight, Color.Transparent),
+            center = tip,
+            radius = strokeWidth * 4f,
+        )
+        val tailStroke = Stroke(strokeWidth * 0.68f, cap = StrokeCap.Round, join = StrokeJoin.Round)
         val drift = 17.dp.toPx()
         onDrawBehind {
             val phase = motion.value
@@ -98,10 +104,12 @@ internal fun Modifier.tasbexOutlineProgress(
                 val pulse = 0.8f + 0.2f * sin(2 * PI * phase).toFloat()
                 drawCircle(tipGlow, radius = strokeWidth / 2f, center = tip, alpha = pulse)
             }
-            val flash = pressLight.opacity
-            if (filled > 0f && flash > 0f) {
-                drawPath(segment, pressTipGlow, alpha = flash, style = stroke)
-                drawCircle(Color.White, radius = strokeWidth * 0.16f, center = tip, alpha = flash)
+            val flash = pressLight.tipOpacity
+            if (flash > 0f) {
+                drawCircle(pressHalo, radius = haloRadius, center = tip, alpha = flash)
+                if (tail > 0f) drawPath(pressTail, tailGlow, alpha = flash, style = tailStroke)
+                drawCircle(pressHead, radius = strokeWidth * 0.60f, center = tip, alpha = flash)
+                drawCircle(Color.White, radius = strokeWidth * 0.43f, center = tip, alpha = flash)
             }
         }
     }

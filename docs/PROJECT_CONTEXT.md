@@ -207,6 +207,10 @@ Tashqi nur uchun avval 4-variant tanlandi. Barmoq tekkan tomonga eng yaqin qirra
 
 Samsung SM-S916N’da 6 ta Tasbix sinovi o‘tdi. Oq va qora mavzuda chap hamda o‘ng bosishlar mos qirrani yoritishi, ushlab turilganda nur so‘nishi va progress uchidagi chaqnash ishlashi kadrlar orqali tekshirildi. Haqiqiy sanoq va tarix fayli saqlandi. Debug va test APK’lari yig‘ildi, 37 ta unit test hamda `lintRelease` o‘tdi (0 xato, 4 ogohlantirish).
 
+4-variant takomillashtirildi. Bosilgan tomondagi Sunset yoyi kengaydi, qirra ortidagi iliq soya 38 dp gacha yoyilib yumshoq so‘nadi. Nur bosib turilganda yonadi, qo‘yib yuborilganda yoki bosish bekor qilinganda so‘nadi. Tasbeh donalaridagi nur to‘lqini 650 ms davom etadi va tez bosishlarda boshlanib bo‘lgan to‘lqin oxirigacha yuradi. Progress uchiga oq yadro, oltin atrof va qisqa yorug‘ iz qo‘shildi. Barmoq qo‘yib yuborilganda yorug‘ uch yangi sanoqqa siljiydi.
+
+Samsung SM-S916N’da takroriy sinovda 6 ta Tasbix testi o‘tdi. Oq va qora mavzuda chap va o‘ng qirra 800 ms bosib turilganda yoniq qolgani, bosish tugagach so‘ngani, donalar yaltirashi 448 ms da ko‘ringani va progress uchidagi oq nuqta ajralishi kadrlar bo‘yicha tasdiqlandi. Haqiqiy sanoq va tarix fayli xeshi mos keldi. Debug va test APK’lari, 37 ta unit test va `lintRelease` o‘tdi (0 xato, avvalgi 4 ogohlantirish).
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.
