@@ -19,8 +19,9 @@
 
 ## Finishing authorized work
 
-- The user previously requested ongoing GitHub pushes for completed project changes. Verify the intended remote, branch, staged changes, and checks before committing. Never stage unrelated user changes.
-- This machine has a working copy and an Android Studio clone. Details are in `docs/PROJECT_CONTEXT.md`. Fast-forward the Studio clone only when safe, and report conflicts or local edits.
+- Use a separate branch for each completed change. Verify the intended remote, branch, staged changes, and checks before committing. Never stage unrelated user changes.
+- Push the branch to the user's repository and open a pull request against master. Summarize the change and verification results in the pull request and share its link.
+- This machine has a working copy and an Android Studio clone. Details are in `docs/PROJECT_CONTEXT.md`. After changes land on master, fast-forward the Studio clone when safe, and report conflicts or local edits.
 - After completing work, update `docs/PROJECT_CONTEXT.md` with the final behavior, new user decisions, remaining tasks, and actual verification results. Keep the note accurate and concise.
 - Save design images that matter for future decisions under `docs/designs/` and link them from the context note. Generated files outside the repository may disappear or be unavailable on another computer.
 - Include the context update with the same commit as the implementation or design deliverable when possible. Record commit history through Git rather than trying to store the hash of a commit inside itself.

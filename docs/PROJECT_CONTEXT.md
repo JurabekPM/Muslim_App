@@ -18,9 +18,9 @@ Bu qayd butun suhbatning so‘zma-so‘z nusxasi emas. Kod, Git tarixi, muhim ta
 - Android Studio nusxasi `C:/Users/turgu/StudioProjects/Muslim_App`. Oldingi implementatsiya ishlaridan keyin shu nusxa fast-forward orqali yangilangan. Yangi sessiyada yo‘lni va lokal o‘zgarishlarni tekshiring.
 - Asosiy remote `origin` — `https://github.com/JurabekPM/Muslim_App.git`.
 - Eski loyiha `upstream` — `https://github.com/JurabekDevelopment/Muslim_App.git`.
-- Joriy ishlab kelinayotgan branch `master`. Boshqa branchga o‘tilgan bo‘lsa Git holatini asos oling.
+- Asosiy branch `master`. Har bir vazifa alohida `codex/…` branchida bajariladi. Git holatini ish boshida tekshiring.
 - Ushbu qayd yaratilishidan oldingi oxirgi kod commiti `a1e40d77a6d29fc28cb7301a666549c8f14e10e8`, hudud tarjimalari va xatolarga chidamli qidiruv.
-- Foydalanuvchi GitHub’ga ish yakunida push qilib borishni, repozitoriyni public qilishni so‘ragan. Yangi sessiyada mavjud ruxsatlar va remote holatini tekshiring.
+- Foydalanuvchi 2026-11-21 kuni GitHub uchun branch va pull request tartibini tanladi. Yakunlangan o‘zgarish branchga push qilinadi va `master`ga pull request ochiladi. Pull requestda o‘zgarish va haqiqiy tekshiruvlar qayd etiladi. Android Studio nusxasi o‘zgarish `master`ga qo‘shilgach xavfsiz fast-forward qilinadi.
 - `.gradle/`, build natijalari va `$CODEX_HOME/generated_images` davom ettirish uchun yagona saqlash manbasi bo‘lmasin. Muhim maketlar `docs/designs/` ichiga ko‘chirildi.
 
 ## Mahsulot va uslub
