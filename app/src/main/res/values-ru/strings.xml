@@ -141,4 +141,8 @@
     <string name="theme_dark">Тёмная</string>
     <string name="about_app">О приложении</string>
     <string name="about_app_description">Muslim App объединяет расписание намазов для регионов Узбекистана, направление киблы и счётчик тасбиха.</string>
+    <string name="tasbih_history_short">История</string>
+    <string name="tasbih_decrement">Уменьшить на один</string>
+    <string name="tasbih_reset_short">Сбросить</string>
+    <string name="tasbih_reset_message">Текущий счёт сохранится в истории, а счётчик начнёт с нуля.</string>
 </resources>

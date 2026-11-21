@@ -127,4 +127,8 @@
     <string name="theme_dark">Қора</string>
     <string name="about_app">Илова ҳақида</string>
     <string name="about_app_description">Muslim App Ўзбекистон ҳудудлари учун намоз вақтлари, Қибла йўналиши ва тасбеҳ ҳисоблагичини бир жойга жамлайди.</string>
+    <string name="tasbih_history_short">Тарих</string>
+    <string name="tasbih_decrement">Биттага камайтириш</string>
+    <string name="tasbih_reset_short">Ноллаш</string>
+    <string name="tasbih_reset_message">Жорий саноқ тарихга сақланади ва ҳисоб нолдан бошланади.</string>
 </resources>

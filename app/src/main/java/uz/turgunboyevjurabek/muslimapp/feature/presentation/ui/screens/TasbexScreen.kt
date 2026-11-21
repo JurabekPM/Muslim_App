@@ -1,286 +1,335 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens
 
-import androidx.compose.ui.res.stringResource
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedValueText
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.pressScale
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.rememberPressScale
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.PressIconButton
-import android.annotation.SuppressLint
-import android.widget.Toast
+import android.view.HapticFeedbackConstants
 import androidx.compose.animation.AnimatedVisibility
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.Morph
 import androidx.graphics.shapes.RoundedPolygon
 import androidx.graphics.shapes.circle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filterIsInstance
 import uz.turgunboyevjurabek.muslimapp.R
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedCounter
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.shape.MorphPolygonShape
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.CounterViewModel
 import uz.turgunboyevjurabek.muslimapp.core.utils.coloredShadow
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.CounterViewModel
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.DhikrSession
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedCounter
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedValueText
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.pressScale
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.rememberPressScale
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.shimmers.ShimmerPlaceholder
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.shape.MorphPolygonShape
+import java.text.DateFormat
+import java.text.NumberFormat
+import java.util.Date
 
-@OptIn(ExperimentalComposeUiApi::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+private enum class TasbexDialog { History, Reset }
+
 @Composable
 fun TasbexScreen(viewModel: CounterViewModel) {
-    val savedCount by viewModel.counter.collectAsStateWithLifecycle()
-    val initialCount = savedCount
-    if (initialCount == null) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val counter = state
+    if (counter == null) {
         Box(Modifier.fillMaxSize().padding(top = 50.dp), contentAlignment = Alignment.TopCenter) {
-            ShimmerPlaceholder(Modifier.size(width = 88.dp, height = 56.dp), description = stringResource(R.string.loading_tasbih))
+            ShimmerPlaceholder(
+                Modifier.size(width = 88.dp, height = 56.dp),
+                description = stringResource(R.string.loading_tasbih),
+            )
         }
         return
     }
-    val context = LocalContext.current
-    var count by rememberSaveable {
-        mutableIntStateOf(initialCount)
-    }
-    ConstraintLayout(
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        val (animatedText, messageText,columnItems, shapeCount) = createRefs()
 
-        AnimatedCounter(
-            modifier = Modifier
-                .constrainAs(animatedText) {
-                    top.linkTo(parent.top, margin=50.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-            count = count, style = TextStyle(
-                fontFamily = FontFamily.Serif, fontSize = 55.sp, fontWeight = FontWeight.ExtraBold
-            )
-        )
-        MessageText(
-            viewModel = viewModel,
-            modifier = Modifier
-                .constrainAs(messageText){
-                    top.linkTo(animatedText.bottom)
-                    start.linkTo(animatedText.start)
-                    end.linkTo(animatedText.end)
-                }
-        )
+    var dialog by rememberSaveable { mutableStateOf<TasbexDialog?>(null) }
+    val view = LocalView.current
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        val compact = maxHeight < 620.dp
+        val counterSize = minOf(350.dp, maxWidth - 24.dp, maxHeight - 205.dp)
+            .coerceAtLeast(48.dp)
+
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(columnItems) {
-                    bottom.linkTo(shapeCount.top, margin = 30.dp)
-                    start.linkTo(shapeCount.start)
-                    end.linkTo(shapeCount.end)
-                }
+            modifier = Modifier.align(Alignment.TopCenter).padding(top = if (compact) 16.dp else 50.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            AnimatedCounter(
+                count = counter.count,
+                style = TextStyle(
+                    fontFamily = FontFamily.Serif,
+                    fontSize = 55.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                ),
+            )
+            CounterMessage(hasCount = counter.count > 0)
+        }
+
+        Column(
+            modifier = Modifier.align(Alignment.BottomCenter)
+                .padding(bottom = if (compact) 12.dp else 30.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(if (compact) 8.dp else 24.dp),
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier.fillMaxWidth(0.9f),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.Top,
             ) {
-                PressIconButton(onClick = {
-                    Toast.makeText(context, R.string.no_dhikr_history, Toast.LENGTH_SHORT).show()
-                }) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_tasbex_history),
-                        contentDescription = stringResource(R.string.dhikr_history),
-                        modifier = Modifier.size(24.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                PressIconButton(onClick = {
-                    count=0
-                    viewModel.clearCounter()
-                }) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_tasbex_reset),
-                        contentDescription = stringResource(R.string.reset_count),
-                        modifier = Modifier.size(24.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-
+                TasbexAction(
+                    icon = R.drawable.ic_tasbex_history,
+                    label = stringResource(R.string.tasbih_history_short),
+                    modifier = Modifier.weight(1f),
+                    onClick = { dialog = TasbexDialog.History },
+                )
+                TasbexAction(
+                    icon = R.drawable.ic_tasbex_minus,
+                    label = "−1",
+                    description = stringResource(R.string.tasbih_decrement),
+                    modifier = Modifier.weight(1f),
+                    enabled = counter.count > 0,
+                    onClick = viewModel::decrementCounter,
+                )
+                TasbexAction(
+                    icon = R.drawable.ic_tasbex_reset,
+                    label = stringResource(R.string.tasbih_reset_short),
+                    modifier = Modifier.weight(1f),
+                    enabled = counter.count > 0,
+                    onClick = { dialog = TasbexDialog.Reset },
+                )
             }
-
+            ShapeCount(
+                count = counter.count,
+                modifier = Modifier.size(counterSize),
+                onClick = {
+                    view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                    viewModel.incrementCounter()
+                },
+            )
         }
-        ShapeCount(
-            onClick = {
-                count++
-                viewModel.incrementCounter()
-            },
-            count = count,
-            modifier = Modifier
-                .constrainAs(shapeCount){
-                    bottom.linkTo(parent.bottom, margin = 30.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
+    }
+
+    when (dialog) {
+        TasbexDialog.History -> TasbexHistoryDialog(counter.history) { dialog = null }
+        TasbexDialog.Reset -> AlertDialog(
+            onDismissRequest = { dialog = null },
+            title = { Text(stringResource(R.string.reset_count)) },
+            text = { Text(stringResource(R.string.tasbih_reset_message)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.clearCounter()
+                    dialog = null
+                }) {
+                    Text(stringResource(R.string.tasbih_reset_short))
                 }
+            },
+            dismissButton = {
+                TextButton(onClick = { dialog = null }) { Text(stringResource(R.string.cancel)) }
+            },
+        )
+        null -> Unit
+    }
+}
+
+@Composable
+private fun TasbexAction(
+    icon: Int,
+    label: String,
+    modifier: Modifier,
+    description: String = label,
+    enabled: Boolean = true,
+    onClick: () -> Unit,
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val colors = MaterialTheme.colorScheme
+    val alpha = if (enabled) 1f else 0.38f
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                enabled = enabled,
+                role = Role.Button,
+                onClickLabel = description,
+                onClick = onClick,
+            )
+            .pressScale(rememberPressScale(interactionSource))
+            .padding(vertical = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Box(
+            modifier = Modifier.size(42.dp).background(colors.surfaceColorAtElevation(8.dp), CircleShape),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                painter = painterResource(icon),
+                contentDescription = null,
+                modifier = Modifier.size(22.dp),
+                tint = colors.primary.copy(alpha = alpha),
+            )
+        }
+        Text(
+            text = label,
+            modifier = Modifier.semantics { if (description != label) contentDescription = description },
+            color = colors.onSurfaceVariant.copy(alpha = alpha),
+            style = MaterialTheme.typography.labelMedium,
+            textAlign = TextAlign.Center,
         )
     }
 }
 
 @Composable
-fun MessageText(viewModel: CounterViewModel, modifier: Modifier) {
-    val counterViewModel = viewModel.counter.collectAsStateWithLifecycle()
+private fun TasbexHistoryDialog(history: List<DhikrSession>, onDismiss: () -> Unit) {
+    val locale = LocalConfiguration.current.locales[0]
+    val dateFormat = remember(locale) { DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale) }
+    val numberFormat = remember(locale) { NumberFormat.getIntegerInstance(locale) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.dhikr_history)) },
+        text = {
+            if (history.isEmpty()) {
+                Text(stringResource(R.string.no_dhikr_history))
+            } else {
+                LazyColumn(Modifier.heightIn(max = 240.dp)) {
+                    items(history) { session ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(dateFormat.format(Date(session.finishedAtMillis)), Modifier.weight(1f))
+                            Text(numberFormat.format(session.count), style = MaterialTheme.typography.titleMedium)
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.close)) }
+        },
+    )
+}
 
+@Composable
+private fun CounterMessage(hasCount: Boolean) {
     var showText by remember { mutableStateOf(true) }
-
-    // LaunchedEffect bilan 8 soniyadan keyin matnni yo'q qilamiz
     LaunchedEffect(Unit) {
-        delay(8000L) // 8 soniya kutish
+        delay(8000L)
         showText = false
     }
     AnimatedVisibility(
-        modifier = modifier,
-        visible = showText, // showText true bo'lsa matn ko'rsatiladi
-        enter = slideInHorizontally(
-            initialOffsetX = { fullWidth -> fullWidth }, animationSpec = tween(durationMillis = 3000)
-        ),
-        exit = slideOutHorizontally(
-            targetOffsetX = { fullWidth -> fullWidth }, animationSpec = tween(durationMillis = 3000)
-        )
+        visible = showText,
+        enter = slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(3000)),
+        exit = slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(3000)),
     ) {
         AnimatedValueText(
-            text = if (counterViewModel.value == 0) stringResource(R.string.new_dhikr) else stringResource(R.string.continue_dhikr),
+            text = stringResource(if (hasCount) R.string.continue_dhikr else R.string.new_dhikr),
             fontSize = 15.sp,
             textAlign = TextAlign.Center,
             fontFamily = FontFamily.Serif,
-            modifier = modifier
-                .fillMaxWidth()
-                .coloredShadow(
-                    MaterialTheme.colorScheme.primary,
-                    borderRadius = 20.dp,
-                    shadowRadius = 30.dp,
-                )
         )
     }
-
 }
 
 @Composable
-fun ShapeCount(
-    onClick: () -> Unit, count: Int,
-    modifier: Modifier
-) {
-
-    var alphaForShadow by rememberSaveable {
-        mutableFloatStateOf(0.01f)
-    }
-    alphaForShadow = when (count) {
-        in 0..9 -> 0.01f
-        in 10..19 -> 0.05f
-        in 20..29 -> 0.1f
-        in 30..39 -> 0.15f
-        in 40..49 -> 0.2f
-        in 50..59 -> 0.25f
-        in 60..69 -> 0.3f
-        in 70..79 -> 0.35f
-        in 80..89 -> 0.4f
-        in 90..99 -> 0.45f
-        else -> 0.5f
-    }
-    val shapeA = remember {
-        RoundedPolygon(
-            12, rounding = CornerRounding(0.2f)
-        )
-    }
-    val shapeB = remember {
-        RoundedPolygon.circle(
-            15
-        )
-    }
+private fun ShapeCount(count: Int, modifier: Modifier, onClick: () -> Unit) {
+    val shadowAlpha = if (count < 10) 0.01f else (count / 10).coerceAtMost(10) * 0.05f
     val morph = remember {
-        Morph(shapeA, shapeB)
+        Morph(RoundedPolygon(12, rounding = CornerRounding(0.2f)), RoundedPolygon.circle(15))
     }
-    val interactionSource = remember {
-        MutableInteractionSource()
+    val interactionSource = remember { MutableInteractionSource() }
+    val progress = remember { Animatable(0f) }
+    LaunchedEffect(interactionSource) {
+        interactionSource.interactions.filterIsInstance<PressInteraction>().collectLatest { press ->
+            when (press) {
+                is PressInteraction.Press -> progress.animateTo(1f, tween(95))
+                is PressInteraction.Release -> {
+                    // Even a tap that ends before the first frame reaches the circle.
+                    if (progress.value < 1f) progress.animateTo(1f, tween(65))
+                    progress.animateTo(0f, tween(180))
+                }
+                is PressInteraction.Cancel -> progress.animateTo(0f, tween(160))
+            }
+        }
     }
-    val isPressed by interactionSource.collectIsPressedAsState()
-    val animatedProgress = animateFloatAsState(
-        targetValue = if (isPressed) 1f else 0f,
-        label = "progress",
-        animationSpec = spring(dampingRatio = 0.4f, stiffness = Spring.StiffnessMedium)
-    )
-    Card(
+    val colors = MaterialTheme.colorScheme
+    Box(
         modifier = modifier
             .coloredShadow(
-                MaterialTheme.colorScheme.primary,
+                colors.primary,
                 borderRadius = 150.dp,
-                alpha = alphaForShadow,
+                alpha = shadowAlpha,
                 shadowRadius = 50.dp,
                 offsetX = 0.dp,
-                offsetY = 0.dp
+                offsetY = 0.dp,
             )
-            .size(350.dp)
-            .padding()
-            .clip(MorphPolygonShape(morph, animatedProgress.value))
-            .size(200.dp)
-            .clickable(interactionSource = interactionSource, indication = null) {
-                onClick()
-            }
-            .pressScale(rememberPressScale(interactionSource)),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(10.dp)
-        )
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                role = Role.Button,
+                onClick = onClick,
+            )
+            .pressScale(rememberPressScale(interactionSource))
+            .clip(MorphPolygonShape(morph, progress.value))
+            .background(colors.surfaceColorAtElevation(10.dp)),
+        contentAlignment = Alignment.Center,
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                stringResource(R.string.dhikr),
-                fontSize = 25.sp,
-                fontFamily = FontFamily.Serif,
-                fontWeight = FontWeight.ExtraBold
-            )
-        }
-
+        Text(
+            stringResource(R.string.dhikr),
+            color = colors.onSurface,
+            fontSize = 25.sp,
+            fontFamily = FontFamily.Serif,
+            fontWeight = FontWeight.ExtraBold,
+        )
     }
 }

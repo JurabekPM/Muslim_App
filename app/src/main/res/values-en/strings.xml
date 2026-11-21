@@ -127,4 +127,8 @@
     <string name="theme_dark">Dark</string>
     <string name="about_app">About</string>
     <string name="about_app_description">Muslim App brings together prayer times for Uzbekistan, the Qibla direction, and a tasbih counter.</string>
+    <string name="tasbih_history_short">History</string>
+    <string name="tasbih_decrement">Decrease by one</string>
+    <string name="tasbih_reset_short">Reset</string>
+    <string name="tasbih_reset_message">The current count will be saved to history and the counter will start at zero.</string>
 </resources>

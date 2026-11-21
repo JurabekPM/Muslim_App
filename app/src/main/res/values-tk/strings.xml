@@ -127,4 +127,8 @@
     <string name="theme_dark">Garaňky</string>
     <string name="about_app">Programma barada</string>
     <string name="about_app_description">Muslim App Özbegistanyň sebitleri üçin namaz wagtlaryny, kybla ugruny we tesbih hasaplaýjysyny bir ýere jemleýär.</string>
+    <string name="tasbih_history_short">Taryh</string>
+    <string name="tasbih_decrement">Bir san azaltmak</string>
+    <string name="tasbih_reset_short">Nollamak</string>
+    <string name="tasbih_reset_message">Häzirki san taryha ýazylar we hasap noldan başlar.</string>
 </resources>

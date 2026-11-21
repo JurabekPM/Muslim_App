@@ -127,4 +127,8 @@
     <string name="theme_dark">Караңгы</string>
     <string name="about_app">Колдонмо жөнүндө</string>
     <string name="about_app_description">Muslim App Өзбекстандын аймактарындагы намаз убакыттарын, кыбыла багытын жана тасбих эсептегичин бир жерге топтойт.</string>
+    <string name="tasbih_history_short">Тарых</string>
+    <string name="tasbih_decrement">Бирге азайтуу</string>
+    <string name="tasbih_reset_short">Нөлдөө</string>
+    <string name="tasbih_reset_message">Учурдагы сан тарыхка сакталат жана эсеп нөлдөн башталат.</string>
 </resources>

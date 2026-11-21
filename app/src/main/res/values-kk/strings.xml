@@ -127,4 +127,8 @@
     <string name="theme_dark">Қараңғы</string>
     <string name="about_app">Қолданба туралы</string>
     <string name="about_app_description">Muslim App Өзбекстан өңірлерінің намаз уақыттарын, құбыла бағытын және тәсбих санағышын біріктіреді.</string>
+    <string name="tasbih_history_short">Тарих</string>
+    <string name="tasbih_decrement">Бірге азайту</string>
+    <string name="tasbih_reset_short">Нөлдеу</string>
+    <string name="tasbih_reset_message">Ағымдағы сан тарихта сақталып, санау нөлден басталады.</string>
 </resources>

@@ -142,4 +142,8 @@
     <string name="theme_dark">Qora</string>
     <string name="about_app">Ilova haqida</string>
     <string name="about_app_description">Muslim App O‘zbekiston hududlari uchun namoz vaqtlari, Qibla yo‘nalishi va tasbeh hisoblagichini bir joyga jamlaydi.</string>
+    <string name="tasbih_history_short">Tarix</string>
+    <string name="tasbih_decrement">Bittaga kamaytirish</string>
+    <string name="tasbih_reset_short">Nollash</string>
+    <string name="tasbih_reset_message">Joriy sanoq tarixga saqlanadi va hisob noldan boshlanadi.</string>
 </resources>

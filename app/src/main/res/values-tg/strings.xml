@@ -127,4 +127,8 @@
     <string name="theme_dark">Торик</string>
     <string name="about_app">Дар бораи барнома</string>
     <string name="about_app_description">Muslim App вақтҳои намоз дар минтақаҳои Ӯзбекистон, самти қибла ва ҳисобкунаки тасбеҳро дар як ҷо ҷамъ мекунад.</string>
+    <string name="tasbih_history_short">Таърих</string>
+    <string name="tasbih_decrement">Як адад кам кардан</string>
+    <string name="tasbih_reset_short">Сифр кардан</string>
+    <string name="tasbih_reset_message">Ҳисоби ҷорӣ дар таърих сабт мешавад ва ҳисоб аз сифр оғоз меёбад.</string>
 </resources>
