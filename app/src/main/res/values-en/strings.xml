@@ -132,4 +132,6 @@
     <string name="tasbih_reset_short">Reset</string>
     <string name="tasbih_reset_message">The current count will be saved to history and the counter will start at zero.</string>
     <string name="tasbih_current_count">Current count</string>
+    <string name="privacy_policy">Privacy policy</string>
+    <string name="privacy_policy_summary">Location permission is optional. Qibla direction is calculated on your phone. If you choose to detect your current region, the app uses Android location and address lookup services. You can also select a region manually.\n\nTo fetch prayer times, the app sends the selected region and schedule period to namoz-vaqti.uz over HTTPS. The service may also see the IP address of the connection.\n\nYour region, cached schedules, dhikr history, count, language and theme are stored in the app. Android may back them up according to your settings. To delete the local data, clear app storage in Android settings.</string>
 </resources>

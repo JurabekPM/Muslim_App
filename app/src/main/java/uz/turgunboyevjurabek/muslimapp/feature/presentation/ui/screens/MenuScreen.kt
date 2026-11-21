@@ -23,6 +23,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -70,6 +71,7 @@ internal fun MenuScreen(
 ) {
     var showLanguage by rememberSaveable { mutableStateOf(false) }
     var showAbout by rememberSaveable { mutableStateOf(false) }
+    var showPrivacy by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
@@ -139,6 +141,21 @@ internal fun MenuScreen(
             },
             confirmButton = {
                 TextButton(onClick = { showLanguage = false }) { Text(stringResource(R.string.close)) }
+            },
+        )
+    }
+    if (showPrivacy) {
+        AlertDialog(
+            onDismissRequest = { showPrivacy = false },
+            title = { Text(stringResource(R.string.privacy_policy)) },
+            text = {
+                Text(
+                    text = stringResource(R.string.privacy_policy_summary),
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { showPrivacy = false }) { Text(stringResource(R.string.close)) }
             },
         )
     }
