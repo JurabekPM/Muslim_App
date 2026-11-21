@@ -3,6 +3,7 @@ package uz.turgunboyevjurabek.muslimapp.feature.data.repository
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -40,15 +41,25 @@ internal class DataStoreTasbihRepository(
                     history = decodeHistory(historyValue)
                     lastHistoryValue = historyValue
                 }
-                emit(TasbihState(preferences[counterKey] ?: 0, history))
+                val target = preferences[targetKey]?.takeIf { it > 0 }
+                emit(TasbihState(preferences[counterKey] ?: 0, history, target))
             }
     }
 
-    override suspend fun increment() {
+    override suspend fun increment(): Boolean {
+        var reachedTarget = false
         store.edit { preferences ->
             val count = preferences[counterKey] ?: 0
-            if (count < Int.MAX_VALUE) preferences[counterKey] = count + 1
+            if (count == Int.MAX_VALUE) return@edit
+
+            val next = count + 1
+            preferences[counterKey] = next
+            if (next == preferences[targetKey] && preferences[targetReachedKey] != true) {
+                preferences[targetReachedKey] = true
+                reachedTarget = true
+            }
         }
+        return reachedTarget
     }
 
     override suspend fun decrement() {
@@ -67,6 +78,21 @@ internal class DataStoreTasbihRepository(
             val history = preferences[historyKey]
             preferences[historyKey] = if (history.isNullOrEmpty()) entry else "$entry\n$history"
             preferences[counterKey] = 0
+            preferences.remove(targetReachedKey)
+        }
+    }
+
+    override suspend fun setTarget(target: Int?) {
+        require(target == null || target > 0)
+        store.edit { preferences ->
+            if (target == preferences[targetKey]) return@edit
+            if (target == null) {
+                preferences.remove(targetKey)
+                preferences.remove(targetReachedKey)
+            } else {
+                preferences[targetKey] = target
+                preferences[targetReachedKey] = (preferences[counterKey] ?: 0) >= target
+            }
         }
     }
 
@@ -80,5 +106,7 @@ internal class DataStoreTasbihRepository(
     private companion object {
         val counterKey = intPreferencesKey("counter")
         val historyKey = stringPreferencesKey("dhikr_history")
+        val targetKey = intPreferencesKey("tasbih_target")
+        val targetReachedKey = booleanPreferencesKey("tasbih_target_reached")
     }
 }

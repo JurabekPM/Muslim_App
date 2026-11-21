@@ -1,8 +1,10 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens
 
+import android.os.Build
 import android.os.SystemClock
 import android.view.HapticFeedbackConstants
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,12 +42,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.draw.innerShadow
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
@@ -57,6 +64,7 @@ import androidx.graphics.shapes.Morph
 import androidx.graphics.shapes.RoundedPolygon
 import androidx.graphics.shapes.circle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filterIsInstance
 import uz.turgunboyevjurabek.muslimapp.R
@@ -67,9 +75,10 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.Counter
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.pressScale
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.rememberPressScale
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.shimmers.ShimmerPlaceholder
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.tasbexOutlineProgress
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.shape.MorphPolygonShape
 
-private enum class TasbexDialog { History, Reset }
+private enum class TasbexDialog { History, Reset, Goal }
 
 @Composable
 fun TasbexScreen(viewModel: CounterViewModel) {
@@ -86,6 +95,7 @@ fun TasbexScreen(viewModel: CounterViewModel) {
     }
 
     var dialog by rememberSaveable { mutableStateOf<TasbexDialog?>(null) }
+    val resetId = counter.history.firstOrNull()?.finishedAtMillis
     val view = LocalView.current
     val tapCadence = remember { CounterTapCadence() }
     var rollDurationMillis by remember { mutableIntStateOf(CounterTapCadence.SlowDurationMillis) }
@@ -96,19 +106,20 @@ fun TasbexScreen(viewModel: CounterViewModel) {
         val compact = maxHeight < 620.dp
 
         Column(
-            modifier = Modifier.fillMaxSize().padding(top = if (compact) 0.dp else 12.dp),
+            modifier = Modifier.fillMaxSize().padding(top = if (compact) 0.dp else 6.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            TasbexGoalPicker(counter.target) { dialog = TasbexDialog.Goal }
             AnimatedCounter(
                 count = counter.count,
-                resetId = counter.history.firstOrNull()?.finishedAtMillis,
+                resetId = resetId,
                 rollDurationMillis = rollDurationMillis,
                 style = MaterialTheme.typography.displayLarge.copy(
                     fontWeight = FontWeight.SemiBold,
                     fontFeatureSettings = "tnum",
                 ),
             )
-            CounterMessage(hasCount = counter.count > 0)
+            CounterMessage(hasCount = counter.count > 0, resetId = resetId)
 
             Spacer(Modifier.height(if (compact) 10.dp else 14.dp))
             Row(
@@ -145,18 +156,27 @@ fun TasbexScreen(viewModel: CounterViewModel) {
                 modifier = Modifier.weight(1f).fillMaxWidth(),
                 contentAlignment = Alignment.BottomCenter,
             ) {
-                val topPadding = minOf(if (compact) 16.dp else 34.dp, maxHeight / 4)
-                val bottomPadding = minOf(if (compact) 12.dp else 30.dp, maxHeight / 4)
+                val topPadding = minOf(if (compact) 12.dp else 20.dp, maxHeight / 4)
+                val bottomPadding = minOf(if (compact) 10.dp else 20.dp, maxHeight / 4)
                 val shapeSize = minOf(350.dp, maxWidth - 24.dp, maxHeight - topPadding - bottomPadding)
                     .coerceAtLeast(0.dp)
                 ShapeCount(
                     shapeSize = shapeSize,
                     topPadding = topPadding,
                     bottomPadding = bottomPadding,
+                    fraction = counter.target?.let { counter.count.coerceAtMost(it).toFloat() / it },
                     onClick = {
                         recordTap()
-                        view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                        viewModel.incrementCounter()
+                        viewModel.incrementCounter { reachedTarget ->
+                            if (view.isAttachedToWindow) {
+                                val feedback = when {
+                                    !reachedTarget -> HapticFeedbackConstants.KEYBOARD_TAP
+                                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> HapticFeedbackConstants.CONFIRM
+                                    else -> HapticFeedbackConstants.LONG_PRESS
+                                }
+                                view.performHapticFeedback(feedback)
+                            }
+                        }
                     },
                 )
             }
@@ -165,6 +185,7 @@ fun TasbexScreen(viewModel: CounterViewModel) {
 
     when (dialog) {
         TasbexDialog.History -> TasbexHistorySheet(counter.history) { dialog = null }
+        TasbexDialog.Goal -> TasbexGoalSheet(counter.target, onDismiss = { dialog = null }, onSelect = viewModel::setTarget)
         TasbexDialog.Reset -> TasbexResetDialog(
             count = counter.count,
             onDismiss = { dialog = null },
@@ -228,10 +249,18 @@ private fun TasbexAction(
 }
 
 @Composable
-private fun CounterMessage(hasCount: Boolean) {
+private fun CounterMessage(hasCount: Boolean, resetId: Long?) {
+    var visible by remember(resetId) { mutableStateOf(true) }
+    LaunchedEffect(resetId) {
+        delay(5_000)
+        visible = false
+    }
+    val opacity = animateFloatAsState(if (visible) 1f else 0f, tween(280), label = "Tasbix hint")
     AnimatedValueText(
         text = stringResource(if (hasCount) R.string.continue_dhikr else R.string.new_dhikr),
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            .then(if (visible) Modifier else Modifier.clearAndSetSemantics {})
+            .graphicsLayer { alpha = opacity.value },
         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.Center,
@@ -244,6 +273,7 @@ private fun ShapeCount(
     shapeSize: Dp,
     topPadding: Dp,
     bottomPadding: Dp,
+    fraction: Float?,
     onClick: () -> Unit,
 ) {
     val morph = remember {
@@ -276,11 +306,27 @@ private fun ShapeCount(
     val contactOpacity = if (dark) 0.44f else 0.15f
     val gold = if (dark) colors.tertiary else Color(0xFFB98525)
     val glowOpacity = if (dark) 0.48f else 0.62f
+    val lowerRimGlow = remember(gold) {
+        Brush.verticalGradient(
+            0.45f to Color.Transparent,
+            0.75f to gold.copy(alpha = 0.5f),
+            1f to gold,
+        )
+    }
     val label = stringResource(R.string.dhikr)
+    val hasOutline = fraction != null
+    val progressOutline = if (fraction == null) {
+        Modifier
+    } else {
+        Modifier.tasbexOutlineProgress(shape, fraction, dark, gold)
+    }
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .semantics { contentDescription = label }
+            .semantics {
+                contentDescription = label
+                if (fraction != null) progressBarRangeInfo = ProgressBarRangeInfo(fraction, 0f..1f)
+            }
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
@@ -296,24 +342,33 @@ private fun ShapeCount(
                 .pressScale(pressScale)
                 .dropShadow(shape) {
                     color = shadowColor
-                    radius = 18.dp.toPx()
+                    radius = (if (hasOutline) 18.dp - 6.dp * pressure else 18.dp).toPx()
                     offset = Offset(0f, (9.dp - 6.dp * pressure).toPx())
                     alpha = ambientOpacity * (1f - 0.38f * pressure)
                 }
                 .dropShadow(shape) {
                     color = shadowColor
-                    radius = 6.dp.toPx()
+                    radius = (if (hasOutline) 6.dp - 2.dp * pressure else 6.dp).toPx()
                     offset = Offset(0f, (4.dp - 3.dp * pressure).toPx())
                     alpha = contactOpacity
                 }
                 .clip(shape)
                 .background(colors.surfaceColorAtElevation(10.dp))
                 .innerShadow(shape) {
-                    color = gold
-                    radius = 5.dp.toPx()
-                    spread = 1.5.dp.toPx()
-                    alpha = pressure * glowOpacity
-                },
+                    if (hasOutline) {
+                        brush = lowerRimGlow
+                        radius = 17.dp.toPx()
+                        spread = 2.dp.toPx()
+                        offset = Offset(0f, -8.dp.toPx())
+                        alpha = pressure * if (dark) 0.90f else 0.82f
+                    } else {
+                        color = gold
+                        radius = 5.dp.toPx()
+                        spread = 1.5.dp.toPx()
+                        alpha = pressure * glowOpacity
+                    }
+                }
+                .then(progressOutline),
             contentAlignment = Alignment.Center,
         ) {
             Icon(

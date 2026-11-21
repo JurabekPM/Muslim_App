@@ -74,7 +74,7 @@
     <string name="dhikr_history">Зикир тарыхы</string>
     <string name="reset_count">Эсептегичти нөлгө коюу</string>
     <string name="new_dhikr">Зикирди баштаңыз</string>
-    <string name="continue_dhikr">Зикир уланууда</string>
+    <string name="continue_dhikr">Зикирди улантыңыз</string>
     <string name="dhikr">Зикир</string>
     <string name="location_services_off">Жайгашкан жерди аныктоо өчүк</string>
     <string name="location_services_hint">Телефондун жөндөөлөрүнөн жайгашкан жерди аныктоону күйгүзүңүз.</string>
@@ -138,5 +138,14 @@
     <plurals name="tasbih_history_entries">
         <item quantity="one">%d жазуу</item>
         <item quantity="other">%d жазуу</item>
+    </plurals>
+    <string name="tasbih_count_mode">Санак режими</string>
+    <string name="tasbih_free_count">Эркин санак</string>
+    <string name="tasbih_custom_count">Башка сан</string>
+    <string name="tasbih_enter_count">Сан киргизиңиз</string>
+    <string name="tasbih_save_count">Сактоо</string>
+    <plurals name="tasbih_count_times">
+        <item quantity="one">%d жолу</item>
+        <item quantity="other">%d жолу</item>
     </plurals>
 </resources>

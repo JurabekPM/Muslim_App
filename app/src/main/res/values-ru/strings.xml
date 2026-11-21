@@ -74,7 +74,7 @@
     <string name="dhikr_history">История зикра</string>
     <string name="reset_count">Сбросить счётчик</string>
     <string name="new_dhikr">Начните зикр</string>
-    <string name="continue_dhikr">Зикр продолжается</string>
+    <string name="continue_dhikr">Продолжите зикр</string>
     <string name="dhikr">Зикр</string>
     <string name="location_services_off">Геолокация отключена</string>
     <string name="location_services_hint">Включите геолокацию в настройках телефона.</string>
@@ -154,5 +154,16 @@
         <item quantity="few">%d записи</item>
         <item quantity="many">%d записей</item>
         <item quantity="other">%d записи</item>
+    </plurals>
+    <string name="tasbih_count_mode">Режим счёта</string>
+    <string name="tasbih_free_count">Свободный счёт</string>
+    <string name="tasbih_custom_count">Другое число</string>
+    <string name="tasbih_enter_count">Введите число</string>
+    <string name="tasbih_save_count">Сохранить</string>
+    <plurals name="tasbih_count_times">
+        <item quantity="one">%d раз</item>
+        <item quantity="few">%d раза</item>
+        <item quantity="many">%d раз</item>
+        <item quantity="other">%d раза</item>
     </plurals>
 </resources>

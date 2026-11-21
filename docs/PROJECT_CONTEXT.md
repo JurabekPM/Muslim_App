@@ -185,6 +185,16 @@ Debug APK, test APK va 36 ta unit test o‘tdi. `lintRelease` 0 xato va avvalgi 
 
 Tasbixdagi «Zikrni boshlang» va «Zikr davom etmoqda» yozuvlari sanoq bilan bitta vertikal tartibda joylashadi. Amallar qatoridan oldin alohida oraliq bor. Katta sanash tugmasi qolgan balandlikka mos o‘lchanadi. Raqamlarning yuqori va pastda so‘nish maydoni saqlandi. Debug APK, test APK va 36 ta unit test o‘tdi. `lintRelease` 0 xato va avvalgi 4 ta ogohlantirish bilan yakunlandi. Samsung SM-S916N’da 5 ta Tasbix testi, jumladan oq va qora mavzuda yozuvning sanoq ostida va amallardan ajralib turishi tekshirildi. Qurilmadagi mavjud sanoq va tarix fayli sinovdan oldin va keyin bir xil bo‘ldi.
 
+Tasbix uchun [Sanoq rejimi](designs/tasbix-count-modes.png) va [Sunset konturining 3-varianti](designs/tasbix-sunset-button.png) tanlandi. Sanoq tepasidagi ixcham tugma «33 marta», «99 marta», «Erkin sanoq» yoki «Boshqa son» tanlovini pastdan ochadi. Tanlov saqlanadi, joriy sanoq va tarix qoladi. Standart rejim Erkin. Maqsadli rejimda sanoq maqsaddan keyin ham davom etadi va kontur to‘liq to‘lgan holatda qoladi. Maqsadga birinchi yetish bitta alohida haptik signal beradi. Nollash keyingi sanoq uchun signalni tiklaydi, tanlangan sonni saqlaydi.
+
+Sunset progressini katta tugma konturi chizadigan `MorphPolygonShape` bilan bir xil shakl belgilaydi. Bosib turganda ikkalasi birga dumaloqlashadi. Oltin press yaltirashi maqsadli rejimda kontur chizig‘ining ichkarisida, pastki qismda. Home va Tasbix Sunset ranglari va yaltirash fazasi yordamchisidan birga foydalanadi. «Zikrni boshlang» va «Zikrni davom ettiring» yozuvlari kirishda va nollashdan keyin 5 soniya ko‘rinib so‘nadi, joyi saqlanadi.
+
+Debug APK, test APK va 37 ta unit test o‘tdi. `lintRelease` 0 xato va avvalgi 4 ta ogohlantirish bilan yakunlandi. Samsung SM-S916N’da yakuniy APK bilan 6 ta Tasbix testi o‘tdi. Oq va qora mavzuda Sunset chizig‘ining bo‘sh va bosilgan kadrlari, 33, 99, Erkin va 54 lik boshqa son, nolni rad etish va yordamchi yozuvning so‘nishi tekshirildi. Test oldi va keyingi haqiqiy sanoq va tarix fayllari xeshi mos keldi. Maqsad chegarasidagi bitta signal mantiqi va rejimning qayta ochilishda saqlanishi unit testda tekshirildi.
+
+PR #17 dagi vizual sayqalda Sunset chizig‘i 7 dp dan 9 dp ga qalinlashdi. Tashqi chiziq tugma chetiga tutashadi. Bosilgandagi oltin nur pastki ichki qirra bo‘ylab tarqaladi, tashqi soyaning yoyilishi bosilganda qisqaradi. Samsung SM-S916N’da 6 ta Tasbix testi o‘tdi. Oq va qora mavzudagi bosilgan kadrlar ko‘rildi, mavjud sanoq va tarix fayli saqlandi. Build, 37 ta unit test va 0 xatoli `lintRelease` o‘tdi.
+
+Sanoq maqsadi tanlanganda bosishdagi oltin nur pastki ichki qirrada kuchaytirildi. Nur gradienti yuqoriga qarab so‘nadi. Samsung SM-S916N’dagi oldingi va yangi oq hamda qora kadrlar solishtirildi. Ikkala mavzuda ham qirradagi nur kuchaygani ko‘rindi. 6 ta qurilma testi, 37 ta unit test va `lintRelease` o‘tdi.
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.

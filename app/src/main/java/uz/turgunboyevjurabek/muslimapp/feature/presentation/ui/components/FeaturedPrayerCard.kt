@@ -3,11 +3,7 @@ package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components
 import androidx.compose.ui.res.stringResource
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -55,6 +51,9 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.PrayerInterval
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.ScheduleCardContent
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.ScheduleCardColor
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.AnimatedValueText
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.rememberSunsetProgressPhase
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.sunsetProgressColors
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.sunsetProgressLight
 import java.util.Locale
 import kotlin.math.PI
 import kotlin.math.sin
@@ -190,12 +189,7 @@ internal fun FeaturedPrayerCard(
 private fun PrayerCardProgress(interval: PrayerInterval, modifier: Modifier = Modifier) {
     val fraction = animateFloatAsState(interval.fraction, tween(650), label = "Prayer progress")
     val duration = 950 + interval.minutesLeft.coerceIn(1L, 180L).toInt() * 15
-    val motion = rememberInfiniteTransition(label = "Prayer progress sparkles").animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(duration, easing = LinearEasing)),
-        label = "Sparkle phase",
-    )
+    val motion = rememberSunsetProgressPhase(duration)
     Box(
         modifier.fillMaxWidth().height(12.dp).clipToBounds()
             .semantics { progressBarRangeInfo = ProgressBarRangeInfo(interval.fraction, 0f..1f) }
@@ -207,11 +201,11 @@ private fun PrayerCardProgress(interval: PrayerInterval, modifier: Modifier = Mo
                 val left = if (rtl) size.width - filled else -tipRadius
                 val fillSize = Size(filled + tipRadius, size.height)
                 val sunset = Brush.horizontalGradient(
-                    listOf(Color(0xFFEA6113), Color(0xFFF88F22), Color(0xFFFBB931), Color(0xFFFFE3B3)),
+                    sunsetProgressColors,
                     startX = if (rtl) size.width else 0f,
                     endX = if (rtl) size.width - filled else filled,
                 )
-                val lightColor = Color(0xFFFFF9E8)
+                val lightColor = sunsetProgressLight
                 val glowRadius = size.height * 0.6f
                 val glow = Brush.radialGradient(
                     listOf(lightColor, progressGold.copy(alpha = 0.72f), Color.Transparent),

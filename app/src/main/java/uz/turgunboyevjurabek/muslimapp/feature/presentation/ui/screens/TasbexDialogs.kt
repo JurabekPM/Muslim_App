@@ -118,11 +118,17 @@ internal fun TasbexResetDialog(count: Int, onDismiss: () -> Unit, onConfirm: () 
 }
 
 @Composable
-internal fun TasbexDialogButton(label: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
+internal fun TasbexDialogButton(
+    label: String,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    onClick: () -> Unit,
+) {
     val colors = MaterialTheme.colorScheme
     val interaction = remember { MutableInteractionSource() }
     Button(
         onClick = onClick,
+        enabled = enabled,
         modifier = modifier.pressScale(rememberPressScale(interaction)).heightIn(min = 48.dp),
         interactionSource = interaction,
         shape = RoundedCornerShape(14.dp),

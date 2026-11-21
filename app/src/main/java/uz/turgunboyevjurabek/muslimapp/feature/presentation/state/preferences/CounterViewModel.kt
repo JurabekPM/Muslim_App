@@ -15,8 +15,8 @@ class CounterViewModel @Inject constructor(
 ) : ViewModel() {
     val state = repository.state.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    fun incrementCounter() {
-        viewModelScope.launch { repository.increment() }
+    fun incrementCounter(onCounted: (reachedTarget: Boolean) -> Unit) {
+        viewModelScope.launch { onCounted(repository.increment()) }
     }
 
     fun decrementCounter() {
@@ -25,5 +25,9 @@ class CounterViewModel @Inject constructor(
 
     fun clearCounter() {
         viewModelScope.launch { repository.reset() }
+    }
+
+    fun setTarget(target: Int?) {
+        viewModelScope.launch { repository.setTarget(target) }
     }
 }
