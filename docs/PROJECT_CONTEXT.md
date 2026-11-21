@@ -129,6 +129,8 @@ Tasbixning keyingi sayqalida Tarix, −1 va Nollash qatori biroz yuqoriga surild
 
 Debug build, 26 ta unit test va Samsung SM_S916N’da ikkita Tasbix instrumentatsiya testi o‘tdi. Shakl yonidagi bosish, tasdiqlash va tarix, shuningdek 124 dan 0 ga qaytishdagi oraliq kadr tekshirildi.
 
+Tasbix raqamlari uchun animatsiya maydoni ekran eniga kengaytirildi va yuqori-pastki chetlarda yumshoq so‘nish qo‘shildi. Tasdiqlangan nollash 1050 ms davom etadi. Oddiy plus va minus 200 ms. Debug build va 26 ta unit test o‘tdi. Yangilangan APK Samsung SM_S916N’ga o‘rnatildi va ikkita Tasbix testi o‘tdi. 124 dan 0 ga qaytishda o‘rta va kechgi kadrlarning chetlari tekshirildi.
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.

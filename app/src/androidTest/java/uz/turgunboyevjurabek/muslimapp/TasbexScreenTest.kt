@@ -42,6 +42,7 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.Animate
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.TasbexScreen
 import java.io.File
 import java.util.UUID
+import kotlin.math.abs
 
 class TasbexScreenTest {
     @get:Rule
@@ -109,7 +110,9 @@ class TasbexScreenTest {
         val count = mutableIntStateOf(124)
         compose.setContent {
             MuslimAppTheme(darkTheme = true) {
-                Surface { AnimatedCounter(count.intValue) }
+                Surface {
+                    AnimatedCounter(count.intValue, resetId = if (count.intValue == 0) 1L else null)
+                }
             }
         }
         val before = compose.onNodeWithText("124").captureToImage()
@@ -117,12 +120,30 @@ class TasbexScreenTest {
         compose.runOnIdle { count.intValue = 0 }
         compose.mainClock.advanceTimeBy(300)
         val rolling = compose.onNodeWithText("0").captureToImage()
-        compose.mainClock.advanceTimeBy(600)
+        compose.mainClock.advanceTimeBy(560)
+        val late = compose.onNodeWithText("0").captureToImage()
+        compose.mainClock.advanceTimeBy(300)
         val settled = compose.onNodeWithText("0").captureToImage()
 
         assertEquals(before.width, rolling.width)
+        assertEquals(rolling.width, settled.width)
         assertNotEquals(before.glyphFrameHash(), rolling.glyphFrameHash())
-        assertTrue(settled.width < rolling.width)
+        assertNotEquals(late.glyphFrameHash(), settled.glyphFrameHash())
+        assertTrue(rolling.hasClearEdges())
+        assertTrue(late.hasClearEdges())
+    }
+
+    private fun ImageBitmap.hasClearEdges(): Boolean {
+        val pixels = toPixelMap()
+        val background = pixels[0, 0]
+        fun isClear(x: Int, y: Int): Boolean {
+            val pixel = pixels[x, y]
+            return abs(pixel.red - background.red) < 0.02f &&
+                abs(pixel.green - background.green) < 0.02f &&
+                abs(pixel.blue - background.blue) < 0.02f
+        }
+        return (0 until width).all { x -> isClear(x, 0) && isClear(x, height - 1) } &&
+            (0 until height).all { y -> isClear(0, y) && isClear(width - 1, y) }
     }
 
     private fun ImageBitmap.glyphFrameHash(): Int {

@@ -102,6 +102,7 @@ fun TasbexScreen(viewModel: CounterViewModel) {
         ) {
             AnimatedCounter(
                 count = counter.count,
+                resetId = counter.history.firstOrNull()?.finishedAtMillis,
                 style = MaterialTheme.typography.displayLarge.copy(
                     fontWeight = FontWeight.SemiBold,
                     fontFeatureSettings = "tnum",
