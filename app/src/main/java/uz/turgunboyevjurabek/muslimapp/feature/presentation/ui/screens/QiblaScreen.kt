@@ -49,21 +49,20 @@ import kotlin.math.roundToInt
 fun QiblaScreen(
     modifier: Modifier = Modifier,
     qiblaState: StateFlow<QiblaState>,
-    compassAvailable: Boolean,
     topPadding: Dp = 0.dp,
 ) {
     val context = LocalContext.current
     val state = qiblaState.collectAsStateWithLifecycle()
     var showCalibration by rememberSaveable { mutableStateOf(false) }
     val bearing by remember(state) { derivedStateOf(structuralEqualityPolicy()) { state.value.qiblaDirection } }
-    val facingQibla by remember(state, compassAvailable) {
-        derivedStateOf(structuralEqualityPolicy()) { compassAvailable && state.value.aligned }
+    val facingQibla by remember(state) {
+        derivedStateOf(structuralEqualityPolicy()) { state.value.compassAvailable && state.value.aligned }
     }
     LaunchedEffect(facingQibla) {
         if (facingQibla) vibrateDevice(context, 200)
     }
-    val status by remember(state, compassAvailable) {
-        derivedStateOf(structuralEqualityPolicy()) { qiblaStatus(state.value, compassAvailable) }
+    val status by remember(state) {
+        derivedStateOf(structuralEqualityPolicy()) { qiblaStatus(state.value) }
     }
     Column(
         modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState())
@@ -98,21 +97,21 @@ internal data class QiblaStatus(
     val loading: Boolean = false,
 )
 
-internal fun qiblaStatus(state: QiblaState, compassAvailable: Boolean): QiblaStatus {
+internal fun qiblaStatus(state: QiblaState): QiblaStatus {
     val turn = state.turn
     val degrees = turn?.let { abs(it).roundToInt() }
     return when {
-        !compassAvailable -> QiblaStatus(R.drawable.ic_qibla_warning, R.string.no_compass)
+        !state.compassAvailable -> QiblaStatus(R.drawable.ic_qibla_warning, R.string.no_compass)
         state.locationUnavailable -> QiblaStatus(R.drawable.ic_qibla_warning, R.string.location_unavailable)
         state.qiblaDirection == null -> QiblaStatus(R.drawable.ic_qibla_location, R.string.locating, loading = true)
         state.aligned -> QiblaStatus(R.drawable.ic_qibla_check, R.string.qibla_found)
-        state.approximatelyAligned && !state.compass.canConfirm ->
+        state.approximatelyAligned && !state.canConfirm ->
             QiblaStatus(R.drawable.ic_qibla_target, R.string.qibla_approx, showCalibration = true)
-        degrees != null && degrees <= 3 && state.rawTurn != null && state.compass.canConfirm ->
+        degrees != null && degrees <= 3 && state.hasRawTurn && state.canConfirm ->
             QiblaStatus(R.drawable.ic_qibla_target, R.string.hold_still)
-        degrees != null && degrees <= 3 && state.rawTurn != null ->
+        degrees != null && degrees <= 3 && state.hasRawTurn ->
             QiblaStatus(R.drawable.ic_qibla_target, R.string.near_qibla, showCalibration = true)
-        !state.compass.reliable || turn == null || degrees == null ->
+        !state.reliable || turn == null || degrees == null ->
             QiblaStatus(R.drawable.ic_qibla_warning, R.string.low_accuracy, showCalibration = true)
         turn < 0f -> QiblaStatus(R.drawable.ic_qibla_turn_left, R.string.turn_left)
         else -> QiblaStatus(R.drawable.ic_qibla_turn_right, R.string.turn_right)
@@ -190,7 +189,7 @@ private fun QiblaStatusCard(status: QiblaStatus, facingQibla: Boolean, onCalibra
 @Composable
 private fun CompassCalibrationDialog(state: State<QiblaState>, onDismiss: () -> Unit) {
     val ready by remember(state) {
-        derivedStateOf(structuralEqualityPolicy()) { state.value.compass.canConfirm }
+        derivedStateOf(structuralEqualityPolicy()) { state.value.canConfirm }
     }
     val interaction = remember { MutableInteractionSource() }
     AlertDialog(

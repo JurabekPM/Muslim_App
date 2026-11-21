@@ -19,7 +19,7 @@ Har bosqich alohida branch va PR’da bajariladi. PR’da o‘zgarish, tekshiruv
 
 - [x] API va Gson’ga oid DTO’larni data qatlamiga joylash. Repository sof Kotlin domen modellarini qaytaradi.
 - [x] Model xaritalashini alohida test qilish. Eski telefon keshidan o‘qish yoki mos migratsiyani sinash.
-- [ ] Qibla va hudud tanlashdagi sensor/GPS natijalarini ekranga ixcham holat sifatida uzatish. Platforma ruxsati va lifecycle boshqaruvi Android chegarasida qoladi.
+- [x] Qibla va hudud tanlashdagi sensor/GPS natijalarini ekranga ixcham holat sifatida uzatish. Platforma ruxsati va lifecycle boshqaruvi Android chegarasida qoladi.
 
 ## 4. Tasbix va hudud sozlamalarini saqlash
 

@@ -1,6 +1,7 @@
 package uz.turgunboyevjurabek.muslimapp
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Assert.assertFalse
 import uz.turgunboyevjurabek.muslimapp.core.utils.isMagneticFieldUsable
@@ -13,7 +14,7 @@ import uz.turgunboyevjurabek.muslimapp.core.utils.calculateQiblaDirection
 import uz.turgunboyevjurabek.muslimapp.core.utils.signedAngle
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.qiblaStatus
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.qibla.QiblaViewModel
-import uz.turgunboyevjurabek.muslimapp.feature.data.location.CompassReading
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.CompassReading
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
@@ -51,7 +52,7 @@ class QiblaHeadingTest {
         holdAt(63f, 1_000_000_000L)
         assertFalse(viewModel.qiblaState.value.aligned)
         holdAt(243f, 2_000_000_000L)
-        assertEquals(R.string.qibla_found, qiblaStatus(viewModel.qiblaState.value, compassAvailable = true).title)
+        assertEquals(R.string.qibla_found, qiblaStatus(viewModel.qiblaState.value).title)
     }
 
     private fun displayMatrix(heading: Float, pitch: Int): FloatArray {
@@ -77,7 +78,7 @@ class QiblaHeadingTest {
                 CompassReading(heading, heading, reliable, reliable, timestamp)
             )
         }
-        fun title() = qiblaStatus(viewModel.qiblaState.value, compassAvailable = true).title
+        fun title() = qiblaStatus(viewModel.qiblaState.value).title
 
         report(220f, 900_000_000L, reliable = false)
         assertEquals(R.string.low_accuracy, title())
@@ -96,6 +97,26 @@ class QiblaHeadingTest {
         viewModel.updateCurrentDirection(CompassReading(243f))
         assertEquals(R.string.low_accuracy, title())
         assertEquals(0f, viewModel.qiblaState.value.turn!!, 0f)
+    }
+
+    @Test
+    fun screenKeepsCorrectedHeadingAndClearsItWhenSensorsStop() {
+        val viewModel = QiblaViewModel()
+        viewModel.updateCurrentDirection(CompassReading(230f, 231f, reliable = true))
+        viewModel.updateQiblaDirection(243f, declination = 5f)
+        val reading = viewModel.qiblaState.value
+        assertEquals(235f, reading.trueHeading!!, 0.01f)
+        assertEquals(8f, reading.turn!!, 0.01f)
+        assertTrue(reading.hasRawTurn)
+
+        viewModel.setCompassAvailable(false)
+        assertEquals(R.string.no_compass, qiblaStatus(viewModel.qiblaState.value).title)
+        viewModel.updateCurrentDirection()
+        viewModel.setCompassAvailable(true)
+        viewModel.beginLocationLookup()
+        assertNull(viewModel.qiblaState.value.trueHeading)
+        assertFalse(viewModel.qiblaState.value.hasRawTurn)
+        assertEquals(R.string.locating, qiblaStatus(viewModel.qiblaState.value).title)
     }
 
     @Test
