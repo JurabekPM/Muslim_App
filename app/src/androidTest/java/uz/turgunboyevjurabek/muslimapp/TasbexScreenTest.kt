@@ -30,7 +30,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
@@ -55,7 +58,7 @@ class TasbexScreenTest {
         val file = File(context.cacheDir, "${UUID.randomUUID()}.preferences_pb")
         val preferences = PreferenceDataStoreFactory.create(scope = scope) { file }
         val viewModels = ViewModelStore()
-        val viewModel = CounterViewModel(preferences)
+        val viewModel = CounterViewModel(preferences, initialCount = 1234)
         viewModels.put("tasbih", viewModel)
         fun text(id: Int) = context.getString(id)
         fun waitForCount(expected: Int) {
@@ -64,7 +67,10 @@ class TasbexScreenTest {
         }
 
         try {
-            runBlocking { preferences.edit { it[intPreferencesKey("counter")] = 2 } }
+            runBlocking {
+                assertEquals(1234, withTimeout(5_000) { viewModel.state.filterNotNull().first().count })
+                preferences.edit { it[intPreferencesKey("counter")] = 2 }
+            }
             compose.setContent {
                 MuslimAppTheme(darkTheme = true) {
                     Surface {
@@ -92,6 +98,7 @@ class TasbexScreenTest {
             compose.onNodeWithText(reset).performClick()
             compose.onNode(hasText(reset) and hasAnyAncestor(isDialog())).performClick()
             waitForCount(0)
+            assertEquals(0, runBlocking { preferences.data.first()[intPreferencesKey("counter")] })
             compose.onNodeWithText("−1").assertIsNotEnabled()
             assertEquals(4, viewModel.state.value?.history?.single()?.count)
 

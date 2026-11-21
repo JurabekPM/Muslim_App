@@ -135,6 +135,8 @@ Nollashda chapdagi raqamlar pastga sirg‘alib so‘nadi, birlik razryadi aylani
 
 Nollash juda tez nolga o‘tgandek ko‘ringani uchun animatsiya 1550 ms ga uzaytirildi. Avval hamma razryad orqaga aylanadi. Chap raqamlar animatsiyaning 58 foizidan keyin pastga sirg‘alib so‘na boshlaydi va birlik noli markazga siljiydi. Debug build, 26 ta unit test va Samsung SM_S916N’da ikkita Tasbix testi o‘tdi. 124 → 0 da dastlabki, o‘rta, so‘nish va yakuniy kadrlar solishtirildi.
 
+Nollanish animatsiyasini ko‘rish uchun debug versiyada saqlangan sanoq bo‘lmasa vaqtincha 1234 ko‘rsatiladi. Avvaldan saqlangan qiymat ustun. Tasdiqlangan nollash DataStore’ga 0 yozadi. Release uchun boshlang‘ich qiymat 0. Debug build va unit testlar o‘tdi. Samsung SM_S916N’da bo‘sh test DataStore uchun 1234, saqlangan qiymatning ustunligi va nollashdan keyin 0 yozilishi tasdiqlandi.
+
 ## Muhim kod yo‘llari
 
 Asosiy prefiks `app/src/main/java/uz/turgunboyevjurabek/muslimapp/`.
