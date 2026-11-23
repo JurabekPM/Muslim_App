@@ -58,7 +58,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.navigation.NavController
 import dev.chrisbanes.haze.HazeInput
 import dev.chrisbanes.haze.HazePerformanceMode
 import dev.chrisbanes.haze.HazeState
@@ -78,15 +77,14 @@ private val glassFadeAboveEdge = 36.dp
 @Composable
 fun MyTopBar(
     modifier: Modifier,
-    navController: NavController,
     route: String?,
     backdrop: HazeState,
     connection: InternetConnection,
     refreshing: Boolean,
     onRegionClick: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     val onQiblaScreen = route == AppRoute.QIBLA
-    val onMenuScreen = route == AppRoute.MENU
     val colors = MaterialTheme.colorScheme
     val glassColor = colors.surface
     val darkGlass = glassColor.luminance() < 0.35f
@@ -158,18 +156,9 @@ fun MyTopBar(
             },
             navigationIcon = {
                 if (onQiblaScreen) {
-                    AppBarIconButton(R.drawable.ic_qibla_back, stringResource(R.string.back)) { navController.popBackStack() }
-                } else if (!onMenuScreen) {
+                    AppBarIconButton(R.drawable.ic_qibla_back, stringResource(R.string.back), onBackClick)
+                } else {
                     AppBarIconButton(R.drawable.ic_qibla_location, stringResource(R.string.regions), onRegionClick)
-                }
-            },
-            actions = {
-                if (!onQiblaScreen && !onMenuScreen) {
-                    AppBarIconButton(R.drawable.ic_qibla_kaaba, stringResource(R.string.qibla)) {
-                        if (navController.currentDestination?.route != AppRoute.QIBLA) {
-                            navController.navigate(AppRoute.QIBLA)
-                        }
-                    }
                 }
             },
         )
