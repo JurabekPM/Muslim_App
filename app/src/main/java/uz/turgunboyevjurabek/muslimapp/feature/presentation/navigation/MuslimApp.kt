@@ -132,6 +132,8 @@ internal fun MuslimApp(
                         exitTransition = { fadeOut(tween(screenFadeOutMillis)) },
                         popEnterTransition = { fadeIn(tween(screenFadeInMillis, delayMillis = screenFadeOutMillis)) },
                         popExitTransition = { fadeOut(tween(screenFadeOutMillis)) },
+                        predictivePopEnterTransition = { fadeIn(tween(screenFadeInMillis)) },
+                        predictivePopExitTransition = { fadeOut(tween(screenFadeOutMillis)) },
                         modifier = Modifier.fillMaxSize()
                             .hazeSource(chromeBackdrop)
                             .background(MaterialTheme.colorScheme.background),
