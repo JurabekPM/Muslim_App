@@ -34,6 +34,7 @@ Muslim App O‘zbekiston uchun namoz vaqtlari, tasbeh va Qibla funksiyalarini be
 - BottomNav istalgan bo‘limidan bosib sudraganda indikator barmoqqa ergashadi. Belgilar vaqtincha tanlangan joyga mos ajraladi. Ekran barmoq qo‘yib yuborilganda almashadi.
 - Tanlangan ikonlar filled, tanlanmaganlari outlined. Almashish animatsiyali. Mavjud vector drawable tizimidan foydalaning.
 - Matnlar qisqa, tushunarli, iliq va o‘qilishi oson. Holatlar va ekran sarlavhalari mayin almashadi.
+- Ilova ichida ekran chetidan orqaga surilganda sahifalar asl o‘lchamida mayin so‘nib almashadi. Menyu, Tasbex va 7 kunlikdan Asosiyga qaytishda videoda ko‘ringan kichrayish Navigation Compose’ning standart animatsiyasidan kelgan. NavHost’da orqaga surish uchun o‘tishlar aniq berildi. Debug APK va 43 ta unit test o‘tdi. Samsung SM-S916N’da PR #22 va #23 birga yig‘ilgan APK o‘rnatildi. Telefon sozlamalari o‘zgartirilmagan holda 7 kunlik va Menyudan Asosiyga 1,1 soniyalik chet imo-ishorasi bilan qaytish kadrma-kadr ko‘rildi. Chiqayotgan sahifa kichraymadi.
 - Murakkab yangi dizaynlarni avval maketda ko‘rsatish odati bor. Maket tanlanmagan bo‘lsa kodga qo‘llamang.
 
 ## Hozir amalda bor funksiyalar
