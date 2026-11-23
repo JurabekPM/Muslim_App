@@ -6,13 +6,15 @@ import android.icu.util.MeasureUnit
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -26,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.res.stringResource
@@ -57,25 +60,30 @@ internal fun MosqueBrowseCard(
     }
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.large,
+        shape = RoundedCornerShape(if (featured) 16.dp else 14.dp),
         color = background,
-        border = BorderStroke(1.dp, colors.outlineVariant),
+        border = BorderStroke(0.75.dp, colors.outline.copy(alpha = 0.30f)),
         shadowElevation = if (onClose != null) 4.dp else 0.dp,
     ) {
         Row(
-            Modifier.padding(start = 10.dp, top = 10.dp, bottom = 10.dp, end = 6.dp),
+            Modifier.padding(start = 8.dp, top = 6.dp, bottom = 6.dp, end = if (featured) 10.dp else 6.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            MosqueThumbnail(place.id, name, Modifier.size(if (featured) 104.dp else 58.dp))
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            val thumbnail = when {
+                featured -> Modifier.weight(0.68f).height(136.dp)
+                onClose != null -> Modifier.size(58.dp)
+                else -> Modifier.size(width = 74.dp, height = 58.dp)
+            }
+            MosqueThumbnail(place.id, name, thumbnail)
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(if (featured) 4.dp else 2.dp)) {
                 if (featured) {
-                    Surface(shape = CircleShape, color = colors.secondaryContainer, contentColor = colors.onSecondaryContainer) {
+                    Surface(shape = CircleShape, color = MosqueActionColor, contentColor = colors.onSecondaryContainer) {
                         Text(
                             stringResource(R.string.mosque_nearest),
                             Modifier.padding(horizontal = 9.dp, vertical = 3.dp),
                             style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.SemiBold,
+                            fontWeight = FontWeight.Medium,
                         )
                     }
                 }
@@ -87,18 +95,45 @@ internal fun MosqueBrowseCard(
                     maxLines = 2,
                 )
                 if (subtitle != null) {
-                    Text(subtitle, style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        if (distance != null) {
+                            Icon(
+                                painterResource(R.drawable.ic_mosque_pin),
+                                contentDescription = null,
+                                modifier = Modifier.size(15.dp),
+                                tint = colors.onSurfaceVariant,
+                            )
+                        }
+                        Text(
+                            subtitle,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = colors.onSurfaceVariant,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
                 }
                 if (featured || onClose != null) {
                     Button(
                         onClick = onDirections,
-                        modifier = Modifier.padding(top = 2.dp),
+                        modifier = if (featured) Modifier.fillMaxWidth() else Modifier,
+                        shape = RoundedCornerShape(14.dp),
+                        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colors.secondaryContainer,
+                            containerColor = MosqueActionColor,
                             contentColor = colors.onSecondaryContainer,
                         ),
                     ) {
-                        Text(stringResource(R.string.mosque_directions))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(7.dp),
+                        ) {
+                            Icon(painterResource(R.drawable.ic_mosque_route), null, Modifier.size(20.dp))
+                            Text(stringResource(R.string.mosque_directions), fontWeight = FontWeight.SemiBold)
+                        }
                     }
                 }
             }
@@ -107,7 +142,11 @@ internal fun MosqueBrowseCard(
                     Icon(Icons.Filled.Close, stringResource(R.string.close), Modifier.size(20.dp))
                 }
                 !featured -> IconButton(onClick = onDirections) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowForward, stringResource(R.string.mosque_directions))
+                    Icon(
+                        painterResource(R.drawable.ic_mosque_turn),
+                        stringResource(R.string.mosque_directions),
+                        Modifier.size(22.dp),
+                    )
                 }
             }
         }

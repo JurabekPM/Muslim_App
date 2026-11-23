@@ -172,7 +172,7 @@ internal fun NearbyMosquesScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        MosqueAreaButton(areaLabel, { showAreas = true }, Modifier.weight(1f))
+                        MosqueAreaButton(areaLabel, { showAreas = true }, Modifier.weight(0.9f))
                         if (isNearby) {
                             MosqueSortButton(sortByName, { sortByName = it }, Modifier.weight(1f))
                         }
@@ -202,6 +202,7 @@ internal fun NearbyMosquesScreen(
                         selectLabel = stringResource(if (showMap) R.string.mosque_choose_area else R.string.mosque_choose_city),
                         onLocate = onLocate.takeIf { isNearby },
                         locating = findingLocation,
+                        showChevron = showMap,
                     )
                     val status = if (findingLocation) R.string.finding_location else locationMessage
                     if (isNearby && status != null) {
@@ -212,7 +213,7 @@ internal fun NearbyMosquesScreen(
                         )
                     }
                 }
-                if (!mapVisible && !loading && !waitingForOrigin && !loadFailed) {
+                if (!mapVisible && !loading && !waitingForOrigin && !loadFailed && (!isNearby || showMap)) {
                     val count = remember(language, visiblePlaces.size) {
                         NumberFormat.getIntegerInstance(language.locale).format(visiblePlaces.size)
                     }
@@ -318,8 +319,8 @@ internal fun NearbyMosquesScreen(
                     }
                     key(area, if (isNearby) origin else null) {
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(start = 16.dp, top = 8.dp, end = 16.dp, bottom = mosqueSwitcherSpace),
+                            modifier = Modifier.fillMaxSize().padding(bottom = mosqueSwitcherSpace),
+                            contentPadding = PaddingValues(start = 16.dp, top = 12.dp, end = 16.dp, bottom = 8.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
                             if (nearest != null) item(key = nearest.id) {

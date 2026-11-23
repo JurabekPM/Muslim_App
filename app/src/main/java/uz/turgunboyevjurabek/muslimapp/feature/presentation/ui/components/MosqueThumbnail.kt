@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
@@ -39,8 +40,9 @@ internal fun MosqueThumbnail(mosqueId: String, name: String, modifier: Modifier 
     val photo = MosquePhotos[mosqueId]
     val thumbnail = modifier.size(60.dp).clip(RoundedCornerShape(14.dp))
     if (photo == null) {
+        val colors = MaterialTheme.colorScheme
         Box(
-            modifier = thumbnail.background(MaterialTheme.colorScheme.secondaryContainer)
+            modifier = thumbnail.background(lerp(colors.surfaceContainerHigh, colors.tertiaryContainer, 0.28f))
                 .testTag("mosque-photo-placeholder"),
             contentAlignment = Alignment.Center,
         ) {
@@ -48,7 +50,7 @@ internal fun MosqueThumbnail(mosqueId: String, name: String, modifier: Modifier 
                 painterResource(R.drawable.ic_mosque),
                 contentDescription = null,
                 modifier = Modifier.size(32.dp),
-                tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                tint = colors.tertiary,
             )
         }
     } else {
