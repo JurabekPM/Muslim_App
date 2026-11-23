@@ -118,14 +118,25 @@ class NearbyMosquesOfflineTest {
         compose.onNode(hasText(city.name.orEmpty()) and hasClickAction() and !hasSetTextAction())
             .performClick()
         compose.waitUntil(5_000) { compose.onNodeWithText(firstMosque).isDisplayed() }
+        compose.onNodeWithText(context.getString(R.string.mosque_nearest)).assertIsDisplayed()
+        val byDistance = context.getString(R.string.mosque_sort_distance)
+        val byName = context.getString(R.string.mosque_sort_name)
+        compose.onNodeWithText(byDistance).performClick()
+        compose.onNodeWithText(byName).performClick()
+        compose.onNodeWithText(firstMosque).assertIsDisplayed()
 
         compose.onNodeWithTag("nearby-mosque-map").assertDoesNotExist()
         compose.onNodeWithText(context.getString(R.string.mosque_map)).performClick()
         compose.onNodeWithText(context.getString(R.string.mosque_map_offline)).assertIsDisplayed()
         compose.onNodeWithTag("nearby-mosque-map").assertDoesNotExist()
+        compose.onNodeWithText(byName).assertDoesNotExist()
+        compose.onNodeWithContentDescription(context.getString(R.string.mosque_choose_area)).performClick()
+        compose.onNodeWithText(context.getString(R.string.mosque_choose_city)).assertIsDisplayed()
+        compose.onNodeWithText(context.getString(R.string.close)).performClick()
 
         compose.onNodeWithText(context.getString(R.string.mosque_list)).performClick()
         compose.onNodeWithText(firstMosque).assertIsDisplayed()
+        compose.onNodeWithText(byName).assertIsDisplayed()
     }
 
     @Test

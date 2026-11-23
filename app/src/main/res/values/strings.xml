@@ -206,4 +206,10 @@
     <string name="mosque_photo_description">%1$s masjidi surati</string>
     <string name="mosque_photo_source">Surat manbasi</string>
     <string name="mosque_photo_credit">Surat muallifi · %1$s</string>
+    <string name="mosque_sort_distance">Masofa bo‘yicha</string>
+    <string name="mosque_sort_name">Nomi bo‘yicha</string>
+    <string name="mosque_gps_source">GPS orqali</string>
+    <string name="mosque_city_source">Tanlangan shahar</string>
+    <string name="mosque_nearest">Eng yaqin</string>
+    <string name="mosque_recenter">Joylashuvga qaytish</string>
 </resources>

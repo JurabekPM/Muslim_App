@@ -191,4 +191,10 @@
     <string name="mosque_photo_description">Photo of %1$s</string>
     <string name="mosque_photo_source">Photo source</string>
     <string name="mosque_photo_credit">Photo by %1$s</string>
+    <string name="mosque_sort_distance">By distance</string>
+    <string name="mosque_sort_name">By name</string>
+    <string name="mosque_gps_source">Via GPS</string>
+    <string name="mosque_city_source">Selected city</string>
+    <string name="mosque_nearest">Closest</string>
+    <string name="mosque_recenter">Return to my location</string>
 </resources>

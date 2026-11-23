@@ -191,4 +191,10 @@
     <string name="mosque_photo_description">%1$s metjidiniň suraty</string>
     <string name="mosque_photo_source">Suratyň çeşmesi</string>
     <string name="mosque_photo_credit">Suratyň awtory · %1$s</string>
+    <string name="mosque_sort_distance">Aralyk boýunça</string>
+    <string name="mosque_sort_name">Ady boýunça</string>
+    <string name="mosque_gps_source">GPS arkaly</string>
+    <string name="mosque_city_source">Saýlanan şäher</string>
+    <string name="mosque_nearest">Iň ýakyn</string>
+    <string name="mosque_recenter">Ýerleşişe dolan</string>
 </resources>

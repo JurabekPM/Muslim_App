@@ -1,10 +1,16 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -16,11 +22,13 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.UiComposable
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -36,6 +44,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.sp
 import org.json.JSONArray
@@ -65,6 +74,7 @@ import org.maplibre.spatialk.geojson.Point
 import org.maplibre.spatialk.geojson.Position
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -84,6 +94,7 @@ internal fun NearbyMosqueMap(
     darkTheme: Boolean,
     onSelect: (String?) -> Unit,
     overview: MosqueArea? = null,
+    bottomOverlay: Dp = 0.dp,
     selectionCard: @Composable () -> Unit = {},
 ) {
     val mosquePins by produceState<GeoJsonData>(emptyMosquePins, mosques) {
@@ -116,13 +127,12 @@ internal fun NearbyMosqueMap(
             featureCollection(listOf(pointFeature(it.coordinates)))
         } ?: emptyMosquePins
     }
-    val marker = if (darkTheme) Color(0xFFF4CF75) else Color(0xFF785213)
+    val ink = Color(0xFF233748)
+    val neutralMarker = if (darkTheme) Color(0xFFE6EBEF) else Color(0xFFFFF8EA)
     val mosqueGlyph = painterResource(R.drawable.ic_mosque)
     val mosqueMarker = remember(mosqueGlyph, darkTheme) {
         MosqueMarkerPainter(
-            mosqueGlyph,
-            if (darkTheme) Color(0xFF2B4659) else Color(0xFF233748),
-            if (darkTheme) Color(0xFFF4CF75) else Color(0xFFFFF8EA),
+            mosqueGlyph, neutralMarker, ink,
         )
     }
     val selectedMarker = remember(mosqueGlyph) {
@@ -147,9 +157,16 @@ internal fun NearbyMosqueMap(
             ),
         ) {
             gpsPin?.let {
+                val locationSource = rememberGeoJsonSource(it)
+                CircleLayer(
+                    id = "muslim-app-location-halo",
+                    source = locationSource,
+                    radius = const(19.dp),
+                    color = const(currentLocation.copy(alpha = 0.16f)),
+                )
                 CircleLayer(
                     id = "muslim-app-location",
-                    source = rememberGeoJsonSource(it),
+                    source = locationSource,
                     radius = const(7.dp),
                     color = const(currentLocation),
                     strokeWidth = const(2.dp),
@@ -167,7 +184,7 @@ internal fun NearbyMosqueMap(
                     source = source,
                     filter = feature.has("cluster_id"),
                     radius = const(15.dp),
-                    color = const(marker),
+                    color = const(neutralMarker),
                     strokeColor = const(Color.White),
                     strokeWidth = const(1.5.dp),
                     hitPadding = markerHitPadding,
@@ -187,7 +204,7 @@ internal fun NearbyMosqueMap(
                     textField = feature["point_count"].convertToString(),
                     textFont = const(listOf("Noto Sans Regular")),
                     textSize = const(11.sp),
-                    textColor = const(if (darkTheme) Color(0xFF29200E) else Color.White),
+                    textColor = const(ink),
                     textAllowOverlap = const(true),
                 )
             }
@@ -218,11 +235,11 @@ internal fun NearbyMosqueMap(
             )
         }
 
-        LaunchedEffect(state, bounds) {
+        LaunchedEffect(state, bounds, bottomOverlay) {
             if (bounds != null) {
                 state.fitCameraToBounds(
                     bounds,
-                    CameraFit(fitPadding = DpPadding(left = 22.dp, top = 24.dp, right = 22.dp, bottom = 36.dp)),
+                    CameraFit(fitPadding = DpPadding(left = 22.dp, top = 24.dp, right = 22.dp, bottom = 36.dp + bottomOverlay)),
                 )
             }
         }
@@ -232,6 +249,8 @@ internal fun NearbyMosqueMap(
             clusterCenter = null
         }
         val loadState = state.style.loadState
+        val scope = rememberCoroutineScope()
+        val surface = MaterialTheme.colorScheme.surface
         var timedOut by remember { mutableStateOf(false) }
         LaunchedEffect(loadState) {
             if (loadState == StyleLoadState.Loading || loadState == StyleLoadState.Pending) {
@@ -266,7 +285,37 @@ internal fun NearbyMosqueMap(
                     MosqueStatus(stringResource(R.string.mosque_map_loading), loading = true)
                 }
             }
-            Column(Modifier.align(Alignment.BottomEnd), horizontalAlignment = Alignment.End) {
+            if (bottomOverlay > 0.dp) {
+                Box(
+                    Modifier.fillMaxWidth().height(24.dp)
+                        .background(Brush.verticalGradient(listOf(surface, Color.Transparent))),
+                )
+            }
+            Column(
+                Modifier.align(Alignment.BottomEnd).padding(bottom = bottomOverlay),
+                horizontalAlignment = Alignment.End,
+            ) {
+                if (gps != null && overview == null && bottomOverlay > 0.dp && selectedMosque == null && loadState == StyleLoadState.Ready) {
+                    Surface(
+                        modifier = Modifier.padding(end = 16.dp),
+                        shape = CircleShape,
+                        color = MaterialTheme.colorScheme.surfaceContainer,
+                        shadowElevation = 3.dp,
+                    ) {
+                        IconButton(onClick = {
+                            scope.launch {
+                                state.animateCamera(
+                                    CameraUpdate(center = Position(longitude = gps.longitude, latitude = gps.latitude)),
+                                )
+                            }
+                        }) {
+                            Icon(
+                                painterResource(R.drawable.ic_mosque_recenter),
+                                stringResource(R.string.mosque_recenter),
+                            )
+                        }
+                    }
+                }
                 MapCredits(Modifier.padding(8.dp))
                 selectionCard()
             }
