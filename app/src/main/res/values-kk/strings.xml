@@ -176,4 +176,10 @@
     <string name="mosque_map_loading">Карта жүктелуде…</string>
     <string name="mosque_privacy_summary">Телефон жақын мешіттерді кіріктірілген каталогтан іздейді. Карта ашылғанда көрінетін аумақтың деректері OpenFreeMap қызметінен сұралады. Бағытты ашқанда мешіт координаттары Google Maps қолданбасында ашылады.</string>
     <string name="mosque_map_offline">Картаны ашу үшін интернет қажет. Мешіттерді тізімнен көре аласыз.</string>
+    <string name="mosque_search">Мешіт іздеу</string>
+    <string name="mosque_search_hint">Өзбекстан бойынша мешіт атауын немесе елді мекенді енгізіңіз.</string>
+    <string name="mosque_search_empty">Сұрауыңыз бойынша мешіт табылмады.</string>
+    <string name="mosque_show_on_map">Картадан көру</string>
+    <string name="mosque_generic">Мешіт</string>
+    <string name="mosque_near_locality">Жақын аумақ · %1$s</string>
 </resources>

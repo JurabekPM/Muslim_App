@@ -25,6 +25,9 @@ internal data class MosquePlace(
     val name: String?,
     val address: String? = null,
     val names: Map<String, String>? = null,
+    val aliases: List<String>? = null,
+    val locality: String? = null,
+    val localityApproximate: Boolean = false,
 ) {
     fun label(language: String): String? = names?.get(language) ?: name
 }

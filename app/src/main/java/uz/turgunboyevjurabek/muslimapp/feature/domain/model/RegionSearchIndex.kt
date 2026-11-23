@@ -6,9 +6,6 @@ import java.util.Locale
 internal object RegionSearchIndex {
     private val locales = listOf("uz-Latn", "uz-Cyrl", "ru", "en", "kk", "ky", "tg", "tk")
         .map(Locale::forLanguageTag)
-    private val spaces = Regex("\\s+")
-    private val latin = Regex("\\p{IsLatin}+")
-    private val diacritics = Regex("\\p{M}+")
     private val qualifiers = mapOf(
         RegionKind.City to "shahri shahar city город қаласы шаары шаҳр шаҳри şäheri",
         RegionKind.District to "tumani tuman district район района ауданы району ноҳия ноҳияи etraby",
@@ -23,17 +20,17 @@ internal object RegionSearchIndex {
                 add(region.slug.substringBeforeLast("-shahri").substringBeforeLast("-viloyati").substringBeforeLast("-tumani"))
                 locales.forEach { add(region.localizedBaseName(it)) }
                 addAll(RegionAddressMatcher.alternativeNames(region.baseName))
-            }.map(::normalize).filter(String::isNotEmpty).toSet()
+            }.map(::normalizePlaceSearch).filter(String::isNotEmpty).toSet()
             val words = names.flatMap { it.split(' ') }.toSet()
             Entry(region, names, words)
         }
     }
     private val kindsByQualifier by lazy {
-        qualifiers.flatMap { (kind, words) -> words.split(' ').map { normalize(it) to kind } }.toMap()
+        qualifiers.flatMap { (kind, words) -> words.split(' ').map { normalizePlaceSearch(it) to kind } }.toMap()
     }
 
     fun search(query: String, candidates: List<Regions> = Regions.supported): List<Regions> {
-        val tokens = normalize(query).split(' ').filter(String::isNotEmpty)
+        val tokens = normalizePlaceSearch(query).split(' ').filter(String::isNotEmpty)
         if (tokens.isEmpty()) return emptyList()
         val requestedKind = kindsByQualifier[tokens.last()] ?: kindsByQualifier[tokens.first()]
         val terms = if (requestedKind == null) tokens else tokens.filterNot { kindsByQualifier[it] == requestedKind }
@@ -77,13 +74,6 @@ internal object RegionSearchIndex {
         }.sortedBy { it.second }.map { it.first }
     }
 
-    private fun normalize(value: String): String {
-        val folded = latin.replace(value) { match ->
-            Normalizer.normalize(match.value, Normalizer.Form.NFD).replace(diacritics, "")
-        }
-        return RegionAddressMatcher.normalize(folded).trim().replace(spaces, " ")
-    }
-
     // Adjacent letter swaps count as one typo.
     private fun editDistance(first: String, second: String, limit: Int): Int {
         if (kotlin.math.abs(first.length - second.length) > limit) return limit + 1
@@ -106,4 +96,15 @@ internal object RegionSearchIndex {
         }
         return previous[second.length]
     }
+}
+
+private val placeSearchSpaces = Regex("\\s+")
+private val placeSearchLatin = Regex("\\p{IsLatin}+")
+private val placeSearchDiacritics = Regex("\\p{M}+")
+
+internal fun normalizePlaceSearch(value: String): String {
+    val folded = placeSearchLatin.replace(value) { match ->
+        Normalizer.normalize(match.value, Normalizer.Form.NFD).replace(placeSearchDiacritics, "")
+    }
+    return RegionAddressMatcher.normalize(folded).trim().replace(placeSearchSpaces, " ")
 }

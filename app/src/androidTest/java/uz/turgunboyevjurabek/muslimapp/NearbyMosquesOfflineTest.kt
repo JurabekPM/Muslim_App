@@ -8,6 +8,7 @@ import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.platform.app.InstrumentationRegistry
@@ -23,6 +24,35 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.MuslimAppTheme
 class NearbyMosquesOfflineTest {
     @get:Rule
     val compose = createComposeRule()
+
+    @Test
+    fun findsVerifiedMosqueAcrossUzbekistanWithoutLocationOrInternet() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val catalog = MosqueCatalog(context)
+        compose.setContent {
+            MuslimAppTheme {
+                NearbyMosquesRoute(
+                    loadCatalog = catalog::load,
+                    locate = { null },
+                    language = AppLanguage.Uzbek,
+                    darkTheme = false,
+                    canLoadMap = false,
+                    onClose = {},
+                )
+            }
+        }
+
+        val search = context.getString(R.string.mosque_search)
+        compose.waitUntil(5_000) { compose.onNodeWithContentDescription(search).isDisplayed() }
+        compose.onNodeWithContentDescription(search).performClick()
+        compose.onNodeWithText(search).performTextInput("Faqih Abulays")
+        compose.waitUntil(5_000) {
+            compose.onNode(hasText("Faqih Abulays") and !hasSetTextAction()).isDisplayed()
+        }
+        compose.onNodeWithText(context.getString(R.string.mosque_show_on_map)).performClick()
+        compose.onNodeWithText(context.getString(R.string.mosque_map_offline)).assertIsDisplayed()
+        compose.onNodeWithText("Faqih Abulays").assertIsDisplayed()
+    }
 
     @Test
     fun manualCityShowsBundledMosquesAndMapExplainsOfflineState() {

@@ -176,4 +176,10 @@
     <string name="mosque_map_loading">Loading map…</string>
     <string name="mosque_privacy_summary">Your phone searches a built-in catalog for nearby mosques. Opening the map requests map data for the visible area from OpenFreeMap. Selecting Get directions opens the mosque coordinates in Google Maps.</string>
     <string name="mosque_map_offline">An internet connection is needed to open the map. You can still browse the mosque list.</string>
+    <string name="mosque_search">Search mosques</string>
+    <string name="mosque_search_hint">Enter a mosque name or area to search across Uzbekistan.</string>
+    <string name="mosque_search_empty">No mosques match your search.</string>
+    <string name="mosque_show_on_map">Show on map</string>
+    <string name="mosque_generic">Mosque</string>
+    <string name="mosque_near_locality">Nearby area · %1$s</string>
 </resources>

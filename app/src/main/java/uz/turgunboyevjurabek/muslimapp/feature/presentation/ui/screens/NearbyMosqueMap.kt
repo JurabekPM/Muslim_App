@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.UiComposable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -46,23 +47,24 @@ import kotlinx.coroutines.delay
 import kotlinx.serialization.json.JsonPrimitive
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosqueCoordinates
-import uz.turgunboyevjurabek.muslimapp.feature.domain.model.NearbyMosque
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosquePlace
 
 @Composable
+@UiComposable
 internal fun NearbyMosqueMap(
     origin: MosqueCoordinates,
     gps: MosqueCoordinates?,
-    mosques: List<NearbyMosque>,
+    mosques: List<MosquePlace>,
     selectedId: String?,
     darkTheme: Boolean,
     onSelect: (String) -> Unit,
 ) {
     val mosquePins = remember(mosques) {
-        featureCollection(mosques.map { pointFeature(it.place.coordinates, it.place.id) })
+        featureCollection(mosques.map { pointFeature(it.coordinates, it.id) })
     }
     val gpsPin = remember(gps) { gps?.let { featureCollection(listOf(pointFeature(it))) } }
     val selectedPin = remember(selectedId, mosques) {
-        mosques.firstOrNull { it.place.id == selectedId }?.place?.let {
+        mosques.firstOrNull { it.id == selectedId }?.let {
             featureCollection(listOf(pointFeature(it.coordinates)))
         }
     }

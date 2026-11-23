@@ -176,4 +176,10 @@
     <string name="mosque_map_loading">Karta ýüklenýär…</string>
     <string name="mosque_privacy_summary">Telefon golaýdaky metjitleri içerki katalogdan gözleýär. Karta açylanda görünýän ýeriň maglumatlary OpenFreeMap hyzmatyndan soralýar. Ýol açylanda metjidiň koordinatlary Google Maps hyzmatynda açylýar.</string>
     <string name="mosque_map_offline">Kartany açmak üçin internet gerek. Metjitleri sanawdan görüp bilersiňiz.</string>
+    <string name="mosque_search">Metjit gözlemek</string>
+    <string name="mosque_search_hint">Özbegistan boýunça metjidiň adyny ýa-da ýeri ýazyň.</string>
+    <string name="mosque_search_empty">Bu gözleg boýunça metjit tapylmady.</string>
+    <string name="mosque_show_on_map">Kartada görmek</string>
+    <string name="mosque_generic">Metjit</string>
+    <string name="mosque_near_locality">Golaýdaky ýer · %1$s</string>
 </resources>

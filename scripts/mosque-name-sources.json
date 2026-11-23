@@ -1,0 +1,40 @@
+{
+  "node/7139515280": {
+    "name": "Faqih Abulays",
+    "names": { "uz-Cyrl": "Фақиҳ Абулайс" },
+    "osmTags": { "addr:full": "Самарқанд шаҳар Вобкенд кўча 82" },
+    "source": "https://sammuslim.uz/press/news/samarqand-viloyatida-tarovih-namozida-xatmi-quron-oqiladigan-masjidlar-royxati-2026?print=on"
+  },
+  "node/7139346032": {
+    "name": "Eshon Pir",
+    "names": { "uz-Cyrl": "Эшон Пир" },
+    "osmTags": { "addr:full": "Шаҳрисабз шаҳар, Қозигузар МФЙ, Қозихона кўчаси, 70" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7137204556": {
+    "name": "Siroj Solih",
+    "names": { "uz-Cyrl": "Сирож Солиҳ" },
+    "osmTags": { "addr:full": "Юнусова кўчаси, 21А", "note": "Сирож-солиҳ" },
+    "source": "https://www.muslim.uz/oz/e/post/32552-toshkent-shahridagi-31-may-kunidagi-xatmonalar-2?page=43&per-page=1"
+  },
+  "way/525984573": {
+    "name": "Kamoliddin Orif al-Buxoriy",
+    "names": { "uz-Cyrl": "Камолиддин Ориф ал-Бухорий", "ru": "Камолиддин Ариф аль-Бухари" },
+    "osmTags": { "addr:street": "Чинабад улица", "addr:housenumber": "14" },
+    "source": "https://muslim.uz/oz/e/post/26432-toshkent-shahridagi-25-may-kunidagi-xatmonalar?page=18&per-page=1",
+    "addressSource": "https://yallamaps.uz/uz/tashkent/org/kamoliddin-orif-al-buxoriy-pl-kx3m4rp2fy5wpa3n/"
+  },
+  "relation/8339113": {
+    "name": "Mirza G‘olib",
+    "names": { "uz-Cyrl": "Мирза Ғолиб" },
+    "osmTags": { "addr:street": "Mirzo Golib 3-o'tish ko'chasi" },
+    "source": "https://muslim.uz/uz/e/post/23852-bugun-toshkent-shahrida-mavlidi-sharif-o-qiladigan-masjidlar?page=11&per-page=1",
+    "addressSource": "https://yandex.uz/maps/org/207257726974/"
+  },
+  "way/95639944": {
+    "name": "Xo‘ja Ahror Valiy",
+    "names": { "uz-Cyrl": "Хўжа Аҳрор Валий" },
+    "osmTags": { "wikipedia": "ru:Джума мечеть (Ташкент)" },
+    "source": "https://tashkent.uz/uz/city/interesting-places/16"
+  }
+}

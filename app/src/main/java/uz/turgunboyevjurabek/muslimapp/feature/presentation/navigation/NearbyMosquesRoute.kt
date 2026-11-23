@@ -98,6 +98,7 @@ internal fun NearbyMosquesRoute(
         darkTheme = darkTheme,
         canLoadMap = canLoadMap,
         cities = catalog?.cities.orEmpty(),
+        mosques = catalog?.mosques.orEmpty(),
         city = city,
         gps = gps,
         origin = origin,
