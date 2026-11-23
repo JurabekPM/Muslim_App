@@ -22,6 +22,7 @@ import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.core.utils.AppLanguage
 import uz.turgunboyevjurabek.muslimapp.feature.data.local.MosqueCatalogData
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosqueArea
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosqueBrowsePreferences
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosqueCoordinates
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.NearbyMosque
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.nearbyMosques
@@ -35,6 +36,8 @@ internal fun NearbyMosquesRoute(
     language: AppLanguage,
     darkTheme: Boolean,
     canLoadMap: Boolean,
+    preferences: MosqueBrowsePreferences,
+    onPreferencesChange: ((MosqueBrowsePreferences) -> MosqueBrowsePreferences) -> Unit,
     onClose: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -43,8 +46,7 @@ internal fun NearbyMosquesRoute(
         ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
     }
 
-    var cityId by rememberSaveable { mutableStateOf<String?>(null) }
-    var area by rememberSaveable { mutableStateOf(MosqueArea.Uzbekistan) }
+    val area = preferences.area
     var latitude by rememberSaveable { mutableStateOf<Double?>(null) }
     var longitude by rememberSaveable { mutableStateOf<Double?>(null) }
     var finding by remember { mutableStateOf(false) }
@@ -68,8 +70,13 @@ internal fun NearbyMosquesRoute(
             null
         }
     }
-    LaunchedEffect(area) {
-        if (area == MosqueArea.Nearby && cityId == null && latitude == null && canLocate()) finding = true
+    val city = remember(catalog, preferences.cityId) {
+        catalog?.cities?.firstOrNull { it.id == preferences.cityId }
+    }
+    LaunchedEffect(area, catalog, city) {
+        if (area == MosqueArea.Nearby && catalog != null && city == null && latitude == null && canLocate()) {
+            finding = true
+        }
     }
     LaunchedEffect(finding) {
         if (!finding) return@LaunchedEffect
@@ -80,12 +87,11 @@ internal fun NearbyMosquesRoute(
         } else {
             latitude = location.latitude
             longitude = location.longitude
-            cityId = null
+            onPreferencesChange { it.copy(cityId = null) }
         }
         finding = false
     }
 
-    val city = catalog?.cities?.firstOrNull { it.id == cityId }
     val gps = latitude?.let { lat -> longitude?.let { lon -> MosqueCoordinates(lat, lon) } }
     val origin = city?.coordinates ?: gps
     var results by remember(origin, catalog) { mutableStateOf<List<NearbyMosque>?>(null) }
@@ -100,6 +106,7 @@ internal fun NearbyMosquesRoute(
         darkTheme = darkTheme,
         canLoadMap = canLoadMap,
         area = area,
+        showMap = preferences.showMap,
         cities = catalog?.cities.orEmpty(),
         mosques = catalog?.mosques.orEmpty(),
         city = city,
@@ -110,18 +117,19 @@ internal fun NearbyMosquesRoute(
         locationMessage = locationMessage,
         loadFailed = loadFailed,
         onRetry = { loadAttempt++ },
-        onAreaChange = {
-            area = it
-            if (it != MosqueArea.Nearby) finding = false
+        onAreaChange = { selected ->
+            if (selected != MosqueArea.Nearby) finding = false
+            onPreferencesChange { it.copy(area = selected) }
         },
+        onShowMapChange = { showMap -> onPreferencesChange { it.copy(showMap = showMap) } },
         onLocate = {
             locationMessage = null
             if (canLocate()) finding = true else permission.launch(permissions)
         },
-        onCity = {
+        onCity = { selected ->
             finding = false
             locationMessage = null
-            cityId = it.id
+            onPreferencesChange { it.copy(cityId = selected.id) }
             latitude = null
             longitude = null
         },
