@@ -41,6 +41,7 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.TasbexScr
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.MenuScreen
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.AppThemeMode
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.CounterViewModel
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.MosqueBrowseViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.PrayerScheduleViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.SelectRegionViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.qibla.QiblaViewModel
@@ -60,6 +61,7 @@ internal fun MuslimApp(
     qiblaViewModel: QiblaViewModel,
     regionLocationLookup: RegionLocationLookup,
     mosqueCatalog: MosqueCatalog,
+    mosqueBrowseViewModel: MosqueBrowseViewModel,
     locateForMosques: suspend () -> Location?,
     qiblaSensors: QiblaSensors,
     permissionsManager: PermissionsManager,
@@ -132,6 +134,8 @@ internal fun MuslimApp(
                         exitTransition = { fadeOut(tween(screenFadeOutMillis)) },
                         popEnterTransition = { fadeIn(tween(screenFadeInMillis, delayMillis = screenFadeOutMillis)) },
                         popExitTransition = { fadeOut(tween(screenFadeOutMillis)) },
+                        predictivePopEnterTransition = { fadeIn(tween(screenFadeInMillis)) },
+                        predictivePopExitTransition = { fadeOut(tween(screenFadeOutMillis)) },
                         modifier = Modifier.fillMaxSize()
                             .hazeSource(chromeBackdrop)
                             .background(MaterialTheme.colorScheme.background),
@@ -197,14 +201,19 @@ internal fun MuslimApp(
                         }
                         composable(AppRoute.MOSQUES) {
                             val connection by scheduleViewModel.connection.collectAsStateWithLifecycle()
-                            NearbyMosquesRoute(
-                                loadCatalog = mosqueCatalog::load,
-                                locate = locateForMosques,
-                                language = language,
-                                darkTheme = darkTheme,
-                                canLoadMap = connection == InternetConnection.Online,
-                                onClose = { navController.popBackStack() },
-                            )
+                            val preferences by mosqueBrowseViewModel.preferences.collectAsStateWithLifecycle()
+                            preferences?.let { selection ->
+                                NearbyMosquesRoute(
+                                    loadCatalog = mosqueCatalog::load,
+                                    locate = locateForMosques,
+                                    language = language,
+                                    darkTheme = darkTheme,
+                                    canLoadMap = connection == InternetConnection.Online,
+                                    preferences = selection,
+                                    onPreferencesChange = mosqueBrowseViewModel::update,
+                                    onClose = { navController.popBackStack() },
+                                )
+                            }
                         }
                         composable(AppRoute.QIBLA) { backStackEntry ->
                             QiblaRoute(
