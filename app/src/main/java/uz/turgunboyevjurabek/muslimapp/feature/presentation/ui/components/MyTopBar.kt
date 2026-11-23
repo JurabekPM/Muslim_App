@@ -315,20 +315,20 @@ private fun AppBarRegionButton(
         border = BorderStroke(1.dp, colors.tertiary.copy(alpha = if (darkTheme) 0.72f else 0.29f)),
     ) {
         Row(
-            modifier = Modifier.heightIn(min = 36.dp).padding(horizontal = 10.dp, vertical = 5.dp),
-            horizontalArrangement = Arrangement.spacedBy(5.dp),
+            modifier = Modifier.heightIn(min = 30.dp).padding(horizontal = 8.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_qibla_location),
                 contentDescription = label,
-                modifier = Modifier.size(16.dp),
+                modifier = Modifier.size(14.dp),
                 tint = colors.tertiary,
             )
             Text(
                 text = regionName ?: label,
                 modifier = Modifier.weight(1f, fill = false),
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -336,7 +336,7 @@ private fun AppBarRegionButton(
             Icon(
                 imageVector = Icons.Default.KeyboardArrowDown,
                 contentDescription = null,
-                modifier = Modifier.size(16.dp),
+                modifier = Modifier.size(14.dp),
                 tint = colors.tertiary,
             )
         }
