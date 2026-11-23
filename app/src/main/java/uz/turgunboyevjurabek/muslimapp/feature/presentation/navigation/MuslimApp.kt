@@ -97,7 +97,6 @@ internal fun MuslimApp(
                         val refreshing = scheduleViewModel.refreshing(route)?.collectAsStateWithLifecycle()
                         MyTopBar(
                             modifier = Modifier,
-                            navController = navController,
                             route = route,
                             backdrop = chromeBackdrop,
                             connection = connection,
@@ -105,6 +104,7 @@ internal fun MuslimApp(
                             onRegionClick = {
                                 navController.navigate(AppRoute.REGIONS) { launchSingleTop = true }
                             },
+                            onBackClick = { navController.popBackStack() },
                         )
                     }
                 },
