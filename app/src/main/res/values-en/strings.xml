@@ -158,6 +158,8 @@
         <item quantity="other">%1$d dhikr recitations completed</item>
     </plurals>
     <string name="nearby_mosques">Nearby mosques</string>
+    <string name="home_mosques_subtitle">List and map</string>
+    <string name="home_qibla_subtitle">Find the direction</string>
     <string name="mosque_list">List</string>
     <string name="mosque_map">Map</string>
     <string name="mosque_choose_city">Choose a city</string>

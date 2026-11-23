@@ -173,6 +173,8 @@
         <item quantity="other">%1$d ta zikr bajarildi</item>
     </plurals>
     <string name="nearby_mosques">Yaqin masjidlar</string>
+    <string name="home_mosques_subtitle">Ro‘yxat va xarita</string>
+    <string name="home_qibla_subtitle">Yo‘nalishni topish</string>
     <string name="mosque_list">Ro‘yxat</string>
     <string name="mosque_map">Xarita</string>
     <string name="mosque_choose_city">Shahar tanlash</string>

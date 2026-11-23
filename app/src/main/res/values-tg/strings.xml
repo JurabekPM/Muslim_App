@@ -155,6 +155,8 @@
         <item quantity="other">%1$d зикр иҷро шуд</item>
     </plurals>
     <string name="nearby_mosques">Масҷидҳои наздик</string>
+    <string name="home_mosques_subtitle">Рӯйхат ва харита</string>
+    <string name="home_qibla_subtitle">Ёфтани самт</string>
     <string name="mosque_list">Рӯйхат</string>
     <string name="mosque_map">Харита</string>
     <string name="mosque_choose_city">Интихоби шаҳр</string>

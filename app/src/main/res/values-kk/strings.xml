@@ -158,6 +158,8 @@
         <item quantity="other">%1$d зікір орындалды</item>
     </plurals>
     <string name="nearby_mosques">Жақын маңдағы мешіттер</string>
+    <string name="home_mosques_subtitle">Тізім және карта</string>
+    <string name="home_qibla_subtitle">Бағытты табу</string>
     <string name="mosque_list">Тізім</string>
     <string name="mosque_map">Карта</string>
     <string name="mosque_choose_city">Қала таңдау</string>

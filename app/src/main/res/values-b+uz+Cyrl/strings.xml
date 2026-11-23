@@ -158,6 +158,8 @@
         <item quantity="other">%1$d та зикр бажарилди</item>
     </plurals>
     <string name="nearby_mosques">Яқин масжидлар</string>
+    <string name="home_mosques_subtitle">Рўйхат ва харита</string>
+    <string name="home_qibla_subtitle">Йўналишни топиш</string>
     <string name="mosque_list">Рўйхат</string>
     <string name="mosque_map">Харита</string>
     <string name="mosque_choose_city">Шаҳар танлаш</string>

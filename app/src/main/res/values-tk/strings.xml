@@ -158,6 +158,8 @@
         <item quantity="other">%1$d zikir ýerine ýetirildi</item>
     </plurals>
     <string name="nearby_mosques">Golaýdaky metjitler</string>
+    <string name="home_mosques_subtitle">Sanaw we karta</string>
+    <string name="home_qibla_subtitle">Ugry tapmak</string>
     <string name="mosque_list">Sanaw</string>
     <string name="mosque_map">Karta</string>
     <string name="mosque_choose_city">Şäher saýlaň</string>

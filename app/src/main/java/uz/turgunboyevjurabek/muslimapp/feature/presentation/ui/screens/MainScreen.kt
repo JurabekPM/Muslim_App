@@ -17,6 +17,7 @@ import uz.turgunboyevjurabek.muslimapp.core.utils.Status
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.daily.Bugungi
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.PrayerTimesError
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.FeaturedPrayerCard
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.HomeShortcutCards
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.PrayerTimeline
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.PrayerLocationDate
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.rememberPrayerTimes
@@ -36,6 +37,8 @@ fun MainScreen(
     schedule: PrayerScheduleViewModel,
     bottomPadding: Dp,
     topPadding: Dp,
+    onNearbyMosques: () -> Unit,
+    onQibla: () -> Unit,
 ) {
     val selection by selectRegionViewModel.selection.collectAsStateWithLifecycle()
     val region = selection?.region
@@ -95,6 +98,10 @@ fun MainScreen(
                     }
                 }
             }
+            HomeShortcutCards(
+                onNearbyMosques = onNearbyMosques,
+                onQibla = onQibla,
+            )
         }
     }
 }

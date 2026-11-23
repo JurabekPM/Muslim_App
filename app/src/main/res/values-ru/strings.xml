@@ -178,6 +178,8 @@
         <item quantity="other">Выполнено %1$d зикров</item>
     </plurals>
     <string name="nearby_mosques">Мечети поблизости</string>
+    <string name="home_mosques_subtitle">Список и карта</string>
+    <string name="home_qibla_subtitle">Найти направление</string>
     <string name="mosque_list">Список</string>
     <string name="mosque_map">Карта</string>
     <string name="mosque_choose_city">Выбрать город</string>

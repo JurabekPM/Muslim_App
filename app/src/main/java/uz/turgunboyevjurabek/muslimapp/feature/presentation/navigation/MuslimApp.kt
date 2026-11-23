@@ -149,6 +149,12 @@ internal fun MuslimApp(
                                 schedule = scheduleViewModel,
                                 bottomPadding = dockPadding,
                                 topPadding = topPadding,
+                                onNearbyMosques = {
+                                    navController.navigate(AppRoute.MOSQUES) { launchSingleTop = true }
+                                },
+                                onQibla = {
+                                    navController.navigate(AppRoute.QIBLA) { launchSingleTop = true }
+                                },
                             )
                         }
                         composable(AppRoute.TASBEX) {
@@ -185,9 +191,6 @@ internal fun MuslimApp(
                                 },
                                 language = language,
                                 onLanguageChange = onLanguageChange,
-                                onNearbyMosques = {
-                                    navController.navigate(AppRoute.MOSQUES) { launchSingleTop = true }
-                                },
                                 topPadding = topPadding,
                                 bottomPadding = dockPadding,
                             )
