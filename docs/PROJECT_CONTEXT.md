@@ -29,6 +29,7 @@ Muslim App O‘zbekiston uchun namoz vaqtlari, tasbeh va Qibla funksiyalarini be
 
 - Ranglar navy/slate, iliq oltin/saffron, oq temada ivory fon. Amaldagi rang qiymatlarini `feature/presentation/theme` dan oling.
 - AppBar glass, sahifaga singishgan. Pastki burchak radiusi olib tashlangan va fon pastga qarab yumshoq so‘nadi. Qora temada oynaning xiraligi 10 dp va ustidagi to‘q ko‘k qatlam kulrang tusni pasaytiradi.
+- Umumiy AppBar uchun oq va qora mavzuda ikkita maket chizildi. [1. Markaziy sarlavha va mayin so‘nish](designs/appbar-1-centered-fade.png), [2. Chapdagi sarlavha va yengil tepaga siljib so‘nish](designs/appbar-2-leading-rise.png). Kontent bir xil holatda ko‘rsatildi. Yashirin ko‘rinishda hudud ikonasi va sarlavha yo‘qoladi, glass soyasi hamda tizim status qatori saqlanadi. Maketlar tanlov uchun.
 - BottomNav ajralib turadigan oval glass shaklda. Kontent uning orqasidan ko‘rinadi. Tanlov silliq siljiydi. Qora temada to‘q ko‘k qoplama va mayinroq yaltirash och kulrang tusni pasaytiradi.
 - Tugmalarda mayin ichkariga bosilish hissi bor. Indikator ustida ham bosilish sezilishi kerak.
 - BottomNav istalgan bo‘limidan bosib sudraganda indikator barmoqqa ergashadi. Belgilar vaqtincha tanlangan joyga mos ajraladi. Ekran barmoq qo‘yib yuborilganda almashadi.
