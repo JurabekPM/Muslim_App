@@ -18,8 +18,10 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
@@ -31,6 +33,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -48,7 +51,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -57,11 +62,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.core.utils.AppLanguage
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosqueArea
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosqueCoordinates
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosquePlace
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosqueSearchIndex
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.NearbyMosque
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.Regions
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.nearbyMosqueRadiusKm
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.displayName
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,6 +78,7 @@ internal fun NearbyMosquesScreen(
     language: AppLanguage,
     darkTheme: Boolean,
     canLoadMap: Boolean,
+    area: MosqueArea,
     cities: List<MosquePlace>,
     mosques: List<MosquePlace>,
     city: MosquePlace?,
@@ -80,6 +89,7 @@ internal fun NearbyMosquesScreen(
     locationMessage: Int?,
     loadFailed: Boolean,
     onRetry: () -> Unit,
+    onAreaChange: (MosqueArea) -> Unit,
     onLocate: () -> Unit,
     onCity: (MosquePlace) -> Unit,
     onClose: () -> Unit,
@@ -90,6 +100,7 @@ internal fun NearbyMosquesScreen(
         MeasureFormat.getInstance(language.locale, MeasureFormat.FormatWidth.SHORT, numbers)
     }
     var showMap by rememberSaveable { mutableStateOf(false) }
+    var showAreas by rememberSaveable { mutableStateOf(false) }
     var showCities by rememberSaveable { mutableStateOf(false) }
     var searching by rememberSaveable { mutableStateOf(false) }
     var query by rememberSaveable { mutableStateOf("") }
@@ -106,8 +117,18 @@ internal fun NearbyMosquesScreen(
         }
     }
     BackHandler(enabled = searching || focusedId != null, onBack = goBack)
-    var selectedId by remember(origin) { mutableStateOf<String?>(null) }
-    val nearbyPlaces = remember(results) { results.orEmpty().map(NearbyMosque::place) }
+    val isNearby = area == MosqueArea.Nearby
+    var selectedId by remember(area, origin) { mutableStateOf<String?>(null) }
+    val visiblePlaces = remember(area, mosques, results) {
+        area.selectMosques(mosques, results.orEmpty().map(NearbyMosque::place))
+    }
+    val distances = remember(isNearby, results) {
+        if (isNearby) results.orEmpty().associate { it.place.id to it.distanceMeters } else emptyMap()
+    }
+    val loading = mosques.isEmpty() || (isNearby && origin != null && results == null)
+    val waitingForOrigin = isNearby && origin == null
+    val mapVisible = canLoadMap && !searching && (focusedMosque != null ||
+        (showMap && !loading && !waitingForOrigin && visiblePlaces.isNotEmpty()))
     var directionsFailed by remember { mutableStateOf(false) }
     val uriHandler = LocalUriHandler.current
     val openDirections: (MosqueCoordinates) -> Unit = { coordinates ->
@@ -139,21 +160,27 @@ internal fun NearbyMosquesScreen(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedButton(onClick = onLocate, enabled = !findingLocation, modifier = Modifier.weight(1f)) {
-                        Text(stringResource(R.string.current_location), textAlign = TextAlign.Center)
-                    }
-                    OutlinedButton(onClick = { showCities = true }, enabled = cities.isNotEmpty(), modifier = Modifier.weight(1f)) {
-                        Text(city?.label(languageKey) ?: stringResource(R.string.mosque_choose_city), textAlign = TextAlign.Center)
-                    }
+                OutlinedButton(onClick = { showAreas = true }, modifier = Modifier.fillMaxWidth()) {
+                    Text(mosqueAreaLabel(area), modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+                    Icon(Icons.Filled.ArrowDropDown, stringResource(R.string.mosque_choose_area))
                 }
-                val status = if (findingLocation) R.string.finding_location else locationMessage
-                if (status != null) {
-                    Text(
-                        stringResource(status),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                if (isNearby) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedButton(onClick = onLocate, enabled = !findingLocation, modifier = Modifier.weight(1f)) {
+                            Text(stringResource(R.string.current_location), textAlign = TextAlign.Center)
+                        }
+                        OutlinedButton(onClick = { showCities = true }, enabled = cities.isNotEmpty(), modifier = Modifier.weight(1f)) {
+                            Text(city?.label(languageKey) ?: stringResource(R.string.mosque_choose_city), textAlign = TextAlign.Center)
+                        }
+                    }
+                    val status = if (findingLocation) R.string.finding_location else locationMessage
+                    if (status != null) {
+                        Text(
+                            stringResource(status),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
                 SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
                     SegmentedButton(
@@ -166,6 +193,17 @@ internal fun NearbyMosquesScreen(
                         onClick = { showMap = true },
                         shape = SegmentedButtonDefaults.itemShape(1, 2),
                     ) { Text(stringResource(R.string.mosque_map)) }
+                }
+                if (!loading && !waitingForOrigin && !loadFailed) {
+                    val count = remember(language, visiblePlaces.size) {
+                        NumberFormat.getIntegerInstance(language.locale).format(visiblePlaces.size)
+                    }
+                    Text(
+                        stringResource(R.string.mosque_catalog_count, count),
+                        modifier = Modifier.align(Alignment.CenterHorizontally).padding(vertical = 2.dp),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
             }
         }
@@ -205,54 +243,65 @@ internal fun NearbyMosquesScreen(
                 }
                 MosqueRow(focusedMosque, null, languageKey, distanceFormat, openDirections, Modifier.padding(16.dp))
             }
-            cities.isEmpty() || origin != null && results == null ->
-                MosqueStatus(stringResource(R.string.mosque_catalog_loading), loading = true)
-            origin == null -> MosqueStatus(stringResource(R.string.mosque_choose_origin))
+            loading -> MosqueStatus(stringResource(R.string.mosque_catalog_loading), loading = true)
+            waitingForOrigin -> MosqueStatus(stringResource(R.string.mosque_choose_origin))
+            visiblePlaces.isEmpty() -> MosqueStatus(
+                if (isNearby) stringResource(R.string.mosque_no_results, nearbyMosqueRadiusKm)
+                else stringResource(R.string.mosque_search_empty)
+            )
             showMap && !canLoadMap -> MosqueStatus(stringResource(R.string.mosque_map_offline))
             showMap -> {
                 Box(Modifier.weight(1f).fillMaxWidth().padding(top = 8.dp)) {
-                    key(origin) {
+                    key(area, if (isNearby) origin else null) {
                         NearbyMosqueMap(
-                            origin = origin,
+                            origin = if (isNearby) checkNotNull(origin) else visiblePlaces.first().coordinates,
                             gps = gps,
-                            mosques = nearbyPlaces,
+                            mosques = visiblePlaces,
                             selectedId = selectedId,
                             darkTheme = darkTheme,
                             onSelect = { selectedId = it },
+                            overview = if (isNearby) null else area,
                         )
                     }
                 }
-                results?.firstOrNull { it.place.id == selectedId }?.let { selected ->
-                    MosqueRow(selected.place, selected.distanceMeters, languageKey, distanceFormat, openDirections, Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+                visiblePlaces.firstOrNull { it.id == selectedId }?.let { selected ->
+                    MosqueRow(selected, distances[selected.id], languageKey, distanceFormat, openDirections, Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
                 }
             }
-            results.isNullOrEmpty() -> MosqueStatus(stringResource(R.string.mosque_no_results, nearbyMosqueRadiusKm))
             else -> {
-                LazyColumn(
-                    modifier = Modifier.weight(1f).fillMaxWidth(),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    item {
-                        Text(
-                            stringResource(R.string.mosque_distance_hint),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                    items(results, key = { it.place.id }) { mosque ->
-                        MosqueRow(mosque.place, mosque.distanceMeters, languageKey, distanceFormat, openDirections)
+                key(area, if (isNearby) origin else null) {
+                    LazyColumn(
+                        modifier = Modifier.weight(1f).fillMaxWidth(),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        if (isNearby) item {
+                            Text(
+                                stringResource(R.string.mosque_distance_hint),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        items(visiblePlaces, key = MosquePlace::id) { mosque ->
+                            MosqueRow(mosque, distances[mosque.id], languageKey, distanceFormat, openDirections)
+                        }
                     }
                 }
             }
         }
-        if (searching || !canLoadMap || focusedMosque == null && (!showMap || origin == null || results == null)) {
+        if (!mapVisible) {
             TextButton(onClick = { uriHandler.openUri("https://www.openstreetmap.org/copyright") }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
                 Text("© OpenStreetMap", style = MaterialTheme.typography.labelSmall)
             }
         }
     }
 
+    if (showAreas) {
+        MosqueAreaDialog(area, onClose = { showAreas = false }) {
+            showAreas = false
+            onAreaChange(it)
+        }
+    }
     if (showCities) {
         MosqueCityDialog(cities, languageKey, onClose = { showCities = false }) {
             showCities = false
@@ -266,6 +315,38 @@ internal fun NearbyMosquesScreen(
             confirmButton = { TextButton(onClick = { directionsFailed = false }) { Text(stringResource(R.string.close)) } },
         )
     }
+}
+
+@Composable
+private fun mosqueAreaLabel(area: MosqueArea): String = when (area) {
+    MosqueArea.Uzbekistan -> stringResource(R.string.mosque_area_country)
+    MosqueArea.Nearby -> stringResource(R.string.mosque_area_nearby)
+    else -> Regions.resolve(area.regionSlug).displayName()
+}
+
+@Composable
+private fun MosqueAreaDialog(selected: MosqueArea, onClose: () -> Unit, onSelect: (MosqueArea) -> Unit) {
+    AlertDialog(
+        onDismissRequest = onClose,
+        title = { Text(stringResource(R.string.mosque_choose_area)) },
+        text = {
+            LazyColumn(Modifier.heightIn(max = 400.dp).testTag("mosque-area-options")) {
+                items(MosqueArea.entries) { area ->
+                    Row(
+                        Modifier.fillMaxWidth()
+                            .selectable(area == selected, role = Role.RadioButton, onClick = { onSelect(area) })
+                            .padding(horizontal = 8.dp, vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        RadioButton(selected = area == selected, onClick = null)
+                        Text(mosqueAreaLabel(area))
+                    }
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = onClose) { Text(stringResource(R.string.close)) } },
+    )
 }
 
 @Composable

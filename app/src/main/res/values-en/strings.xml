@@ -182,4 +182,8 @@
     <string name="mosque_show_on_map">Show on map</string>
     <string name="mosque_generic">Mosque</string>
     <string name="mosque_near_locality">Nearby area · %1$s</string>
+    <string name="mosque_area_country">All Uzbekistan</string>
+    <string name="mosque_area_nearby">Nearby</string>
+    <string name="mosque_choose_area">Choose area</string>
+    <string name="mosque_catalog_count">Mosques · %1$s</string>
 </resources>

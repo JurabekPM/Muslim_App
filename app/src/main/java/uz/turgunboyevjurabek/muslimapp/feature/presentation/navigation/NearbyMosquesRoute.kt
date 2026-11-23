@@ -21,6 +21,7 @@ import kotlinx.coroutines.withContext
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.core.utils.AppLanguage
 import uz.turgunboyevjurabek.muslimapp.feature.data.local.MosqueCatalogData
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosqueArea
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosqueCoordinates
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.NearbyMosque
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.nearbyMosques
@@ -43,6 +44,7 @@ internal fun NearbyMosquesRoute(
     }
 
     var cityId by rememberSaveable { mutableStateOf<String?>(null) }
+    var area by rememberSaveable { mutableStateOf(MosqueArea.Uzbekistan) }
     var latitude by rememberSaveable { mutableStateOf<Double?>(null) }
     var longitude by rememberSaveable { mutableStateOf<Double?>(null) }
     var finding by remember { mutableStateOf(false) }
@@ -66,8 +68,8 @@ internal fun NearbyMosquesRoute(
             null
         }
     }
-    LaunchedEffect(Unit) {
-        if (cityId == null && latitude == null && canLocate()) finding = true
+    LaunchedEffect(area) {
+        if (area == MosqueArea.Nearby && cityId == null && latitude == null && canLocate()) finding = true
     }
     LaunchedEffect(finding) {
         if (!finding) return@LaunchedEffect
@@ -97,6 +99,7 @@ internal fun NearbyMosquesRoute(
         language = language,
         darkTheme = darkTheme,
         canLoadMap = canLoadMap,
+        area = area,
         cities = catalog?.cities.orEmpty(),
         mosques = catalog?.mosques.orEmpty(),
         city = city,
@@ -107,6 +110,10 @@ internal fun NearbyMosquesRoute(
         locationMessage = locationMessage,
         loadFailed = loadFailed,
         onRetry = { loadAttempt++ },
+        onAreaChange = {
+            area = it
+            if (it != MosqueArea.Nearby) finding = false
+        },
         onLocate = {
             locationMessage = null
             if (canLocate()) finding = true else permission.launch(permissions)

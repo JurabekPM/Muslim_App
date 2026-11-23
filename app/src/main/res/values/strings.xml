@@ -197,4 +197,8 @@
     <string name="mosque_show_on_map">Xaritada ko‘rish</string>
     <string name="mosque_generic">Masjid</string>
     <string name="mosque_near_locality">Yaqin hudud · %1$s</string>
+    <string name="mosque_area_country">Butun O‘zbekiston</string>
+    <string name="mosque_area_nearby">Yaqin atrof</string>
+    <string name="mosque_choose_area">Hudud tanlash</string>
+    <string name="mosque_catalog_count">Masjidlar · %1$s</string>
 </resources>

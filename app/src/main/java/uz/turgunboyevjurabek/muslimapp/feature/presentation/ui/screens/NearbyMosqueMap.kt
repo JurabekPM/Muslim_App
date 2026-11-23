@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -30,22 +31,34 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.json.JSONArray
 import org.json.JSONObject
 import org.maplibre.compose.camera.CameraPosition
+import org.maplibre.compose.camera.CameraFit
+import org.maplibre.compose.camera.CameraUpdate
 import org.maplibre.compose.expressions.dsl.const
+import org.maplibre.compose.expressions.dsl.convertToString
+import org.maplibre.compose.expressions.dsl.feature
 import org.maplibre.compose.interaction.ClickResult
 import org.maplibre.compose.layers.CircleLayer
+import org.maplibre.compose.layers.SymbolLayer
 import org.maplibre.compose.map.MaplibreMap
 import org.maplibre.compose.map.StyleLoadState
 import org.maplibre.compose.map.rememberMapState
 import org.maplibre.compose.sources.GeoJsonData
 import org.maplibre.compose.sources.rememberGeoJsonSource
 import org.maplibre.compose.style.BaseStyle
+import org.maplibre.compose.util.DpPadding
+import org.maplibre.spatialk.geojson.BoundingBox
+import org.maplibre.spatialk.geojson.Point
 import org.maplibre.spatialk.geojson.Position
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonPrimitive
 import uz.turgunboyevjurabek.muslimapp.R
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosqueArea
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosqueCoordinates
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosquePlace
 
@@ -58,9 +71,31 @@ internal fun NearbyMosqueMap(
     selectedId: String?,
     darkTheme: Boolean,
     onSelect: (String) -> Unit,
+    overview: MosqueArea? = null,
 ) {
-    val mosquePins = remember(mosques) {
-        featureCollection(mosques.map { pointFeature(it.coordinates, it.id) })
+    val mosquePins by produceState<GeoJsonData>(emptyMosquePins, mosques) {
+        value = withContext(Dispatchers.Default) {
+            featureCollection(mosques.map { pointFeature(it.coordinates, it.id) })
+        }
+    }
+    val bounds = remember(overview, mosques) {
+        when {
+            overview == MosqueArea.Uzbekistan -> BoundingBox(
+                Position(longitude = 55.9, latitude = 37.1),
+                Position(longitude = 73.3, latitude = 45.7),
+            )
+            overview != null && mosques.size > 1 -> BoundingBox(
+                Position(
+                    longitude = mosques.minOf { it.coordinates.longitude } - 0.015,
+                    latitude = mosques.minOf { it.coordinates.latitude } - 0.015,
+                ),
+                Position(
+                    longitude = mosques.maxOf { it.coordinates.longitude } + 0.015,
+                    latitude = mosques.maxOf { it.coordinates.latitude } + 0.015,
+                ),
+            )
+            else -> null
+        }
     }
     val gpsPin = remember(gps) { gps?.let { featureCollection(listOf(pointFeature(it))) } }
     val selectedPin = remember(selectedId, mosques) {
@@ -74,11 +109,17 @@ internal fun NearbyMosqueMap(
     var attempt by remember { mutableIntStateOf(0) }
 
     key(attempt) {
+        var clusterCenter by remember { mutableStateOf<Position?>(null) }
         val state = rememberMapState(
             baseStyle = BaseStyle.Uri("https://tiles.openfreemap.org/styles/$style"),
             initialCameraPosition = CameraPosition(
-                center = Position(longitude = origin.longitude, latitude = origin.latitude),
-                zoom = 12.3,
+                center = if (overview == MosqueArea.Uzbekistan) Position(longitude = 64.6, latitude = 41.5)
+                else Position(longitude = origin.longitude, latitude = origin.latitude),
+                zoom = when (overview) {
+                    null -> 12.3
+                    MosqueArea.Uzbekistan -> 3.7
+                    else -> 7.0
+                },
             ),
         ) {
             gpsPin?.let {
@@ -91,9 +132,44 @@ internal fun NearbyMosqueMap(
                     strokeColor = const(Color.White),
                 )
             }
+            val source = rememberGeoJsonSource(mosquePins) {
+                cluster = overview != null
+                clusterRadius = 24
+                clusterMaxZoom = 14
+            }
+            if (overview != null) {
+                CircleLayer(
+                    id = "muslim-app-mosque-clusters",
+                    source = source,
+                    filter = feature.has("cluster_id"),
+                    radius = const(13.dp),
+                    color = const(marker),
+                    strokeColor = const(Color.White),
+                    strokeWidth = const(1.5.dp),
+                    hitPadding = 8.dp,
+                    onClick = { features ->
+                        val point = features.firstOrNull()?.geometry as? Point
+                        if (point == null) ClickResult.Pass else {
+                            clusterCenter = point.coordinates
+                            ClickResult.Consume
+                        }
+                    },
+                )
+                SymbolLayer(
+                    id = "muslim-app-mosque-cluster-counts",
+                    source = source,
+                    filter = feature.has("cluster_id"),
+                    textField = feature["point_count"].convertToString(),
+                    textFont = const(listOf("Noto Sans Regular")),
+                    textSize = const(11.sp),
+                    textColor = const(if (darkTheme) Color(0xFF29200E) else Color.White),
+                    textAllowOverlap = const(true),
+                )
+            }
             CircleLayer(
                 id = "muslim-app-mosques",
-                source = rememberGeoJsonSource(mosquePins),
+                source = source,
+                filter = feature.has("mosqueId"),
                 radius = const(7.dp),
                 color = const(marker),
                 strokeWidth = const(2.dp),
@@ -121,6 +197,19 @@ internal fun NearbyMosqueMap(
             }
         }
 
+        LaunchedEffect(state, bounds) {
+            if (bounds != null) {
+                state.fitCameraToBounds(
+                    bounds,
+                    CameraFit(fitPadding = DpPadding(left = 22.dp, top = 24.dp, right = 22.dp, bottom = 36.dp)),
+                )
+            }
+        }
+        LaunchedEffect(clusterCenter) {
+            val center = clusterCenter ?: return@LaunchedEffect
+            state.animateCamera(CameraUpdate(center = center, zoom = (state.cameraPosition.zoom + 2).coerceAtMost(16.0)))
+            clusterCenter = null
+        }
         val loadState = state.style.loadState
         var timedOut by remember { mutableStateOf(false) }
         LaunchedEffect(loadState) {
@@ -167,6 +256,8 @@ private fun MapCredits(modifier: Modifier = Modifier) {
 private fun featureCollection(features: List<JSONObject>) = GeoJsonData.JsonString(
     JSONObject().put("type", "FeatureCollection").put("features", JSONArray(features)).toString(),
 )
+
+private val emptyMosquePins = GeoJsonData.JsonString("""{"type":"FeatureCollection","features":[]}""")
 
 private fun pointFeature(coordinates: MosqueCoordinates, mosqueId: String? = null) = JSONObject()
     .put("type", "Feature")

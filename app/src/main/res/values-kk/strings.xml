@@ -182,4 +182,8 @@
     <string name="mosque_show_on_map">Картадан көру</string>
     <string name="mosque_generic">Мешіт</string>
     <string name="mosque_near_locality">Жақын аумақ · %1$s</string>
+    <string name="mosque_area_country">Бүкіл Өзбекстан</string>
+    <string name="mosque_area_nearby">Жақын маң</string>
+    <string name="mosque_choose_area">Аймақ таңдау</string>
+    <string name="mosque_catalog_count">Мешіттер · %1$s</string>
 </resources>

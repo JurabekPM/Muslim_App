@@ -28,6 +28,7 @@ internal data class MosquePlace(
     val aliases: List<String>? = null,
     val locality: String? = null,
     val localityApproximate: Boolean = false,
+    val regionCode: String? = null,
 ) {
     fun label(language: String): String? = names?.get(language) ?: name
 }

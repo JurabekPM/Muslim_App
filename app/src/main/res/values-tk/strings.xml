@@ -182,4 +182,8 @@
     <string name="mosque_show_on_map">Kartada görmek</string>
     <string name="mosque_generic">Metjit</string>
     <string name="mosque_near_locality">Golaýdaky ýer · %1$s</string>
+    <string name="mosque_area_country">Tutuş Özbegistan</string>
+    <string name="mosque_area_nearby">Golaýdakylar</string>
+    <string name="mosque_choose_area">Sebit saýlamak</string>
+    <string name="mosque_catalog_count">Metjitler · %1$s</string>
 </resources>

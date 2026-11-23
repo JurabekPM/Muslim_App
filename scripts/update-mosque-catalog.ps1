@@ -1,4 +1,7 @@
-param([string]$MosquesJson, [string]$CitiesJson, [string]$LocalitiesJson, [string]$BuildingsJson)
+param(
+    [string]$MosquesJson, [string]$CitiesJson, [string]$LocalitiesJson,
+    [string]$BuildingsJson, [string]$RegionsJson
+)
 
 $ErrorActionPreference = 'Stop'
 $area = 'area["ISO3166-1"="UZ"]["admin_level"="2"]->.uz;'
@@ -66,6 +69,7 @@ $mosqueSource = Read-Overpass $MosquesJson 'nwr["amenity"="place_of_worship"]["r
 $citySource = Read-Overpass $CitiesJson 'node["place"~"^(city|town)$"]["name"](area.uz);out;'
 $localitySource = Read-Overpass $LocalitiesJson 'node["place"~"^(city|town|village|hamlet|suburb|quarter|neighbourhood)$"]["name"](area.uz);out;'
 $buildingSource = Read-Overpass $BuildingsJson 'way["building"="mosque"]["name"](area.uz);out geom;'
+$boundarySource = Read-Overpass $RegionsJson 'rel["ISO3166-2"~"^UZ-"]["boundary"="administrative"];out geom;'
 $verifiedNames = Get-Content -Raw (Join-Path $PSScriptRoot 'mosque-name-sources.json') | ConvertFrom-Json -AsHashtable
 
 $localityCells = @{}
@@ -177,7 +181,17 @@ $catalog = [ordered]@{
 }
 $outputPath = Join-Path $PSScriptRoot '../app/src/main/assets/uzbekistan_mosques.json'
 [void][System.IO.Directory]::CreateDirectory((Split-Path -Parent $outputPath))
-$catalog | ConvertTo-Json -Compress -Depth 10 | Set-Content -LiteralPath $outputPath -Encoding utf8NoBOM
+$catalogTemp = [IO.Path]::GetTempFileName()
+$boundaryTemp = [IO.Path]::GetTempFileName()
+try {
+    $catalog | ConvertTo-Json -Compress -Depth 10 | Set-Content -LiteralPath $catalogTemp -Encoding utf8NoBOM
+    $boundarySource | ConvertTo-Json -Compress -Depth 15 | Set-Content -LiteralPath $boundaryTemp -Encoding utf8NoBOM
+    node (Join-Path $PSScriptRoot 'assign-mosque-regions.mjs') $catalogTemp $boundaryTemp
+    if ($LASTEXITCODE -ne 0) { throw 'Mosque region assignment failed.' }
+    Copy-Item -LiteralPath $catalogTemp -Destination $outputPath
+} finally {
+    Remove-Item -LiteralPath $catalogTemp, $boundaryTemp
+}
 Write-Output "$($mosques.Count) mosques and $($cities.Count) cities saved."
 $unnamed = @($mosques | Where-Object { !$_.name })
 $withContext = @($unnamed | Where-Object { $_.locality -or $_.address })

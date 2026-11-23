@@ -182,4 +182,8 @@
     <string name="mosque_show_on_map">Картадан көрүү</string>
     <string name="mosque_generic">Мечит</string>
     <string name="mosque_near_locality">Жакынкы аймак · %1$s</string>
+    <string name="mosque_area_country">Бүт Өзбекстан</string>
+    <string name="mosque_area_nearby">Жакын жерде</string>
+    <string name="mosque_choose_area">Аймак тандоо</string>
+    <string name="mosque_catalog_count">Мечиттер · %1$s</string>
 </resources>

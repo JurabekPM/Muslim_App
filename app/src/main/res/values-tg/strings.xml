@@ -179,4 +179,8 @@
     <string name="mosque_show_on_map">Дидан дар харита</string>
     <string name="mosque_generic">Масҷид</string>
     <string name="mosque_near_locality">Маҳали наздик · %1$s</string>
+    <string name="mosque_area_country">Тамоми Ӯзбекистон</string>
+    <string name="mosque_area_nearby">Дар наздикӣ</string>
+    <string name="mosque_choose_area">Интихоби минтақа</string>
+    <string name="mosque_catalog_count">Масҷидҳо · %1$s</string>
 </resources>

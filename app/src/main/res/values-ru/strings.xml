@@ -202,4 +202,8 @@
     <string name="mosque_show_on_map">Показать на карте</string>
     <string name="mosque_generic">Мечеть</string>
     <string name="mosque_near_locality">Район поблизости · %1$s</string>
+    <string name="mosque_area_country">Весь Узбекистан</string>
+    <string name="mosque_area_nearby">Поблизости</string>
+    <string name="mosque_choose_area">Выбрать регион</string>
+    <string name="mosque_catalog_count">Мечети · %1$s</string>
 </resources>

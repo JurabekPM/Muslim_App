@@ -182,4 +182,8 @@
     <string name="mosque_show_on_map">Харитада кўриш</string>
     <string name="mosque_generic">Масжид</string>
     <string name="mosque_near_locality">Яқин ҳудуд · %1$s</string>
+    <string name="mosque_area_country">Бутун Ўзбекистон</string>
+    <string name="mosque_area_nearby">Яқин атроф</string>
+    <string name="mosque_choose_area">Ҳудуд танлаш</string>
+    <string name="mosque_catalog_count">Масжидлар · %1$s</string>
 </resources>
