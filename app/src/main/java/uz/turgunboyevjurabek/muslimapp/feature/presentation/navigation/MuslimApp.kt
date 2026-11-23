@@ -25,10 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -55,7 +52,6 @@ import uz.turgunboyevjurabek.muslimapp.feature.data.local.MosqueCatalog
 import uz.turgunboyevjurabek.muslimapp.feature.data.network.InternetConnection
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MyTopBar
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MyBottomNavigationBar
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.AppBarScrollState
 
 @Composable
 internal fun MuslimApp(
@@ -88,10 +84,6 @@ internal fun MuslimApp(
             val navController = rememberNavController()
             val chromeBackdrop = rememberHazeState()
             val entry by navController.currentBackStackEntryAsState()
-            val density = LocalDensity.current
-            val appBarScroll = remember(entry?.id, density) {
-                with(density) { AppBarScrollState(hideDistance = 16.dp.toPx(), showDistance = 8.dp.toPx()) }
-            }
             val hasOwnBars = when (entry?.destination?.route) {
                 AppRoute.REGIONS, AppRoute.MOSQUES -> true
                 else -> false
@@ -110,7 +102,6 @@ internal fun MuslimApp(
                             modifier = Modifier,
                             route = route,
                             region = selection?.region,
-                            controlsVisible = appBarScroll.controlsVisible,
                             backdrop = chromeBackdrop,
                             connection = connection,
                             refreshing = refreshing?.value == true,
@@ -148,7 +139,6 @@ internal fun MuslimApp(
                         predictivePopEnterTransition = { fadeIn(tween(screenFadeInMillis)) },
                         predictivePopExitTransition = { fadeOut(tween(screenFadeOutMillis)) },
                         modifier = Modifier.fillMaxSize()
-                            .nestedScroll(appBarScroll)
                             .hazeSource(chromeBackdrop)
                             .background(MaterialTheme.colorScheme.background),
                     ) {

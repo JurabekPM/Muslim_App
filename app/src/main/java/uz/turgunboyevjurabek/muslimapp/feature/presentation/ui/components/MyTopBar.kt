@@ -5,7 +5,6 @@ package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components
 import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -57,8 +56,6 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.LiveRegionMode
-import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -88,7 +85,6 @@ fun MyTopBar(
     modifier: Modifier,
     route: String?,
     region: Regions?,
-    controlsVisible: Boolean,
     backdrop: HazeState,
     connection: InternetConnection,
     refreshing: Boolean,
@@ -99,14 +95,6 @@ fun MyTopBar(
     val colors = MaterialTheme.colorScheme
     val glassColor = colors.surface
     val darkGlass = glassColor.luminance() < 0.35f
-    val controlsAlpha = animateFloatAsState(
-        targetValue = if (controlsVisible) 1f else 0f,
-        animationSpec = tween(if (controlsVisible) 180 else 145),
-        label = "AppBar controls visibility",
-    )
-    val controlsModifier = Modifier.graphicsLayer { alpha = controlsAlpha.value }.then(
-        if (controlsVisible) Modifier else Modifier.clearAndSetSemantics { hideFromAccessibility() },
-    )
     val input = remember(backdrop) { HazeInput.Sources(backdrop) }
     val glass = remember(glassColor, darkGlass) {
         GlassStyle.regular.then {
@@ -169,13 +157,13 @@ fun MyTopBar(
             ),
             title = {
                 Column {
-                    AppBarTitle(stringResource(titleForRoute(route)), modifier = controlsModifier)
+                    AppBarTitle(stringResource(titleForRoute(route)))
                     ConnectionSubtitle(connection, refreshing)
                 }
             },
             navigationIcon = {
                 if (onQiblaScreen) {
-                    AppBarBackButton(controlsModifier, controlsVisible, onBackClick)
+                    AppBarBackButton(onClick = onBackClick)
                 }
             },
             actions = {
@@ -183,8 +171,6 @@ fun MyTopBar(
                     AppBarRegionButton(
                         regionName = region?.localizedBaseName(appLocale()),
                         darkTheme = darkGlass,
-                        modifier = controlsModifier,
-                        enabled = controlsVisible,
                         onClick = onRegionClick,
                     )
                 }
@@ -194,7 +180,7 @@ fun MyTopBar(
 }
 
 @Composable
-private fun AppBarTitle(title: String, modifier: Modifier) {
+private fun AppBarTitle(title: String) {
     var displayedTitle by remember { mutableStateOf(title) }
     val opacity = remember { Animatable(1f) }
     LaunchedEffect(title) {
@@ -206,7 +192,7 @@ private fun AppBarTitle(title: String, modifier: Modifier) {
     }
     Text(
         text = displayedTitle,
-        modifier = modifier.graphicsLayer { alpha = opacity.value },
+        modifier = Modifier.graphicsLayer { alpha = opacity.value },
         style = MaterialTheme.typography.titleLarge,
         fontWeight = FontWeight.SemiBold,
         maxLines = 1,
@@ -283,14 +269,13 @@ private fun ConnectionSubtitle(connection: InternetConnection, refreshing: Boole
 }
 
 @Composable
-private fun AppBarBackButton(modifier: Modifier, enabled: Boolean, onClick: () -> Unit) {
+private fun AppBarBackButton(onClick: () -> Unit) {
     val colors = MaterialTheme.colorScheme
     val interaction = remember { MutableInteractionSource() }
     Surface(
         onClick = onClick,
-        enabled = enabled,
         interactionSource = interaction,
-        modifier = modifier.padding(horizontal = 4.dp)
+        modifier = Modifier.padding(horizontal = 4.dp)
             .pressScale(rememberPressScale(interaction))
             .minimumInteractiveComponentSize()
             .size(42.dp),
@@ -312,8 +297,6 @@ private fun AppBarBackButton(modifier: Modifier, enabled: Boolean, onClick: () -
 private fun AppBarRegionButton(
     regionName: String?,
     darkTheme: Boolean,
-    modifier: Modifier,
-    enabled: Boolean,
     onClick: () -> Unit,
 ) {
     val colors = MaterialTheme.colorScheme
@@ -321,9 +304,8 @@ private fun AppBarRegionButton(
     val label = stringResource(R.string.regions)
     Surface(
         onClick = onClick,
-        enabled = enabled,
         interactionSource = interaction,
-        modifier = modifier.padding(end = 12.dp)
+        modifier = Modifier.padding(end = 12.dp)
             .widthIn(max = 148.dp)
             .pressScale(rememberPressScale(interaction)),
         shape = CircleShape,
