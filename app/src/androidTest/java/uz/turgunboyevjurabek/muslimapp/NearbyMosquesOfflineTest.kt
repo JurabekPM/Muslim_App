@@ -1,7 +1,12 @@
 package uz.turgunboyevjurabek.muslimapp
 
 import android.icu.text.NumberFormat
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
@@ -21,6 +26,7 @@ import org.junit.Assert.assertEquals
 import uz.turgunboyevjurabek.muslimapp.core.utils.AppLanguage
 import uz.turgunboyevjurabek.muslimapp.feature.data.local.MosqueCatalog
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosqueArea
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosqueBrowsePreferences
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.nearbyMosques
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.navigation.NearbyMosquesRoute
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.MuslimAppTheme
@@ -33,18 +39,7 @@ class NearbyMosquesOfflineTest {
     fun displaysBundledPhotoAndShowsItsAuthorAndLicense() {
         val context = AppLanguage.Uzbek.localize(InstrumentationRegistry.getInstrumentation().targetContext)
         val catalog = MosqueCatalog(context)
-        compose.setContent {
-            MuslimAppTheme {
-                NearbyMosquesRoute(
-                    loadCatalog = catalog::load,
-                    locate = { null },
-                    language = AppLanguage.Uzbek,
-                    darkTheme = false,
-                    canLoadMap = false,
-                    onClose = {},
-                )
-            }
-        }
+        showMosques(catalog)
         val search = context.getString(R.string.mosque_search)
         compose.waitUntil(5_000) { compose.onNodeWithContentDescription(search).isDisplayed() }
         compose.onNodeWithContentDescription(search).performClick()
@@ -67,18 +62,7 @@ class NearbyMosquesOfflineTest {
         val numberFormat = NumberFormat.getIntegerInstance(AppLanguage.Uzbek.locale)
         fun countLabel(value: Int) = context.getString(R.string.mosque_catalog_count, numberFormat.format(value))
 
-        compose.setContent {
-            MuslimAppTheme {
-                NearbyMosquesRoute(
-                    loadCatalog = catalog::load,
-                    locate = { null },
-                    language = AppLanguage.Uzbek,
-                    darkTheme = false,
-                    canLoadMap = false,
-                    onClose = {},
-                )
-            }
-        }
+        showMosques(catalog)
         compose.waitUntil(5_000) { compose.onNodeWithText(countLabel(data.mosques.size)).isDisplayed() }
         compose.onNodeWithContentDescription(context.getString(R.string.mosque_choose_area)).performClick()
         val region = hasText("Samarqand viloyati") and hasClickAction()
@@ -97,18 +81,7 @@ class NearbyMosquesOfflineTest {
     fun findsVerifiedMosqueAcrossUzbekistanWithoutLocationOrInternet() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val catalog = MosqueCatalog(context)
-        compose.setContent {
-            MuslimAppTheme {
-                NearbyMosquesRoute(
-                    loadCatalog = catalog::load,
-                    locate = { null },
-                    language = AppLanguage.Uzbek,
-                    darkTheme = false,
-                    canLoadMap = false,
-                    onClose = {},
-                )
-            }
-        }
+        showMosques(catalog)
 
         val search = context.getString(R.string.mosque_search)
         compose.waitUntil(5_000) { compose.onNodeWithContentDescription(search).isDisplayed() }
@@ -132,18 +105,7 @@ class NearbyMosquesOfflineTest {
         val firstMosque = nearbyMosques(city.coordinates, data.mosques).first().place.name
             ?: context.getString(R.string.mosque_unnamed)
 
-        compose.setContent {
-            MuslimAppTheme {
-                NearbyMosquesRoute(
-                    loadCatalog = catalog::load,
-                    locate = { null },
-                    language = AppLanguage.Uzbek,
-                    darkTheme = false,
-                    canLoadMap = false,
-                    onClose = {},
-                )
-            }
-        }
+        showMosques(catalog)
 
         compose.onNodeWithContentDescription(context.getString(R.string.mosque_choose_area)).performClick()
         compose.onNodeWithText(context.getString(R.string.mosque_area_nearby)).performClick()
@@ -164,5 +126,48 @@ class NearbyMosquesOfflineTest {
 
         compose.onNodeWithText(context.getString(R.string.mosque_list)).performClick()
         compose.onNodeWithText(firstMosque).assertIsDisplayed()
+    }
+
+    @Test
+    fun restoresMapAndRegionWithAnOfflineListFallback() {
+        val context = AppLanguage.Uzbek.localize(InstrumentationRegistry.getInstrumentation().targetContext)
+        val catalog = MosqueCatalog(context)
+        val places = runBlocking { catalog.load() }
+        val count = places.mosques.count { it.regionCode == MosqueArea.Andijon.regionCode }
+        val amount = NumberFormat.getIntegerInstance(AppLanguage.Uzbek.locale).format(count)
+        val countyCount = context.getString(R.string.mosque_catalog_count, amount)
+        showMosques(catalog, MosqueBrowsePreferences(area = MosqueArea.Andijon, showMap = true))
+
+        val offline = context.getString(R.string.mosque_map_offline)
+        compose.waitUntil(5_000) { compose.onNodeWithText(offline).isDisplayed() }
+        compose.onNodeWithText("Andijon viloyati").assertIsDisplayed()
+        compose.onNodeWithText(countyCount).assertIsDisplayed()
+        compose.onNodeWithText(context.getString(R.string.mosque_map)).assertIsSelected()
+
+        val list = compose.onNodeWithText(context.getString(R.string.mosque_list))
+        list.performClick().assertIsSelected()
+        compose.onNodeWithText(offline).assertDoesNotExist()
+        compose.onNodeWithText(countyCount).assertIsDisplayed()
+    }
+
+    private fun showMosques(
+        catalog: MosqueCatalog,
+        initialPreferences: MosqueBrowsePreferences = MosqueBrowsePreferences(),
+    ) {
+        compose.setContent {
+            var preferences by remember { mutableStateOf(initialPreferences) }
+            MuslimAppTheme {
+                NearbyMosquesRoute(
+                    loadCatalog = catalog::load,
+                    locate = { null },
+                    language = AppLanguage.Uzbek,
+                    darkTheme = false,
+                    canLoadMap = false,
+                    preferences = preferences,
+                    onPreferencesChange = { change -> preferences = change(preferences) },
+                    onClose = {},
+                )
+            }
+        }
     }
 }

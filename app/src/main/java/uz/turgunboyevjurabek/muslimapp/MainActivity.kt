@@ -22,6 +22,7 @@ import androidx.annotation.RequiresApi
 
 import dagger.hilt.android.AndroidEntryPoint
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.CounterViewModel
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.MosqueBrowseViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.PrayerScheduleViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.preferences.SelectRegionViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.qibla.QiblaViewModel
@@ -61,6 +62,7 @@ class MainActivity : ComponentActivity() {
         val scheduleViewModel by viewModels<PrayerScheduleViewModel>()
         val counterViewModel by viewModels<CounterViewModel>()
         val regionViewModel by viewModels<SelectRegionViewModel>()
+        val mosqueBrowseViewModel by viewModels<MosqueBrowseViewModel>()
 
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
@@ -83,6 +85,7 @@ class MainActivity : ComponentActivity() {
                 qiblaViewModel = qiblaViewModel,
                 regionLocationLookup = regionLocationLookup,
                 mosqueCatalog = mosqueCatalog,
+                mosqueBrowseViewModel = mosqueBrowseViewModel,
                 locateForMosques = mosqueLocation::awaitCurrentLocation,
                 qiblaSensors = qiblaSensors,
                 permissionsManager = permissionsManager,

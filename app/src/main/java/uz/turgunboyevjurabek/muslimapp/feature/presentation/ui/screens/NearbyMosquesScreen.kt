@@ -79,6 +79,7 @@ internal fun NearbyMosquesScreen(
     darkTheme: Boolean,
     canLoadMap: Boolean,
     area: MosqueArea,
+    showMap: Boolean,
     cities: List<MosquePlace>,
     mosques: List<MosquePlace>,
     city: MosquePlace?,
@@ -90,6 +91,7 @@ internal fun NearbyMosquesScreen(
     loadFailed: Boolean,
     onRetry: () -> Unit,
     onAreaChange: (MosqueArea) -> Unit,
+    onShowMapChange: (Boolean) -> Unit,
     onLocate: () -> Unit,
     onCity: (MosquePlace) -> Unit,
     onClose: () -> Unit,
@@ -99,7 +101,6 @@ internal fun NearbyMosquesScreen(
         val numbers = NumberFormat.getNumberInstance(language.locale).apply { maximumFractionDigits = 1 }
         MeasureFormat.getInstance(language.locale, MeasureFormat.FormatWidth.SHORT, numbers)
     }
-    var showMap by rememberSaveable { mutableStateOf(false) }
     var showAreas by rememberSaveable { mutableStateOf(false) }
     var showCities by rememberSaveable { mutableStateOf(false) }
     var searching by rememberSaveable { mutableStateOf(false) }
@@ -185,12 +186,12 @@ internal fun NearbyMosquesScreen(
                 SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
                     SegmentedButton(
                         selected = !showMap,
-                        onClick = { showMap = false },
+                        onClick = { onShowMapChange(false) },
                         shape = SegmentedButtonDefaults.itemShape(0, 2),
                     ) { Text(stringResource(R.string.mosque_list)) }
                     SegmentedButton(
                         selected = showMap,
-                        onClick = { showMap = true },
+                        onClick = { onShowMapChange(true) },
                         shape = SegmentedButtonDefaults.itemShape(1, 2),
                     ) { Text(stringResource(R.string.mosque_map)) }
                 }
