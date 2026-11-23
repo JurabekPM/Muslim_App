@@ -186,4 +186,7 @@
     <string name="mosque_area_nearby">Nearby</string>
     <string name="mosque_choose_area">Choose area</string>
     <string name="mosque_catalog_count">Mosques · %1$s</string>
+    <string name="mosque_photo_description">Photo of %1$s</string>
+    <string name="mosque_photo_source">Photo source</string>
+    <string name="mosque_photo_credit">Photo by %1$s</string>
 </resources>

@@ -201,4 +201,7 @@
     <string name="mosque_area_nearby">Yaqin atrof</string>
     <string name="mosque_choose_area">Hudud tanlash</string>
     <string name="mosque_catalog_count">Masjidlar · %1$s</string>
+    <string name="mosque_photo_description">%1$s masjidi surati</string>
+    <string name="mosque_photo_source">Surat manbasi</string>
+    <string name="mosque_photo_credit">Surat muallifi · %1$s</string>
 </resources>

@@ -186,4 +186,7 @@
     <string name="mosque_area_nearby">Golaýdakylar</string>
     <string name="mosque_choose_area">Sebit saýlamak</string>
     <string name="mosque_catalog_count">Metjitler · %1$s</string>
+    <string name="mosque_photo_description">%1$s metjidiniň suraty</string>
+    <string name="mosque_photo_source">Suratyň çeşmesi</string>
+    <string name="mosque_photo_credit">Suratyň awtory · %1$s</string>
 </resources>

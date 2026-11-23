@@ -21,8 +21,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.UiComposable
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -31,6 +37,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.sp
 import org.json.JSONArray
 import org.json.JSONObject
@@ -40,6 +47,7 @@ import org.maplibre.compose.camera.CameraUpdate
 import org.maplibre.compose.expressions.dsl.const
 import org.maplibre.compose.expressions.dsl.convertToString
 import org.maplibre.compose.expressions.dsl.feature
+import org.maplibre.compose.expressions.dsl.image
 import org.maplibre.compose.interaction.ClickResult
 import org.maplibre.compose.layers.CircleLayer
 import org.maplibre.compose.layers.SymbolLayer
@@ -104,6 +112,17 @@ internal fun NearbyMosqueMap(
         }
     }
     val marker = if (darkTheme) Color(0xFFF4CF75) else Color(0xFF785213)
+    val mosqueGlyph = painterResource(R.drawable.ic_mosque)
+    val mosqueMarker = remember(mosqueGlyph, darkTheme) {
+        MosqueMarkerPainter(
+            mosqueGlyph,
+            if (darkTheme) Color(0xFF2B4659) else Color(0xFF233748),
+            if (darkTheme) Color(0xFFF4CF75) else Color(0xFFFFF8EA),
+        )
+    }
+    val selectedMarker = remember(mosqueGlyph) {
+        MosqueMarkerPainter(mosqueGlyph, Color(0xFFF4CF75), Color(0xFF233748))
+    }
     val currentLocation = if (darkTheme) Color(0xFF69BEFF) else Color(0xFF136AC0)
     val style = if (darkTheme) "dark" else "liberty"
     var attempt by remember { mutableIntStateOf(0) }
@@ -166,15 +185,14 @@ internal fun NearbyMosqueMap(
                     textAllowOverlap = const(true),
                 )
             }
-            CircleLayer(
+            SymbolLayer(
                 id = "muslim-app-mosques",
                 source = source,
                 filter = feature.has("mosqueId"),
-                radius = const(7.dp),
-                color = const(marker),
-                strokeWidth = const(2.dp),
-                strokeColor = const(Color.White),
-                hitPadding = 12.dp,
+                iconImage = image(mosqueMarker, size = DpSize(25.dp, 25.dp)),
+                iconAllowOverlap = const(true),
+                iconIgnorePlacement = const(true),
+                hitPadding = 8.dp,
                 onClick = { features ->
                     val id = (features.firstOrNull()?.properties?.get("mosqueId") as? JsonPrimitive)?.content
                     if (id == null) {
@@ -186,13 +204,12 @@ internal fun NearbyMosqueMap(
                 },
             )
             selectedPin?.let {
-                CircleLayer(
+                SymbolLayer(
                     id = "muslim-app-mosque-selected",
                     source = rememberGeoJsonSource(it),
-                    radius = const(9.dp),
-                    color = const(marker),
-                    strokeWidth = const(3.dp),
-                    strokeColor = const(Color.White),
+                    iconImage = image(selectedMarker, size = DpSize(31.dp, 31.dp)),
+                    iconAllowOverlap = const(true),
+                    iconIgnorePlacement = const(true),
                 )
             }
         }
@@ -234,6 +251,26 @@ internal fun NearbyMosqueMap(
                 }
             }
             MapCredits(Modifier.align(Alignment.BottomEnd).padding(8.dp))
+        }
+    }
+}
+
+private class MosqueMarkerPainter(
+    private val glyph: Painter,
+    private val background: Color,
+    private val foreground: Color,
+) : Painter() {
+    override val intrinsicSize = Size.Unspecified
+
+    override fun DrawScope.onDraw() {
+        val radius = size.minDimension / 2
+        drawCircle(Color.White, radius)
+        drawCircle(background, radius - 1.25.dp.toPx())
+        val glyphSize = radius * 1.18f
+        translate(left = center.x - glyphSize / 2, top = center.y - glyphSize / 2) {
+            with(glyph) {
+                draw(Size(glyphSize, glyphSize), colorFilter = ColorFilter.tint(foreground))
+            }
         }
     }
 }

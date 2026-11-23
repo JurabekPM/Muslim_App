@@ -48,3 +48,5 @@ Namoz jadvali ekranlari ViewModel orqali ishlaydi. ViewModel jadvalni domen inte
 Namoz vaqtlari [Namoz vaqti API](https://namoz-vaqti.uz/?format=docs&lang=lotin&region=toshkent-shahri) orqali olinadi.
 
 Masjidlar katalogi va shaharlar [OpenStreetMap ma’lumotlari](https://www.openstreetmap.org/copyright) asosida tuzilgan va ODbL 1.0 bo‘yicha tarqatiladi. Xaritani [OpenFreeMap](https://openfreemap.org/) ta’minlaydi.
+
+Masjid suratlarining mualliflari va litsenziyalari [surat manbalari](docs/MOSQUE_PHOTOS.md) sahifasida keltirilgan.

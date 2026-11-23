@@ -186,4 +186,7 @@
     <string name="mosque_area_nearby">Жақын маң</string>
     <string name="mosque_choose_area">Аймақ таңдау</string>
     <string name="mosque_catalog_count">Мешіттер · %1$s</string>
+    <string name="mosque_photo_description">%1$s мешітінің суреті</string>
+    <string name="mosque_photo_source">Сурет дереккөзі</string>
+    <string name="mosque_photo_credit">Сурет авторы · %1$s</string>
 </resources>

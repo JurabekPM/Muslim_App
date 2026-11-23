@@ -183,4 +183,7 @@
     <string name="mosque_area_nearby">Дар наздикӣ</string>
     <string name="mosque_choose_area">Интихоби минтақа</string>
     <string name="mosque_catalog_count">Масҷидҳо · %1$s</string>
+    <string name="mosque_photo_description">Акси масҷиди %1$s</string>
+    <string name="mosque_photo_source">Манбаи акс</string>
+    <string name="mosque_photo_credit">Муаллифи акс · %1$s</string>
 </resources>

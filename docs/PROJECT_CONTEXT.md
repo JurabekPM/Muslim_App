@@ -50,6 +50,8 @@ Muslim App O‘zbekiston uchun namoz vaqtlari, tasbeh va Qibla funksiyalarini be
 - Debug APK, release APK, release AAB va 40 ta unit test o‘tdi. `lintRelease` 0 ta xato va mavjud 6 ta ogohlantirish bilan o‘tdi. Debug APK va 64-bit MapLibre ELF segmentlari 16 KB alignment tekshiruvidan o‘tdi. Universal debug APK 19,7 MB dan 63,4 MB gacha oshdi. Release AAB ichidagi ARM64 MapLibre kutubxonalarining siqilgan hajmi 6 MB.
 - Butun O‘zbekiston qidiruvi yangilanishida 42 ta unit test o‘tdi. Samsung SM_S916N’da ikkita Android testi o‘tdi. Ular tanlangan shahardagi ro‘yxatni va GPS hamda internet holati bo‘lmasdan Faqih Abulays masjidini topishni tekshirdi. Xaritada ochish amali internet talab qilishi ham tekshirildi.
 - Hudud filtri yangilanishida 43 ta unit test va Samsung SM_S916N’dagi uchta Android testi o‘tdi. Telefonning jonli xaritasida «Butun O‘zbekiston» 2 280 ta va «Andijon viloyati» 190 ta masjidni ko‘rsatdi. Ikkala ko‘rinishda ham guruh belgilari va sonlar chizildi.
+- Ro‘yxat, qidiruv va xaritadagi masjid kartalarida OpenStreetMap ID’si bo‘yicha 28 ta tekshirilgan Wikimedia Commons surati ko‘rsatiladi. JPEG miniatyuralar ilovaga biriktirilgan, jami 284 KB va internetsiz ochiladi. Qolgan yozuvlar tema rangidagi standart masjid rasmini ishlatadi. Suratga bosganda muallif, litsenziya va asl manba chiqadi. [Surat manbalari](MOSQUE_PHOTOS.md).
+- Xaritadagi alohida nuqtalar masjid ikonkasiga almashtirildi. Tanlangan masjid kattaroq oltin belgi bilan ajraladi, uzoqdan yaqin masjidlar soni ko‘rsatilgan guruhlarga birlashadi. Debug APK va 43 ta unit test o‘tdi. Samsung SM_S916N’da to‘rtta Android testi o‘tdi, oq mavzuda Minor surati, standart rasm va tanlangan oltin xarita belgisi jonli ko‘rildi.
 
 ### Namoz vaqtlari va kesh
 

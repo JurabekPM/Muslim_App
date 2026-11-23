@@ -22,7 +22,6 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -70,6 +69,7 @@ import uz.turgunboyevjurabek.muslimapp.feature.domain.model.NearbyMosque
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.Regions
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.nearbyMosqueRadiusKm
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.displayName
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueThumbnail
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -374,6 +374,9 @@ private fun MosqueRow(
     modifier: Modifier = Modifier,
     onShowOnMap: (() -> Unit)? = null,
 ) {
+    val name = place.label(languageKey) ?: stringResource(
+        if (place.locality != null) R.string.mosque_generic else R.string.mosque_unnamed
+    )
     val distance = remember(distanceMeters, format) {
         distanceMeters?.let {
             val measure = if (it < 1_000) Measure(it.roundToInt(), MeasureUnit.METER)
@@ -383,16 +386,14 @@ private fun MosqueRow(
     }
     Surface(modifier.fillMaxWidth(), MaterialTheme.shapes.large, MaterialTheme.colorScheme.surfaceContainer) {
         Row(
-            Modifier.padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
+            Modifier.padding(start = 12.dp, end = 8.dp, top = 12.dp, bottom = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Top,
         ) {
-            Icon(Icons.Filled.LocationOn, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+            MosqueThumbnail(place.id, name)
             Column(Modifier.weight(1f)) {
                 Text(
-                    place.label(languageKey) ?: stringResource(
-                        if (place.locality != null) R.string.mosque_generic else R.string.mosque_unnamed
-                    ),
+                    name,
                     style = MaterialTheme.typography.titleSmall,
                 )
                 place.address?.let { Text(it, style = MaterialTheme.typography.bodySmall) }

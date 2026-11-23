@@ -30,6 +30,33 @@ class NearbyMosquesOfflineTest {
     val compose = createComposeRule()
 
     @Test
+    fun displaysBundledPhotoAndShowsItsAuthorAndLicense() {
+        val context = AppLanguage.Uzbek.localize(InstrumentationRegistry.getInstrumentation().targetContext)
+        val catalog = MosqueCatalog(context)
+        compose.setContent {
+            MuslimAppTheme {
+                NearbyMosquesRoute(
+                    loadCatalog = catalog::load,
+                    locate = { null },
+                    language = AppLanguage.Uzbek,
+                    darkTheme = false,
+                    canLoadMap = false,
+                    onClose = {},
+                )
+            }
+        }
+        val search = context.getString(R.string.mosque_search)
+        compose.waitUntil(5_000) { compose.onNodeWithContentDescription(search).isDisplayed() }
+        compose.onNodeWithContentDescription(search).performClick()
+        compose.onNodeWithText(search).performTextInput("Минор")
+        compose.waitUntil(5_000) { compose.onNodeWithTag("mosque-photo").isDisplayed() }
+        compose.onNodeWithTag("mosque-photo").performClick()
+        compose.onNodeWithText(context.getString(R.string.mosque_photo_credit, "Yuriy Pavlovich")).assertIsDisplayed()
+        compose.onNodeWithText("CC0 1.0").assertIsDisplayed()
+        compose.onNodeWithText(context.getString(R.string.mosque_photo_source)).assertIsDisplayed()
+    }
+
+    @Test
     fun countryAndRegionUseTheSameScopeOnListAndMapTabs() {
         val context = AppLanguage.Uzbek.localize(InstrumentationRegistry.getInstrumentation().targetContext)
         val catalog = MosqueCatalog(context)
@@ -90,6 +117,7 @@ class NearbyMosquesOfflineTest {
         compose.waitUntil(5_000) {
             compose.onNode(hasText("Faqih Abulays") and !hasSetTextAction()).isDisplayed()
         }
+        compose.onNodeWithTag("mosque-photo-placeholder").assertIsDisplayed()
         compose.onNodeWithText(context.getString(R.string.mosque_show_on_map)).performClick()
         compose.onNodeWithText(context.getString(R.string.mosque_map_offline)).assertIsDisplayed()
         compose.onNodeWithText("Faqih Abulays").assertIsDisplayed()
