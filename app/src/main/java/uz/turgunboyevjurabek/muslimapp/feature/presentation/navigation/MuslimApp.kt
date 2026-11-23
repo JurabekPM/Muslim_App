@@ -95,11 +95,13 @@ internal fun MuslimApp(
                 topBar = {
                     if (!hasOwnBars) {
                         val route = entry?.destination?.route
+                        val selection by regionViewModel.selection.collectAsStateWithLifecycle()
                         val connection by scheduleViewModel.connection.collectAsStateWithLifecycle()
                         val refreshing = scheduleViewModel.refreshing(route)?.collectAsStateWithLifecycle()
                         MyTopBar(
                             modifier = Modifier,
                             route = route,
+                            region = selection?.region,
                             backdrop = chromeBackdrop,
                             connection = connection,
                             refreshing = refreshing?.value == true,

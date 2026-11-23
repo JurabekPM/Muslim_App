@@ -3,7 +3,6 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components
 
 import androidx.compose.ui.res.stringResource
-import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -11,6 +10,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,19 +19,23 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
@@ -68,6 +72,8 @@ import kotlinx.coroutines.delay
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.navigation.AppRoute
 import uz.turgunboyevjurabek.muslimapp.feature.data.network.InternetConnection
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.Regions
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.localizedBaseName
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.screenFadeInMillis
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.animation.screenFadeOutMillis
 
@@ -78,6 +84,7 @@ private val glassFadeAboveEdge = 36.dp
 fun MyTopBar(
     modifier: Modifier,
     route: String?,
+    region: Regions?,
     backdrop: HazeState,
     connection: InternetConnection,
     refreshing: Boolean,
@@ -140,25 +147,32 @@ fun MyTopBar(
                 .hazeGlass(input = input, style = glass, performanceMode = HazePerformanceMode.Performance),
         )
 
-        CenterAlignedTopAppBar(
+        TopAppBar(
             expandedHeight = 58.dp,
             windowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal),
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.Transparent,
                 scrolledContainerColor = Color.Transparent,
-                titleContentColor = colors.primary,
+                titleContentColor = colors.onSurface,
             ),
             title = {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column {
                     AppBarTitle(stringResource(titleForRoute(route)))
                     ConnectionSubtitle(connection, refreshing)
                 }
             },
             navigationIcon = {
                 if (onQiblaScreen) {
-                    AppBarIconButton(R.drawable.ic_qibla_back, stringResource(R.string.back), onBackClick)
-                } else {
-                    AppBarIconButton(R.drawable.ic_qibla_location, stringResource(R.string.regions), onRegionClick)
+                    AppBarBackButton(onClick = onBackClick)
+                }
+            },
+            actions = {
+                if (!onQiblaScreen) {
+                    AppBarRegionButton(
+                        regionName = region?.localizedBaseName(appLocale()),
+                        darkTheme = darkGlass,
+                        onClick = onRegionClick,
+                    )
                 }
             },
         )
@@ -255,7 +269,7 @@ private fun ConnectionSubtitle(connection: InternetConnection, refreshing: Boole
 }
 
 @Composable
-private fun AppBarIconButton(@DrawableRes icon: Int, label: String, onClick: () -> Unit) {
+private fun AppBarBackButton(onClick: () -> Unit) {
     val colors = MaterialTheme.colorScheme
     val interaction = remember { MutableInteractionSource() }
     Surface(
@@ -271,9 +285,59 @@ private fun AppBarIconButton(@DrawableRes icon: Int, label: String, onClick: () 
     ) {
         Box(contentAlignment = Alignment.Center) {
             Icon(
-                painter = painterResource(icon),
-                contentDescription = label,
+                painter = painterResource(R.drawable.ic_qibla_back),
+                contentDescription = stringResource(R.string.back),
                 modifier = Modifier.size(22.dp),
+            )
+        }
+    }
+}
+
+@Composable
+private fun AppBarRegionButton(
+    regionName: String?,
+    darkTheme: Boolean,
+    onClick: () -> Unit,
+) {
+    val colors = MaterialTheme.colorScheme
+    val interaction = remember { MutableInteractionSource() }
+    val label = stringResource(R.string.regions)
+    Surface(
+        onClick = onClick,
+        interactionSource = interaction,
+        modifier = Modifier.padding(end = 12.dp)
+            .widthIn(max = 148.dp)
+            .pressScale(rememberPressScale(interaction)),
+        shape = CircleShape,
+        color = if (darkTheme) colors.surfaceContainerHigh.copy(alpha = 0.58f)
+        else colors.tertiaryContainer.copy(alpha = 0.50f),
+        contentColor = colors.onSurface,
+        border = BorderStroke(1.dp, colors.tertiary.copy(alpha = if (darkTheme) 0.72f else 0.29f)),
+    ) {
+        Row(
+            modifier = Modifier.heightIn(min = 30.dp).padding(horizontal = 8.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_qibla_location),
+                contentDescription = label,
+                modifier = Modifier.size(14.dp),
+                tint = colors.tertiary,
+            )
+            Text(
+                text = regionName ?: label,
+                modifier = Modifier.weight(1f, fill = false),
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowDown,
+                contentDescription = null,
+                modifier = Modifier.size(14.dp),
+                tint = colors.tertiary,
             )
         }
     }
