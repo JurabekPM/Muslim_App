@@ -28,6 +28,8 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.qibla.QiblaVie
 import uz.turgunboyevjurabek.muslimapp.feature.data.location.QiblaSensors
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.navigation.PermissionsManager
 import uz.turgunboyevjurabek.muslimapp.feature.data.location.RegionLocationLookup
+import uz.turgunboyevjurabek.muslimapp.feature.data.location.MyLocationManager
+import uz.turgunboyevjurabek.muslimapp.feature.data.local.MosqueCatalog
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.navigation.MuslimApp
 import javax.inject.Inject
 
@@ -38,6 +40,12 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var regionLocationLookup: RegionLocationLookup
+
+    @Inject
+    lateinit var mosqueCatalog: MosqueCatalog
+
+    @Inject
+    lateinit var mosqueLocation: MyLocationManager
 
     private lateinit var permissionsManager: PermissionsManager
 
@@ -74,6 +82,8 @@ class MainActivity : ComponentActivity() {
                 counterViewModel = counterViewModel,
                 qiblaViewModel = qiblaViewModel,
                 regionLocationLookup = regionLocationLookup,
+                mosqueCatalog = mosqueCatalog,
+                locateForMosques = mosqueLocation::awaitCurrentLocation,
                 qiblaSensors = qiblaSensors,
                 permissionsManager = permissionsManager,
                 displayRotation = ::displayRotation,

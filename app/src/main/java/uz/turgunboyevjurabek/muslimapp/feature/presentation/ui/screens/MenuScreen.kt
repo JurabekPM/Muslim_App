@@ -24,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -66,6 +67,7 @@ internal fun MenuScreen(
     onThemeChange: (AppThemeMode) -> Unit,
     language: AppLanguage,
     onLanguageChange: (AppLanguage) -> Unit,
+    onNearbyMosques: () -> Unit,
     topPadding: Dp,
     bottomPadding: Dp,
 ) {
@@ -102,6 +104,11 @@ internal fun MenuScreen(
                 }
             }
         }
+        MenuRow(
+            title = stringResource(R.string.nearby_mosques),
+            icon = Icons.Default.LocationOn,
+            onClick = onNearbyMosques,
+        )
         MenuRow(
             title = stringResource(R.string.language),
             value = language.label,
@@ -154,10 +161,13 @@ internal fun MenuScreen(
             onDismissRequest = { showPrivacy = false },
             title = { Text(stringResource(R.string.privacy_policy)) },
             text = {
-                Text(
-                    text = stringResource(R.string.privacy_policy_summary),
+                Column(
                     modifier = Modifier.verticalScroll(rememberScrollState()),
-                )
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Text(stringResource(R.string.privacy_policy_summary))
+                    Text(stringResource(R.string.mosque_privacy_summary))
+                }
             },
             confirmButton = {
                 TextButton(onClick = { showPrivacy = false }) { Text(stringResource(R.string.close)) }

@@ -177,4 +177,23 @@
         <item quantity="many">Выполнено %1$d зикров</item>
         <item quantity="other">Выполнено %1$d зикров</item>
     </plurals>
+    <string name="nearby_mosques">Мечети поблизости</string>
+    <string name="mosque_list">Список</string>
+    <string name="mosque_map">Карта</string>
+    <string name="mosque_choose_city">Выбрать город</string>
+    <string name="mosque_search_city">Поиск города</string>
+    <string name="mosque_no_city">Город не найден</string>
+    <string name="mosque_choose_origin">Определите своё местоположение или выберите город, чтобы найти мечети поблизости.</string>
+    <string name="mosque_location_permission">Разрешите доступ к местоположению или выберите город.</string>
+    <string name="mosque_unnamed">Мечеть без названия</string>
+    <string name="mosque_directions">Проложить маршрут</string>
+    <string name="mosque_directions_error">Для построения маршрута нужно приложение с картами или браузер.</string>
+    <string name="mosque_no_results">В радиусе %1$d км мечети не найдены.</string>
+    <string name="mosque_distance_hint">Расстояние по прямой</string>
+    <string name="mosque_catalog_error">Не удалось открыть список мечетей.</string>
+    <string name="mosque_catalog_loading">Загрузка списка мечетей…</string>
+    <string name="mosque_map_error">Не удалось загрузить карту. Проверьте интернет-соединение и повторите попытку.</string>
+    <string name="mosque_map_loading">Загрузка карты…</string>
+    <string name="mosque_privacy_summary">Телефон ищет ближайшие мечети во встроенном каталоге. При открытии карты приложение запрашивает у OpenFreeMap данные для видимой области. При выборе маршрута координаты мечети открываются в Google Maps.</string>
+    <string name="mosque_map_offline">Для карты нужен интернет. Список мечетей доступен.</string>
 </resources>

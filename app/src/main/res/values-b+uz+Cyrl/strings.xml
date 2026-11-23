@@ -157,4 +157,23 @@
         <item quantity="one">%1$d та зикр бажарилди</item>
         <item quantity="other">%1$d та зикр бажарилди</item>
     </plurals>
+    <string name="nearby_mosques">Яқин масжидлар</string>
+    <string name="mosque_list">Рўйхат</string>
+    <string name="mosque_map">Харита</string>
+    <string name="mosque_choose_city">Шаҳар танлаш</string>
+    <string name="mosque_search_city">Шаҳар қидириш</string>
+    <string name="mosque_no_city">Шаҳар топилмади</string>
+    <string name="mosque_choose_origin">Яқин масжидларни кўриш учун жойлашувингизни аниқланг ёки шаҳар танланг.</string>
+    <string name="mosque_location_permission">Жойлашувга рухсат беринг ёки шаҳар танланг.</string>
+    <string name="mosque_unnamed">Номи кўрсатилмаган масжид</string>
+    <string name="mosque_directions">Йўлни очиш</string>
+    <string name="mosque_directions_error">Йўлни очиш учун харита иловаси ёки браузер керак.</string>
+    <string name="mosque_no_results">%1$d км ичида масжид топилмади.</string>
+    <string name="mosque_distance_hint">Масофа тўғри чизиқ бўйича</string>
+    <string name="mosque_catalog_error">Масжидлар рўйхатини очиб бўлмади.</string>
+    <string name="mosque_catalog_loading">Масжидлар юкланмоқда…</string>
+    <string name="mosque_map_error">Харита юкланмади. Интернетни текшириб, қайта уриниб кўринг.</string>
+    <string name="mosque_map_loading">Харита юкланмоқда…</string>
+    <string name="mosque_privacy_summary">Яқин масжидларни телефон каталогдан қидиради. Харита очилганда, кўринаётган ҳудуд учун OpenFreeMap’га сўров юборилади. «Йўлни очиш» танланса, масжид координаталари Google Maps орқали очилади.</string>
+    <string name="mosque_map_offline">Харитани очиш учун интернет керак. Масжидларни рўйхатдан кўришингиз мумкин.</string>
 </resources>

@@ -1,6 +1,6 @@
 # Muslim App davom ettirish qaydi
 
-Oxirgi yangilanish 2026-11-22. Ushbu qayd foydalanuvchining suhbatdagi qarorlari va tekshirilgan kod holati asosida tuzildi. Keyingi ish tugagach qaydni yangilash uchun ildizdagi `AGENTS.md` ko‘rsatmalarini o‘qing.
+Oxirgi yangilanish 2026-11-23. Ushbu qayd foydalanuvchining suhbatdagi qarorlari va tekshirilgan kod holati asosida tuzildi. Keyingi ish tugagach qaydni yangilash uchun ildizdagi `AGENTS.md` ko‘rsatmalarini o‘qing.
 
 ## Qanday davom ettirish kerak
 
@@ -37,6 +37,14 @@ Muslim App O‘zbekiston uchun namoz vaqtlari, tasbeh va Qibla funksiyalarini be
 - Murakkab yangi dizaynlarni avval maketda ko‘rsatish odati bor. Maket tanlanmagan bo‘lsa kodga qo‘llamang.
 
 ## Hozir amalda bor funksiyalar
+
+### Yaqin masjidlar
+
+- Foydalanuvchi MapLibre xaritasini ilovaning o‘zida ochishni tanladi. «Menyu → Yaqin masjidlar» dastlab ro‘yxatni ko‘rsatadi. GPS yoki qo‘lda tanlangan shahar atrofida 20 km radiusdagi eng yaqin 50 ta natija masofa bo‘yicha saralanadi. Masofa to‘g‘ri chiziq bo‘yicha. Namoz jadvalining tanlangan hududi bunday tanlovdan ta’sirlanmaydi.
+- Internetsiz katalogda 2 278 ta masjid yozuvi va 347 ta shahar yoki shaharcha bor. Ma’lumot OpenStreetMap’dan ODbL 1.0 shartlari bo‘yicha olingan. 2026-11-23 dagi nusxa `app/src/main/assets/uzbekistan_mosques.json` ichida. Yangilash uchun PowerShell 7 da `./scripts/update-mosque-catalog.ps1` ishlatiladi. Shahar va masjid nomining tarjimasi manbada mavjud bo‘lsa ishlatiladi. Katalogning APK ichidagi hajmi taxminan 99 kB.
+- MapLibre Compose 0.20.0 va OpenGL faqat «Xarita» tanlanganda ishga tushadi. OpenFreeMap’ning Liberty va Dark stillari ishlatiladi. Xaritada GPS va masjid belgilari chiqadi. Masjid belgisi tafsilotlarni ochadi. «Yo‘lni ochish» tanlangan masjid koordinatalari bilan Google Maps havolasini ochadi. Interfeys matnlari sakkiz tilda.
+- Samsung SM_S916N’da joriy joylashuv orqali ro‘yxat, qora mavzuda joylashuv belgisi, Toshkentni qo‘lda izlab tanlash, oq mavzuda xarita hamda masjid belgisi orqali tafsilotlar tekshirildi. Telefonning qora mavzusi tiklandi. Qurilmadagi ikkita avtomatik test internetsiz xarita holati, katalogdan ro‘yxatni ochish va maxfiylik dialogini qamradi. Google Maps’dagi marshrut alohida tekshirilmadi.
+- Debug APK, release APK, release AAB va 40 ta unit test o‘tdi. `lintRelease` 0 ta xato va mavjud 6 ta ogohlantirish bilan o‘tdi. Debug APK va 64-bit MapLibre ELF segmentlari 16 KB alignment tekshiruvidan o‘tdi. Universal debug APK 19,7 MB dan 63,4 MB gacha oshdi. Release AAB ichidagi ARM64 MapLibre kutubxonalarining siqilgan hajmi 6 MB.
 
 ### Namoz vaqtlari va kesh
 

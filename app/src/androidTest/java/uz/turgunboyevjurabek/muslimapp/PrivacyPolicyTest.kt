@@ -34,6 +34,7 @@ class PrivacyPolicyTest {
                     onThemeChange = {},
                     language = AppLanguage.Uzbek,
                     onLanguageChange = {},
+                    onNearbyMosques = {},
                     topPadding = 0.dp,
                     bottomPadding = 0.dp,
                 )

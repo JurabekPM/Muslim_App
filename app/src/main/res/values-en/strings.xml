@@ -157,4 +157,23 @@
         <item quantity="one">%1$d dhikr recitation completed</item>
         <item quantity="other">%1$d dhikr recitations completed</item>
     </plurals>
+    <string name="nearby_mosques">Nearby mosques</string>
+    <string name="mosque_list">List</string>
+    <string name="mosque_map">Map</string>
+    <string name="mosque_choose_city">Choose a city</string>
+    <string name="mosque_search_city">Search cities</string>
+    <string name="mosque_no_city">No cities found</string>
+    <string name="mosque_choose_origin">Use your location or choose a city to see nearby mosques.</string>
+    <string name="mosque_location_permission">Allow location access or choose a city.</string>
+    <string name="mosque_unnamed">Unnamed mosque</string>
+    <string name="mosque_directions">Get directions</string>
+    <string name="mosque_directions_error">A maps app or browser is needed for directions.</string>
+    <string name="mosque_no_results">No mosques found within %1$d km.</string>
+    <string name="mosque_distance_hint">Straight-line distance</string>
+    <string name="mosque_catalog_error">Couldn’t open the mosque list.</string>
+    <string name="mosque_catalog_loading">Loading mosques…</string>
+    <string name="mosque_map_error">Couldn’t load the map. Check your connection and try again.</string>
+    <string name="mosque_map_loading">Loading map…</string>
+    <string name="mosque_privacy_summary">Your phone searches a built-in catalog for nearby mosques. Opening the map requests map data for the visible area from OpenFreeMap. Selecting Get directions opens the mosque coordinates in Google Maps.</string>
+    <string name="mosque_map_offline">An internet connection is needed to open the map. You can still browse the mosque list.</string>
 </resources>
