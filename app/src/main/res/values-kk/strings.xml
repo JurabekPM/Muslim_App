@@ -191,4 +191,10 @@
     <string name="mosque_photo_description">%1$s мешітінің суреті</string>
     <string name="mosque_photo_source">Сурет дереккөзі</string>
     <string name="mosque_photo_credit">Сурет авторы · %1$s</string>
+    <string name="mosque_sort_distance">Қашықтық бойынша</string>
+    <string name="mosque_sort_name">Атауы бойынша</string>
+    <string name="mosque_gps_source">GPS арқылы</string>
+    <string name="mosque_city_source">Таңдалған қала</string>
+    <string name="mosque_nearest">Ең жақын</string>
+    <string name="mosque_recenter">Орналасқан жерге оралу</string>
 </resources>

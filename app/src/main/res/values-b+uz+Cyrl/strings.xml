@@ -191,4 +191,10 @@
     <string name="mosque_photo_description">%1$s масжиди сурати</string>
     <string name="mosque_photo_source">Сурат манбаси</string>
     <string name="mosque_photo_credit">Сурат муаллифи · %1$s</string>
+    <string name="mosque_sort_distance">Масофа бўйича</string>
+    <string name="mosque_sort_name">Номи бўйича</string>
+    <string name="mosque_gps_source">GPS орқали</string>
+    <string name="mosque_city_source">Танланган шаҳар</string>
+    <string name="mosque_nearest">Энг яқин</string>
+    <string name="mosque_recenter">Жойлашувга қайтиш</string>
 </resources>

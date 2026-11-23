@@ -188,4 +188,10 @@
     <string name="mosque_photo_description">Акси масҷиди %1$s</string>
     <string name="mosque_photo_source">Манбаи акс</string>
     <string name="mosque_photo_credit">Муаллифи акс · %1$s</string>
+    <string name="mosque_sort_distance">Аз рӯйи масофа</string>
+    <string name="mosque_sort_name">Аз рӯйи ном</string>
+    <string name="mosque_gps_source">Тавассути GPS</string>
+    <string name="mosque_city_source">Шаҳри интихобшуда</string>
+    <string name="mosque_nearest">Наздиктарин</string>
+    <string name="mosque_recenter">Бозгашт ба ҷойгиршавӣ</string>
 </resources>
