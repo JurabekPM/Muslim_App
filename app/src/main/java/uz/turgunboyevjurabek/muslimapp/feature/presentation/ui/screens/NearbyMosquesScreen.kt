@@ -232,7 +232,7 @@ internal fun NearbyMosquesScreen(
                                 origin = focusedMosque.coordinates,
                                 gps = gps,
                                 mosques = listOf(focusedMosque),
-                                selectedId = focusedMosque.id,
+                                selectedMosque = focusedMosque,
                                 darkTheme = darkTheme,
                                 onSelect = {},
                             )
@@ -251,21 +251,32 @@ internal fun NearbyMosquesScreen(
             )
             showMap && !canLoadMap -> MosqueStatus(stringResource(R.string.mosque_map_offline))
             showMap -> {
+                val selected = remember(visiblePlaces, selectedId) {
+                    visiblePlaces.firstOrNull { it.id == selectedId }
+                }
                 Box(Modifier.weight(1f).fillMaxWidth().padding(top = 8.dp)) {
                     key(area, if (isNearby) origin else null) {
                         NearbyMosqueMap(
                             origin = if (isNearby) checkNotNull(origin) else visiblePlaces.first().coordinates,
                             gps = gps,
                             mosques = visiblePlaces,
-                            selectedId = selectedId,
+                            selectedMosque = selected,
                             darkTheme = darkTheme,
                             onSelect = { selectedId = it },
                             overview = if (isNearby) null else area,
-                        )
+                        ) {
+                            selected?.let {
+                                MosqueRow(
+                                    it,
+                                    distances[it.id],
+                                    languageKey,
+                                    distanceFormat,
+                                    openDirections,
+                                    Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                                )
+                            }
+                        }
                     }
-                }
-                visiblePlaces.firstOrNull { it.id == selectedId }?.let { selected ->
-                    MosqueRow(selected, distances[selected.id], languageKey, distanceFormat, openDirections, Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
                 }
             }
             else -> {

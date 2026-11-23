@@ -1,8 +1,7 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -49,6 +48,7 @@ import org.maplibre.compose.expressions.dsl.convertToString
 import org.maplibre.compose.expressions.dsl.feature
 import org.maplibre.compose.expressions.dsl.image
 import org.maplibre.compose.interaction.ClickResult
+import org.maplibre.compose.interaction.MapInteractions
 import org.maplibre.compose.layers.CircleLayer
 import org.maplibre.compose.layers.SymbolLayer
 import org.maplibre.compose.map.MaplibreMap
@@ -59,16 +59,20 @@ import org.maplibre.compose.sources.rememberGeoJsonSource
 import org.maplibre.compose.style.BaseStyle
 import org.maplibre.compose.util.DpPadding
 import org.maplibre.spatialk.geojson.BoundingBox
+import org.maplibre.spatialk.geojson.Feature
+import org.maplibre.spatialk.geojson.Geometry
 import org.maplibre.spatialk.geojson.Point
 import org.maplibre.spatialk.geojson.Position
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosqueArea
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosqueCoordinates
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosquePlace
+import kotlin.math.cos
 
 @Composable
 @UiComposable
@@ -76,10 +80,11 @@ internal fun NearbyMosqueMap(
     origin: MosqueCoordinates,
     gps: MosqueCoordinates?,
     mosques: List<MosquePlace>,
-    selectedId: String?,
+    selectedMosque: MosquePlace?,
     darkTheme: Boolean,
-    onSelect: (String) -> Unit,
+    onSelect: (String?) -> Unit,
     overview: MosqueArea? = null,
+    selectionCard: @Composable () -> Unit = {},
 ) {
     val mosquePins by produceState<GeoJsonData>(emptyMosquePins, mosques) {
         value = withContext(Dispatchers.Default) {
@@ -106,10 +111,10 @@ internal fun NearbyMosqueMap(
         }
     }
     val gpsPin = remember(gps) { gps?.let { featureCollection(listOf(pointFeature(it))) } }
-    val selectedPin = remember(selectedId, mosques) {
-        mosques.firstOrNull { it.id == selectedId }?.let {
+    val selectedPin = remember(selectedMosque) {
+        selectedMosque?.let {
             featureCollection(listOf(pointFeature(it.coordinates)))
-        }
+        } ?: emptyMosquePins
     }
     val marker = if (darkTheme) Color(0xFFF4CF75) else Color(0xFF785213)
     val mosqueGlyph = painterResource(R.drawable.ic_mosque)
@@ -153,7 +158,7 @@ internal fun NearbyMosqueMap(
             }
             val source = rememberGeoJsonSource(mosquePins) {
                 cluster = overview != null
-                clusterRadius = 24
+                clusterRadius = 36
                 clusterMaxZoom = 14
             }
             if (overview != null) {
@@ -161,14 +166,15 @@ internal fun NearbyMosqueMap(
                     id = "muslim-app-mosque-clusters",
                     source = source,
                     filter = feature.has("cluster_id"),
-                    radius = const(13.dp),
+                    radius = const(15.dp),
                     color = const(marker),
                     strokeColor = const(Color.White),
                     strokeWidth = const(1.5.dp),
-                    hitPadding = 8.dp,
+                    hitPadding = markerHitPadding,
                     onClick = { features ->
-                        val point = features.firstOrNull()?.geometry as? Point
+                        val point = features.closestTo(position)?.geometry as? Point
                         if (point == null) ClickResult.Pass else {
+                            onSelect(null)
                             clusterCenter = point.coordinates
                             ClickResult.Consume
                         }
@@ -189,12 +195,12 @@ internal fun NearbyMosqueMap(
                 id = "muslim-app-mosques",
                 source = source,
                 filter = feature.has("mosqueId"),
-                iconImage = image(mosqueMarker, size = DpSize(25.dp, 25.dp)),
+                iconImage = image(mosqueMarker, size = DpSize(33.dp, 33.dp)),
                 iconAllowOverlap = const(true),
                 iconIgnorePlacement = const(true),
-                hitPadding = 8.dp,
+                hitPadding = markerHitPadding,
                 onClick = { features ->
-                    val id = (features.firstOrNull()?.properties?.get("mosqueId") as? JsonPrimitive)?.content
+                    val id = (features.closestTo(position)?.properties?.get("mosqueId") as? JsonPrimitive)?.content
                     if (id == null) {
                         ClickResult.Pass
                     } else {
@@ -203,15 +209,13 @@ internal fun NearbyMosqueMap(
                     }
                 },
             )
-            selectedPin?.let {
-                SymbolLayer(
-                    id = "muslim-app-mosque-selected",
-                    source = rememberGeoJsonSource(it),
-                    iconImage = image(selectedMarker, size = DpSize(31.dp, 31.dp)),
-                    iconAllowOverlap = const(true),
-                    iconIgnorePlacement = const(true),
-                )
-            }
+            SymbolLayer(
+                id = "muslim-app-mosque-selected",
+                source = rememberGeoJsonSource(selectedPin),
+                iconImage = image(selectedMarker, size = DpSize(40.dp, 40.dp)),
+                iconAllowOverlap = const(true),
+                iconIgnorePlacement = const(true),
+            )
         }
 
         LaunchedEffect(state, bounds) {
@@ -239,6 +243,18 @@ internal fun NearbyMosqueMap(
             MaplibreMap(
                 state = state,
                 modifier = Modifier.fillMaxSize().testTag("nearby-mosque-map"),
+                interactions = MapInteractions {
+                    callbacks {
+                        click {
+                            onUnhandled {
+                                if (selectedMosque == null) ClickResult.Pass else {
+                                    onSelect(null)
+                                    ClickResult.Consume
+                                }
+                            }
+                        }
+                    }
+                },
                 overlay = {},
             )
             when {
@@ -250,8 +266,24 @@ internal fun NearbyMosqueMap(
                     MosqueStatus(stringResource(R.string.mosque_map_loading), loading = true)
                 }
             }
-            MapCredits(Modifier.align(Alignment.BottomEnd).padding(8.dp))
+            Column(Modifier.align(Alignment.BottomEnd), horizontalAlignment = Alignment.End) {
+                MapCredits(Modifier.padding(8.dp))
+                selectionCard()
+            }
         }
+    }
+}
+
+private val markerHitPadding = 9.dp
+
+private fun List<Feature<Geometry, JsonObject?>>.closestTo(position: Position?): Feature<Geometry, JsonObject?>? {
+    if (position == null || size <= 1) return firstOrNull()
+    val longitudeScale = cos(Math.toRadians(position.latitude))
+    return minByOrNull { feature ->
+        val point = feature.geometry as? Point ?: return@minByOrNull Double.POSITIVE_INFINITY
+        val latitudeDelta = point.coordinates.latitude - position.latitude
+        val longitudeDelta = (point.coordinates.longitude - position.longitude) * longitudeScale
+        latitudeDelta * latitudeDelta + longitudeDelta * longitudeDelta
     }
 }
 
