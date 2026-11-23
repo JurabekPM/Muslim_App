@@ -1,5 +1,7 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.navigation
 
+import android.location.Location
+
 import uz.turgunboyevjurabek.muslimapp.core.utils.AppLanguage
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -45,6 +47,8 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.state.qibla.QiblaVie
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.MuslimAppTheme
 import uz.turgunboyevjurabek.muslimapp.feature.data.location.QiblaSensors
 import uz.turgunboyevjurabek.muslimapp.feature.data.location.RegionLocationLookup
+import uz.turgunboyevjurabek.muslimapp.feature.data.local.MosqueCatalog
+import uz.turgunboyevjurabek.muslimapp.feature.data.network.InternetConnection
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MyTopBar
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MyBottomNavigationBar
 
@@ -55,6 +59,8 @@ internal fun MuslimApp(
     counterViewModel: CounterViewModel,
     qiblaViewModel: QiblaViewModel,
     regionLocationLookup: RegionLocationLookup,
+    mosqueCatalog: MosqueCatalog,
+    locateForMosques: suspend () -> Location?,
     qiblaSensors: QiblaSensors,
     permissionsManager: PermissionsManager,
     displayRotation: () -> Int,
@@ -76,13 +82,16 @@ internal fun MuslimApp(
             val navController = rememberNavController()
             val chromeBackdrop = rememberHazeState()
             val entry by navController.currentBackStackEntryAsState()
-            val selectingRegion = entry?.destination?.route == AppRoute.REGIONS
+            val hasOwnBars = when (entry?.destination?.route) {
+                AppRoute.REGIONS, AppRoute.MOSQUES -> true
+                else -> false
+            }
 
             Scaffold(
                 modifier = Modifier
                     .fillMaxSize(),
                 topBar = {
-                    if (!selectingRegion) {
+                    if (!hasOwnBars) {
                         val route = entry?.destination?.route
                         val connection by scheduleViewModel.connection.collectAsStateWithLifecycle()
                         val refreshing = scheduleViewModel.refreshing(route)?.collectAsStateWithLifecycle()
@@ -100,7 +109,7 @@ internal fun MuslimApp(
                     }
                 },
                 bottomBar = {
-                    if (!selectingRegion) MyBottomNavigationBar(
+                    if (!hasOwnBars) MyBottomNavigationBar(
                         navController = navController,
                         backdrop = chromeBackdrop,
                     )
@@ -140,6 +149,12 @@ internal fun MuslimApp(
                                 schedule = scheduleViewModel,
                                 bottomPadding = dockPadding,
                                 topPadding = topPadding,
+                                onNearbyMosques = {
+                                    navController.navigate(AppRoute.MOSQUES) { launchSingleTop = true }
+                                },
+                                onQibla = {
+                                    navController.navigate(AppRoute.QIBLA) { launchSingleTop = true }
+                                },
                             )
                         }
                         composable(AppRoute.TASBEX) {
@@ -178,6 +193,17 @@ internal fun MuslimApp(
                                 onLanguageChange = onLanguageChange,
                                 topPadding = topPadding,
                                 bottomPadding = dockPadding,
+                            )
+                        }
+                        composable(AppRoute.MOSQUES) {
+                            val connection by scheduleViewModel.connection.collectAsStateWithLifecycle()
+                            NearbyMosquesRoute(
+                                loadCatalog = mosqueCatalog::load,
+                                locate = locateForMosques,
+                                language = language,
+                                darkTheme = darkTheme,
+                                canLoadMap = connection == InternetConnection.Online,
+                                onClose = { navController.popBackStack() },
                             )
                         }
                         composable(AppRoute.QIBLA) { backStackEntry ->

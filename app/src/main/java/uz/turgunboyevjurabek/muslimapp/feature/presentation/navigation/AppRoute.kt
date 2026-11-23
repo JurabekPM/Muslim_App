@@ -9,4 +9,5 @@ internal object AppRoute {
     const val QIBLA = "QiblaScreen"
     const val REGIONS = "RegionSelectionScreen"
     const val MENU = "MenuScreen"
+    const val MOSQUES = "NearbyMosques"
 }

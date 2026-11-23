@@ -154,10 +154,13 @@ internal fun MenuScreen(
             onDismissRequest = { showPrivacy = false },
             title = { Text(stringResource(R.string.privacy_policy)) },
             text = {
-                Text(
-                    text = stringResource(R.string.privacy_policy_summary),
+                Column(
                     modifier = Modifier.verticalScroll(rememberScrollState()),
-                )
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Text(stringResource(R.string.privacy_policy_summary))
+                    Text(stringResource(R.string.mosque_privacy_summary))
+                }
             },
             confirmButton = {
                 TextButton(onClick = { showPrivacy = false }) { Text(stringResource(R.string.close)) }

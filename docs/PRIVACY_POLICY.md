@@ -10,6 +10,12 @@ Muslim App namoz vaqtlarini ko‘rsatadi, Qibla yo‘nalishini aniqlaydi va Tasb
 - Qibla yo‘nalishi kompas sensori va mavjud joylashuv ma’lumotlari asosida telefonda hisoblanadi. Joriy hududni aniqlashda ilova Android joylashuv xizmatlari va manzilni aniqlash xizmatidan foydalanadi. Manzilni aniqlash uchun qurilmadagi xizmat koordinatalarni tarmoq orqali qayta ishlashi mumkin. Ilova tanlangan hududni va u joylashuv orqali tanlanganini saqlaydi.
 - Kunlik, haftalik yoki oylik jadvalni olish uchun ilova tanlangan hudud va jadval davrini namoz-vaqti.uz xizmatiga HTTPS orqali yuboradi. Ilova ushbu xizmatga GPS koordinatalari yoki zikr tarixini yubormaydi. Xizmat ulanishning IP manzilini ko‘rishi va texnik jurnallar yuritishi mumkin. Bu jurnallar xizmatning o‘z boshqaruvida. [Namoz Vaqti maxfiylik siyosati](https://namoz-vaqti.uz/policy.php?lang=lotin).
 
+## Yaqin masjidlar
+
+- Yaqin masjidlar telefonning o‘zida, ilovaga qo‘shilgan OpenStreetMap katalogidan qidiriladi. Qidiruv markazi uchun shaharni qo‘lda tanlash yoki joylashuvga ruxsat berish mumkin.
+- Xarita ochilganda MapLibre ko‘rinayotgan hudud uchun OpenFreeMap’dan xarita ma’lumotlarini HTTPS orqali oladi. Xizmat IP manzili va so‘ralgan xarita hududlarini ko‘rishi mumkin. [OpenFreeMap](https://openfreemap.org/).
+- «Yo‘lni ochish» tanlansa, masjid koordinatalari Google Maps’ga uzatiladi. Yo‘nalish ochilgach, Google Maps o‘z maxfiylik siyosati va qurilmadagi ruxsatlar asosida ishlaydi. [Google maxfiylik siyosati](https://policies.google.com/privacy).
+
 ## Saqlash va o‘chirish
 
 - Tanlangan hudud, oxirgi yuklangan jadvallar, Tasbix sanoqi, 20 tagacha sana-vaqtli tarix yozuvi, til va mavzu Android’ning ilovaga ajratilgan xotirasida saqlanadi. Saqlangan jadvallar internet bo‘lmaganda ko‘rsatiladi.

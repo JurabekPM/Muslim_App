@@ -8,6 +8,7 @@ Muslim App — O‘zbekiston hududlari uchun namoz vaqtlari, Qibla kompasi va ta
 - **Hudud tanlash.** 223 ta shahar, tuman va viloyat orasidan qidiring, filtrlang yoki telefon joylashuvi orqali mos hududni tanlang.
 - **Internetsiz ko‘rish.** Avval yuklangan jadvallar telefonda saqlanadi va ilova qayta ochilganda ham ko‘rinadi. Internet bo‘lganda jadvalni yuqoridan pastga tortib yangilang.
 - **Qibla kompasi.** Telefon joylashuvi va kompas sensori yordamida Ka’ba yo‘nalishini ko‘rsatadi.
+- **Masjidlar.** Butun O‘zbekiston, alohida viloyat yoki yaqin atrofdagi masjidlarni ro‘yxat va xaritada ko‘ring. Ro‘yxat va qidiruv internetsiz ishlaydi. MapLibre xaritasida guruhlangan belgilar yaqinlashtirilganda alohida masjidlarni ko‘rsatadi.
 - **Tasbeh.** Zikr hisoblagichi qiymatini saqlaydi va keyingi safar davom ettirishga imkon beradi.
 - **Oq va qora tema.** Ilova telefonning tema sozlamasiga moslashadi.
 
@@ -45,3 +46,7 @@ Unit testlarni Windows’da `.gradlew.bat :app:testDebugUnitTest`, macOS va Linu
 Namoz jadvali ekranlari ViewModel orqali ishlaydi. ViewModel jadvalni domen interfeysi orqali oladi, Hilt esa Retrofit bilan ishlaydigan implementatsiyani ulaydi.
 
 Namoz vaqtlari [Namoz vaqti API](https://namoz-vaqti.uz/?format=docs&lang=lotin&region=toshkent-shahri) orqali olinadi.
+
+Masjidlar katalogi va shaharlar [OpenStreetMap ma’lumotlari](https://www.openstreetmap.org/copyright) asosida tuzilgan va ODbL 1.0 bo‘yicha tarqatiladi. Xaritani [OpenFreeMap](https://openfreemap.org/) ta’minlaydi.
+
+Masjid suratlarining mualliflari va litsenziyalari [surat manbalari](docs/MOSQUE_PHOTOS.md) sahifasida keltirilgan.

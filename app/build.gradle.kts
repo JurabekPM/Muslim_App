@@ -77,6 +77,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.10.2")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.2")
     implementation("androidx.graphics:graphics-shapes:1.1.0")
+    implementation("org.maplibre.compose:maplibre-compose:0.20.0")
+    runtimeOnly("org.maplibre.compose:maplibre-compose-runtime-opengl-android:0.20.0")
     implementation("androidx.datastore:datastore-preferences:1.3.0")
 
     implementation("com.google.android.gms:play-services-location:21.4.0")
