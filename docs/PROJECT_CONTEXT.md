@@ -87,6 +87,10 @@ Muslim App O‘zbekiston uchun namoz vaqtlari, tasbeh va Qibla funksiyalarini be
 - PR #27 ning keyingi yangilanishida «Yaqin masjidlar»dagi GPS qatori va xaritadagi qurilma joylashuvi olib tashlandi. «Yaqin atrof» birinchi marta tanlansa shahar tanlagich ochiladi. Saqlangan shahar hudud tugmasidan almashtiriladi. Yaqin masjidlar faqat shu rejim ochilganda hisoblanadi. Masjid qidiruv indeksi so‘rovdan keyin quriladi va ekran ichida qayta ishlatiladi. OpenStreetMap yozuvi xarita tayyor bo‘lgach besh soniya ko‘rinadi, barcha xarita litsenziyalari burchakdagi ma’lumot tugmasidan ochiladi.
 - Yangilangan APK Samsung SM-S916N’ga o‘rnatildi. Jonli sinovda qurilma joylashuvi qatori ko‘rinmasligi, OpenStreetMap yozuvining yig‘ilishi va litsenziya oynasining ilova ichida ochilishi tasdiqlandi. Samsung’da 7 ta Compose testi, jumladan GPSsiz shahar tanlash va oflayn ro‘yxat, hamda mahalliy 45 ta unit test o‘tdi.
 
+- PR #27 dan keyingi katalog yangilanishida xira 44 ta surat manbadagi kattaroq nusxalardan qayta tayyorlandi. 6 ta masjidga 8 ta ochiq litsenziyali surat qo‘shildi. Shayxon (Kitob) va Abu Yusuf (Namangan) masjidlarida ikkitadan kadr bor. Jami 51 masjidning 74 surati ilova ichida internetsiz ochiladi. Har bir suratning uzun tomoni 768 px dan oshmaydi. Suratlar jami 6,4 MB. Muallif, litsenziya va asl fayllar [suratlar ro‘yxatida](MOSQUE_PHOTOS.md) qayd etilgan.
+- Kitob tumanidagi 26 ta yozuv nomi Musulmonlar idorasi ro‘yxati bo‘yicha o‘zbek kirill va lotin yozuvida qo‘shildi. `scripts/mosque-name-sources.json` dagi manzil teglari OpenStreetMap bilan solishtirildi. Joy koordinatalari va 2 280 ta barqaror ID saqlandi. Alohida nomi tasdiqlanmagan 563 ta yozuv qoldi. Qo‘qondagi Avg‘onbog‘, Zinbardor va Shayxon uchun ilovada tarqatishga ruxsat berilgan suratlar hali kerak.
+- Debug APK, test APK va `lintRelease` yig‘ildi, 45 ta unit test o‘tdi. 74 ta suratning ochilishi, resursga bog‘lanishi va hujjatdagi manbalari tekshirildi. Samsung ulangan edi, sinov vaqtida boshqa ilova ochilgani uchun katalog APK’si telefonga o‘rnatilmadi.
+
 ### Namoz vaqtlari va kesh
 
 - Kunlik, 7 kunlik, oylik jadvallar ishlaydi.

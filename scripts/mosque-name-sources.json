@@ -36,5 +36,161 @@
     "names": { "uz-Cyrl": "Хўжа Аҳрор Валий" },
     "osmTags": { "wikipedia": "ru:Джума мечеть (Ташкент)" },
     "source": "https://tashkent.uz/uz/city/interesting-places/16"
+  },
+  "node/7139346058": {
+    "name": "Bektemir",
+    "names": { "uz-Cyrl": "Бектемир" },
+    "osmTags": { "addr:full": "Китоб тумани, Бектемир ҚФЙ, Бектемир қишлоғи, Бектемир кўча, 3" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346060": {
+    "name": "Alaquyliq",
+    "names": { "uz-Cyrl": "Алақуйлиқ" },
+    "osmTags": { "addr:full": "Китоб тумани, Бектемир ҚФЙ, Алақуйлик қишлоғи, 31" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346061": {
+    "name": "Hazrati Ali",
+    "names": { "uz-Cyrl": "Ҳазрати Али" },
+    "osmTags": { "addr:full": "Китоб тумани, Бештерак ҚФЙ, Бештерак қишлоғи, 127" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346062": {
+    "name": "Vahdat",
+    "names": { "uz-Cyrl": "Вахдат" },
+    "osmTags": { "addr:full": "Китоб тумани, Қатарбоғ ҚФЙ, Тошлоқ қишлоғи, Тошлоқ кўча, 78" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346064": {
+    "name": "Sevaz",
+    "names": { "uz-Cyrl": "Севаз" },
+    "osmTags": { "addr:full": "Китоб тумани, Севаз ҚФЙ, Севаз шаҳарчаси, 129" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346065": {
+    "name": "Shayxon",
+    "names": { "uz-Cyrl": "Шайхон" },
+    "osmTags": { "addr:full": "Китоб шаҳар, Тошкент МФЙ, Тошкент кўчаси, 2" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346066": {
+    "name": "Sh. Shamsiddin Kulol",
+    "names": { "uz-Cyrl": "Ш. Шамсиддин Кулол" },
+    "osmTags": { "addr:full": "Китоб тумани, Севаз ҚФЙ, Хужаиспараз қишлоғи, 83" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346067": {
+    "name": "Hazrati Bahovuddin Naqshband",
+    "names": { "uz-Cyrl": "Ҳазрати Баҳовуддин Нақшбанд" },
+    "osmTags": { "addr:full": "Китоб тумани, Пахтаобод ҚФЙ, Безқазоқ қишлоғи, Бешқазоқ кўчаси, 139" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346068": {
+    "name": "Amir Hamza",
+    "names": { "uz-Cyrl": "Амир Ҳамза" },
+    "osmTags": { "addr:full": "Китоб тумани, Макрид ҚФЙ, Макрид қишлоғи, 13" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346069": {
+    "name": "Shayx Abu Bakr Kitobiy",
+    "names": { "uz-Cyrl": "Шайх Абу Бакр Китобий" },
+    "osmTags": { "addr:full": "Китоб тумани, Улуғбек МФЙ, Пахтакор кўчаси, 132" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346070": {
+    "name": "Tuyaboshi",
+    "names": { "uz-Cyrl": "Туябоши" },
+    "osmTags": { "addr:full": "Китоб тумани, Тогоб ҚФЙ, Туябоши қишлоғи, 17" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346071": {
+    "name": "Sanam",
+    "names": { "uz-Cyrl": "Санам" },
+    "osmTags": { "addr:full": "Китоб шаҳар, Санам МФЙ, Шодёна кўчаси, 34" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346072": {
+    "name": "Xo‘ja Ilm Koni",
+    "names": { "uz-Cyrl": "Хўжа Илм Кони" },
+    "osmTags": { "addr:full": "Китоб тумани, Севаз ҚФЙ, Хужаилмкони қишлоғи, 87" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346073": {
+    "name": "Saroy",
+    "names": { "uz-Cyrl": "Сарой" },
+    "osmTags": { "addr:full": "Китоб тумани, Жилисув ҚФЙ, Сарой қишлоғи, 160" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346074": {
+    "name": "Denov",
+    "names": { "uz-Cyrl": "Денов" },
+    "osmTags": { "addr:full": "Китоб тумани, Сурум ҚФЙ, Денов қишлоғи, 138" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346075": {
+    "name": "Shayx Sobir",
+    "names": { "uz-Cyrl": "Шайх Собир" },
+    "osmTags": { "addr:full": "Китоб тумани, Куҳисор ҚФЙ, Юқори Жовуз қишлоғи, 47" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346076": {
+    "name": "Xonaqo",
+    "names": { "uz-Cyrl": "Хонақо" },
+    "osmTags": { "addr:full": "Китоб тумани, Макрид ҚФЙ, Хонақо қишлоғи, 64" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346077": {
+    "name": "Gulbog‘",
+    "names": { "uz-Cyrl": "Гулбоғ" },
+    "osmTags": { "addr:full": "Китоб тумани, Севаз ҚФЙ, Гулбоғ қишлоғи, Гулбоғ кўча 156" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346078": {
+    "name": "Matmon",
+    "names": { "uz-Cyrl": "Матмон" },
+    "osmTags": { "addr:full": "Китоб тумани, Куҳисор МФЙ, Матмон қишлоғи, 15" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346079": {
+    "name": "Oyoqchi",
+    "names": { "uz-Cyrl": "Аёқчи" },
+    "osmTags": { "addr:full": "Китоб тумани, Аёқчи ҚФЙ, Аёқчи қишлоғи, 17" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346080": {
+    "name": "Qusam",
+    "names": { "uz-Cyrl": "Қусам" },
+    "osmTags": { "addr:full": "Китоб тумани, Қуйиоқбой ҚФЙ, Қусам қишлоғи, 53" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346081": {
+    "name": "Qo‘shchinor",
+    "names": { "uz-Cyrl": "Қўшчинор" },
+    "osmTags": { "addr:full": "Китоб тумани, Қатарбоғ ҚФЙ, Кушчинор қишлоғи, 76" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346082": {
+    "name": "Qoraxo‘ja",
+    "names": { "uz-Cyrl": "Қорахўжа" },
+    "osmTags": { "addr:full": "Китоб тумани, Аёқчи ҚФЙ, Юқори Аёқчи қишлоғи, 104" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346083": {
+    "name": "Denov Bolo",
+    "names": { "uz-Cyrl": "Денов Боло" },
+    "osmTags": { "addr:full": "Китоб тумани, Куҳисор ҚФЙ, Деновболо қишлоғи, 54" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346084": {
+    "name": "Ravot",
+    "names": { "uz-Cyrl": "Равот" },
+    "osmTags": { "addr:full": "Китоб тумани, Тупчоқ ҚФЙ, Равот қишлоғи, 67" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
+  },
+  "node/7139346085": {
+    "name": "Qaynar",
+    "names": { "uz-Cyrl": "Қайнар" },
+    "osmTags": { "addr:full": "Китоб тумани, Қайнар ҚФЙ, Қайнар қишлоғи, 24" },
+    "source": "https://old.muslim.uz/pdf_2029/MASJIDLAR%20ROYXATI.pdf"
   }
 }
