@@ -68,6 +68,12 @@ internal object MosquePhotos {
             author = "Humoyun Mehridinov",
             fileName = "Masjidi Kalon 1.jpg",
         ),
+        "way/1158817582" to MosquePhoto(
+            R.drawable.mosque_photo_way_1158817582,
+            author = "Mitti quyoshcha",
+            fileName = "Qoʻqon hadya hoji jome masjidi.jpg",
+            license = MosquePhotoLicense.Cc0,
+        ),
         "way/1265442637" to MosquePhoto(
             R.drawable.mosque_photo_way_1265442637,
             author = "Wikisurgery94",
@@ -141,6 +147,16 @@ internal object MosquePhotos {
             R.drawable.mosque_photo_way_33427229,
             author = "Yunus M-D",
             fileName = "Фото мечети \"Новза\".jpg",
+        ),
+        "way/449151719" to MosquePhoto(
+            R.drawable.mosque_photo_way_449151719,
+            author = "Arina Pan",
+            fileName = "Двор Медресе Саид-Ахмад ходжа.jpg",
+        ),
+        "way/452168942" to MosquePhoto(
+            R.drawable.mosque_photo_way_452168942,
+            author = "Petar Milošević",
+            fileName = "Devonaboy Jome Mosque, Andijan, Uzbekistan.jpg",
         ),
         "way/457119463" to MosquePhoto(
             R.drawable.mosque_photo_way_457119463,
