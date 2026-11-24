@@ -6,7 +6,6 @@ import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -17,12 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeInput
 import dev.chrisbanes.haze.HazePerformanceMode
@@ -111,44 +107,6 @@ internal fun MosqueGlassPill(
         )
         content()
     }
-}
-
-@Composable
-internal fun MosqueGlassHeaderBackground(glass: MosqueGlass, modifier: Modifier) {
-    val fill = MaterialTheme.colorScheme.surface
-    val style = remember(fill, glass.darkTheme) {
-        GlassStyle.regular.then {
-            shape(RoundedCornerShape(0.dp))
-            backgroundColor(fill.copy(alpha = 0.80f))
-            tint(fill.copy(alpha = if (glass.darkTheme) 0.72f else 0.57f))
-            optics { copy(blurRadius = OpticalSizeValue.Fixed(13.dp), refractionDisplacement = 0.dp) }
-            specularIntensity(0f)
-            ambientResponse(0f)
-            edgeShadow(Color.Transparent)
-        }
-    }
-    val fade = 20.dp
-    Box(
-        modifier.layout { measurable, constraints ->
-            val height = constraints.maxHeight + fade.roundToPx()
-            val layer = measurable.measure(constraints.copy(minHeight = height, maxHeight = height))
-            layout(constraints.maxWidth, constraints.maxHeight) { layer.place(0, 0) }
-        }
-            .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
-            .drawWithCache {
-                val fadeBrush = Brush.verticalGradient(
-                    0f to Color.Black, 0.5f to Color.Black.copy(alpha = 0.50f), 1f to Color.Transparent,
-                    startY = (size.height - fade.toPx()).coerceAtLeast(0f),
-                    endY = size.height,
-                )
-                onDrawWithContent {
-                    drawContent()
-                    drawRect(fill.copy(alpha = if (glass.darkTheme) 0.68f else 0.56f))
-                    drawRect(fadeBrush, blendMode = BlendMode.DstIn)
-                }
-            }
-            .hazeGlass(input = glass.input, style = style, performanceMode = HazePerformanceMode.Performance),
-    )
 }
 
 internal fun Modifier.mosqueLiquidPress(scale: State<Float>): Modifier = graphicsLayer {

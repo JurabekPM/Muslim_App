@@ -7,6 +7,7 @@ import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,10 +27,12 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.HorizontalDivider
@@ -81,9 +84,8 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.Mosque
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueChoiceRow
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueDetailSheet
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueDirectionsDialog
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.AppBarGlassBackground
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueGlass
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueGlassBackButton
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueGlassHeaderBackground
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueOverlayHeader
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueSearchDock
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueSheet
@@ -244,7 +246,7 @@ internal fun NearbyMosquesScreen(
     val compactHeader = focusedId == null && !activeMap && scrolled
     val backdrop = remember { HazeState() }
     val glassInput = remember(backdrop) { HazeInput.Sources(backdrop) }
-    val glass = MosqueGlass(glassInput, darkTheme, mapVisible)
+    val dockGlass = MosqueGlass(glassInput, darkTheme, mapVisible)
     var directionsFailed by remember { mutableStateOf(false) }
     val uriHandler = LocalUriHandler.current
     val openDirections: (MosqueCoordinates) -> Unit = { coordinates ->
@@ -256,63 +258,75 @@ internal fun NearbyMosquesScreen(
     }
 
     MosqueChromeLayout(
-        modifier = Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding(),
+        modifier = Modifier.fillMaxSize().navigationBarsPadding(),
         header = {
-            Box(Modifier.fillMaxWidth()) {
-                MosqueGlassHeaderBackground(glass, Modifier.matchParentSize())
-                Column {
-                    AnimatedVisibility(visible = !compactHeader) {
-                        TopAppBar(
-                            windowInsets = WindowInsets(0, 0, 0, 0),
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = Color.Transparent,
-                                scrolledContainerColor = Color.Transparent,
-                            ),
-                            title = {
-                                Text(stringResource(R.string.nearby_mosques), maxLines = 1, overflow = TextOverflow.Ellipsis)
-                            },
-                            navigationIcon = { MosqueGlassBackButton(glass, enabled = !compactHeader, goBack) },
-                        )
+            Column(Modifier.fillMaxWidth()) {
+                Box(Modifier.fillMaxWidth()) {
+                    AppBarGlassBackground(Modifier.matchParentSize(), backdrop)
+                    Box(Modifier.statusBarsPadding()) {
+                        androidx.compose.animation.AnimatedVisibility(visible = !compactHeader) {
+                            TopAppBar(
+                                windowInsets = WindowInsets(0, 0, 0, 0),
+                                colors = TopAppBarDefaults.topAppBarColors(
+                                    containerColor = Color.Transparent,
+                                    scrolledContainerColor = Color.Transparent,
+                                ),
+                                title = {
+                                    Text(
+                                        stringResource(R.string.nearby_mosques),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                    )
+                                },
+                                navigationIcon = {
+                                    IconButton(onClick = goBack, enabled = !compactHeader) {
+                                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back))
+                                    }
+                                },
+                            )
+                        }
                     }
-                    if (focusedId == null) {
-                        Column(
-                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 6.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp),
-                        ) {
-                            val nearbyCityName = city?.label(languageKey).takeIf { isNearby }
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                AnimatedVisibility(
-                                    visible = compactHeader,
-                                    enter = expandHorizontally(expandFrom = Alignment.Start),
-                                    exit = shrinkHorizontally(shrinkTowards = Alignment.Start),
-                                ) {
-                                    MosqueGlassBackButton(glass, enabled = compactHeader, goBack)
-                                }
-                                MosqueBrowseFilters(
-                                    glass = glass,
-                                    label = nearbyCityName ?: mosqueAreaLabel(area),
-                                    showSort = !activeMap,
-                                    sortByName = if (searching) searchSortByName ?: sortByName else sortByName,
-                                    canSortByDistance = canSortByDistance,
-                                    onAreaClick = { dismissKeyboard(); showAreas = true },
-                                    onSortChange = {
-                                        if (searching) searchSortByName = it else preferredSortByName = it
-                                    },
-                                )
-                            }
-                            if (matchedPlaces == null && !compactHeader && !mapVisible && !loading &&
-                                !waitingForOrigin && !loadFailed && (!isNearby || activeMap)
+                }
+                if (focusedId == null) {
+                    Column(
+                        modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+                            .padding(start = 16.dp, end = 16.dp, bottom = 6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
+                    ) {
+                        val nearbyCityName = city?.label(languageKey).takeIf { isNearby }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            AnimatedVisibility(
+                                visible = compactHeader,
+                                enter = expandHorizontally(expandFrom = Alignment.Start),
+                                exit = shrinkHorizontally(shrinkTowards = Alignment.Start),
                             ) {
-                                val count = remember(language, visiblePlaces.size) {
-                                    NumberFormat.getIntegerInstance(language.locale).format(visiblePlaces.size)
+                                IconButton(onClick = goBack, enabled = compactHeader) {
+                                    Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back))
                                 }
-                                Text(
-                                    stringResource(R.string.mosque_catalog_count, count),
-                                    modifier = Modifier.padding(start = 2.dp),
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
                             }
+                            MosqueBrowseFilters(
+                                label = nearbyCityName ?: mosqueAreaLabel(area),
+                                showSort = !activeMap,
+                                sortByName = if (searching) searchSortByName ?: sortByName else sortByName,
+                                canSortByDistance = canSortByDistance,
+                                onAreaClick = { dismissKeyboard(); showAreas = true },
+                                onSortChange = {
+                                    if (searching) searchSortByName = it else preferredSortByName = it
+                                },
+                            )
+                        }
+                        if (matchedPlaces == null && !compactHeader && !mapVisible && !loading &&
+                            !waitingForOrigin && !loadFailed && (!isNearby || activeMap)
+                        ) {
+                            val count = remember(language, visiblePlaces.size) {
+                                NumberFormat.getIntegerInstance(language.locale).format(visiblePlaces.size)
+                            }
+                            Text(
+                                stringResource(R.string.mosque_catalog_count, count),
+                                modifier = Modifier.padding(start = 2.dp),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
                         }
                     }
                 }
@@ -435,7 +449,7 @@ internal fun NearbyMosquesScreen(
             }
             if (focusedId == null) {
                 MosqueSearchDock(
-                    glass = glass, showMap = activeMap, searching = searching,
+                    glass = dockGlass, showMap = activeMap, searching = searching,
                     searchAvailable = mosques.isNotEmpty(), searchText = searchText, requestFocus = requestSearchFocus,
                     onFocusRequested = { requestSearchFocus = false },
                     onSearchOpen = {

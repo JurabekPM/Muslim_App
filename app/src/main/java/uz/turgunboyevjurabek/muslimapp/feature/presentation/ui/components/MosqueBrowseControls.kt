@@ -2,8 +2,6 @@ package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -24,6 +21,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -52,7 +50,6 @@ internal val MosqueActionColor = Color(0xFFF5C361)
 
 @Composable
 internal fun MosqueBrowseFilters(
-    glass: MosqueGlass,
     label: String,
     showSort: Boolean,
     sortByName: Boolean,
@@ -61,13 +58,12 @@ internal fun MosqueBrowseFilters(
     onSortChange: (Boolean) -> Unit,
 ) {
     val colors = MaterialTheme.colorScheme
-    Box(Modifier.fillMaxWidth().background(colors.surfaceContainer.copy(alpha = 0.32f), CircleShape)) {
+    Surface(Modifier.fillMaxWidth(), shape = CircleShape, color = colors.surfaceContainer) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             if (showSort) {
-                MosqueSortButton(glass, sortByName, canSortByDistance, onSortChange)
+                MosqueSortButton(sortByName, canSortByDistance, onSortChange)
             }
             MosqueAreaButton(
-                glass = glass,
                 label = label,
                 onClick = onAreaClick,
                 modifier = Modifier.weight(1f),
@@ -79,23 +75,25 @@ internal fun MosqueBrowseFilters(
 
 @Composable
 private fun MosqueAreaButton(
-    glass: MosqueGlass,
     label: String,
     onClick: () -> Unit,
     modifier: Modifier,
     startPadding: Dp,
 ) {
+    val colors = MaterialTheme.colorScheme
     val description = stringResource(R.string.mosque_choose_area)
-    val interaction = remember { MutableInteractionSource() }
-    Box(
-        modifier.semantics { contentDescription = description }
-            .clickable(interactionSource = interaction, indication = null, role = Role.Button, onClick = onClick)
-            .padding(start = startPadding, end = 6.dp, top = 6.dp, bottom = 6.dp),
+    Surface(
+        onClick = onClick,
+        modifier = modifier.semantics { contentDescription = description },
+        shape = CircleShape,
+        color = Color.Transparent,
     ) {
-        MosqueGlassPill(
-            glass,
-            Modifier.fillMaxWidth().mosqueLiquidPress(rememberPressScale(interaction, bounce = true)),
-            interactionSource = interaction,
+        Surface(
+            modifier = Modifier.padding(start = startPadding, end = 6.dp, top = 6.dp, bottom = 6.dp),
+            shape = CircleShape,
+            color = colors.surface.copy(alpha = 0.78f),
+            contentColor = colors.onSurface,
+            border = BorderStroke(1.dp, colors.outlineVariant),
         ) {
             Row(
                 Modifier.heightIn(min = 36.dp).padding(start = 12.dp, end = 8.dp),
@@ -117,32 +115,34 @@ private fun MosqueAreaButton(
 }
 
 @Composable
-private fun MosqueSortButton(
-    glass: MosqueGlass,
-    byName: Boolean,
-    canSortByDistance: Boolean,
-    onChange: (Boolean) -> Unit,
-) {
+private fun MosqueSortButton(byName: Boolean, canSortByDistance: Boolean, onChange: (Boolean) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     val description = stringResource(R.string.mosque_sort)
     val distance = stringResource(R.string.mosque_sort_distance)
     val name = stringResource(R.string.mosque_sort_name)
     val colors = MaterialTheme.colorScheme
-    val interaction = remember { MutableInteractionSource() }
     Box(Modifier.width(52.dp)) {
-        Box(
-            Modifier.fillMaxWidth().heightIn(min = 48.dp).semantics {
+        Surface(
+            onClick = { expanded = true },
+            modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).semantics {
                 contentDescription = description
                 stateDescription = if (byName) name else distance
-            }.clickable(interactionSource = interaction, indication = null, role = Role.Button) { expanded = true },
-            contentAlignment = Alignment.Center,
+            },
+            shape = CircleShape,
+            color = Color.Transparent,
         ) {
-            MosqueGlassPill(
-                glass,
-                Modifier.size(36.dp).mosqueLiquidPress(rememberPressScale(interaction, bounce = true)),
-                interactionSource = interaction,
-            ) {
-                Icon(painterResource(R.drawable.ic_mosque_sort), null, Modifier.size(20.dp))
+            Box(contentAlignment = Alignment.Center) {
+                Surface(
+                    modifier = Modifier.size(36.dp),
+                    shape = CircleShape,
+                    color = colors.surface,
+                    contentColor = colors.onSurface,
+                    shadowElevation = 1.dp,
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(painterResource(R.drawable.ic_mosque_sort), null, Modifier.size(20.dp))
+                    }
+                }
             }
         }
         DropdownMenu(
@@ -188,25 +188,6 @@ private fun MosqueSortButton(
                     },
                 )
             }
-        }
-    }
-}
-
-@Composable
-internal fun MosqueGlassBackButton(glass: MosqueGlass, enabled: Boolean, onClick: () -> Unit) {
-    val interaction = remember { MutableInteractionSource() }
-    Box(
-        Modifier.size(48.dp)
-            .clickable(interactionSource = interaction, indication = null, enabled = enabled,
-                role = Role.Button, onClick = onClick),
-        contentAlignment = Alignment.Center,
-    ) {
-        MosqueGlassPill(
-            glass,
-            Modifier.size(36.dp).mosqueLiquidPress(rememberPressScale(interaction, bounce = true)),
-            interactionSource = interaction,
-        ) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back), Modifier.size(21.dp))
         }
     }
 }

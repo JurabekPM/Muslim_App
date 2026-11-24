@@ -111,6 +111,8 @@ Muslim App O‘zbekiston uchun namoz vaqtlari, tasbeh va Qibla funksiyalarini be
 - «Yaqin masjidlar» AppBar foni ro‘yxat va xarita ustiga mayin so‘nadigan shisha qatlam qilib qo‘yildi. Orqaga qaytish, hudud va saralash tugmalari shisha va bosilganda siqilib qaytish effektiga ega. Xarita shishani chizish uchun `TextureView` ishlatadi. Xarita ustidagi pastki tablar, lupa, qidiruv maydoni va dumaloq almashtirgichda ko‘cha yozuvlarini yumshatadigan mavzuga mos xira qatlam bor. Tab indikatori siljishda cho‘ziladi, bosilganda shisha nuri va sinishi kuchayadi. Debug APK, test APK, 45 ta unit test va `lintRelease` o‘tdi (0 xato, mavjud 6 ogohlantirish).
 - Samsung SM-S916N’da oq va qora mavzularda ro‘yxat, xarita, AppBar, klaviatura ustidagi qidiruv va yozuvli tablarning qaytishi jonli ko‘rildi. Hudud kapsulasi va xarita tabining bosib turilgan shakli tinch holat bilan solishtirildi. `NearbyMosquesOfflineTest` sinfining 10 testi o‘tdi. Sinovdan keyin telefon oq ko‘rinishga qaytarildi.
 
+- Foydalanuvchi rasmda belgilangan yaltiroq tugmalarni avvalgi ko‘rinishga qaytarishni tanladi. Orqaga, hudud va saralash boshqaruvlari oldingi uslubiga qaytdi. AppBar foni «7 Kunlik» va boshqa asosiy ekranlar ishlatadigan umumiy `AppBarGlassBackground` bilan chiziladi. Ro‘yxat surilganda ixcham AppBar va filtr paneli ishlaydi. Debug APK, Android test APK, 45 ta unit test va `lintRelease` o‘tdi (0 xato, mavjud 6 ogohlantirish). Samsung SM-S916N’da oq mavzuda AppBar «7 Kunlik» bilan solishtirildi, avvalgi filtrlar, klaviatura ochilganda ularning o‘rni va xarita tekshirildi. 10 ta qurilma testi o‘tdi.
+
 ### Namoz vaqtlari va kesh
 
 - Kunlik, 7 kunlik, oylik jadvallar ishlaydi.
