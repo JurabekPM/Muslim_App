@@ -87,6 +87,8 @@ Muslim App O‘zbekiston uchun namoz vaqtlari, tasbeh va Qibla funksiyalarini be
 - PR #27 ning keyingi yangilanishida «Yaqin masjidlar»dagi GPS qatori va xaritadagi qurilma joylashuvi olib tashlandi. «Yaqin atrof» birinchi marta tanlansa shahar tanlagich ochiladi. Saqlangan shahar hudud tugmasidan almashtiriladi. Yaqin masjidlar faqat shu rejim ochilganda hisoblanadi. Masjid qidiruv indeksi so‘rovdan keyin quriladi va ekran ichida qayta ishlatiladi. OpenStreetMap yozuvi xarita tayyor bo‘lgach besh soniya ko‘rinadi, barcha xarita litsenziyalari burchakdagi ma’lumot tugmasidan ochiladi.
 - Yangilangan APK Samsung SM-S916N’ga o‘rnatildi. Jonli sinovda qurilma joylashuvi qatori ko‘rinmasligi, OpenStreetMap yozuvining yig‘ilishi va litsenziya oynasining ilova ichida ochilishi tasdiqlandi. Samsung’da 7 ta Compose testi, jumladan GPSsiz shahar tanlash va oflayn ro‘yxat, hamda mahalliy 45 ta unit test o‘tdi.
 
+- [AppBar va pastki qidiruv maketlari](designs/nearby-mosques-sticky-dock.png) uch variantda tayyorlandi. Videodagi kabi ro‘yxat tepaga surilganda saralash va hudud tanlovi AppBar’da qoladi. Pastdagi shisha «Ro‘yxat / Xarita» tablari bilan qidiruv yonma-yon, alohida qatorda yoki yoyiladigan tugma ko‘rinishida. Oq va qora mavzular, yopishib qoladigan panel va asosiy amallar prototipda tekshirildi. Ilovaga qo‘llash uchun variant tanlanadi.
+
 ### Namoz vaqtlari va kesh
 
 - Kunlik, 7 kunlik, oylik jadvallar ishlaydi.
