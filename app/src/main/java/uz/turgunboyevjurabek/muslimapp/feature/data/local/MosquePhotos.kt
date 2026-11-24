@@ -9,6 +9,7 @@ internal enum class MosquePhotoLicense(val title: String, val url: String) {
     By20("CC BY 2.0", "https://creativecommons.org/licenses/by/2.0/"),
     By30("CC BY 3.0", "https://creativecommons.org/licenses/by/3.0/"),
     By40("CC BY 4.0", "https://creativecommons.org/licenses/by/4.0/"),
+    BySa30("CC BY-SA 3.0", "https://creativecommons.org/licenses/by-sa/3.0/"),
     BySa40("CC BY-SA 4.0", "https://creativecommons.org/licenses/by-sa/4.0/"),
 }
 
@@ -28,6 +29,12 @@ internal data class MosquePhoto(
 
 internal object MosquePhotos {
     // The catalog key is the stable OpenStreetMap feature ID, not the display name.
+    private val galleriesByMosqueId = mapOf(
+        "node/10830790244" to "https://www.trip.com/travel-guide/attraction/kokand/avg-onbog-jome-masjidi-142710106",
+        "way/451482572" to "https://yandex.uz/maps/org/zinbardor_masjidi/164390939211/gallery/",
+        "way/451808369" to "https://yandex.uz/maps/org/g_ishtlik_masjidi/60293259308/gallery/",
+    )
+
     private val photosByMosqueId = mapOf(
         "node/12029940233" to MosquePhoto(
             R.drawable.mosque_photo_node_12029940233,
@@ -46,16 +53,36 @@ internal object MosquePhotos {
             fileName = "Shayx Muhammad Sodiq Muhammad Yusuf nomidagi jome' masjidi.jpg",
             license = MosquePhotoLicense.By40,
         ),
+        "node/7139516193" to MosquePhoto(
+            R.drawable.mosque_photo_node_7139516193,
+            author = "Bobyrr",
+            fileName = "Mosque Khoja Ahrar 4740.JPG",
+        ),
         "relation/13911901" to MosquePhoto(
             R.drawable.mosque_photo_relation_13911901,
             author = "Gregor Rom",
             fileName = "Komplex Said Scheliker Bei.jpg",
+        ),
+        "relation/1553869" to MosquePhoto(
+            R.drawable.mosque_photo_relation_1553869,
+            author = "Petar Milošević",
+            fileName = "Медресе Баракхан,Ташкент (Barakhan Madrasah, Baroqxon madrasasi).jpg",
         ),
         "relation/19934455" to MosquePhoto(
             R.drawable.mosque_photo_relation_19934455,
             author = "Muxriddin Azimov",
             fileName = "Hazrati Imom masjidi 20230421.jpg",
             license = MosquePhotoLicense.Cc0,
+        ),
+        "relation/21151698" to MosquePhoto(
+            R.drawable.mosque_photo_relation_21151698,
+            author = "MarjonaKhidirova",
+            fileName = "Xonaqoh masjidi — Oʻzbekiston, Fargʻona viloyati, Margʻilon 2.jpg",
+        ),
+        "relation/2324986" to MosquePhoto(
+            R.drawable.mosque_photo_relation_2324986,
+            author = "Ymblanter",
+            fileName = "Kukeldash Madrassah side view.jpg",
         ),
         "relation/4827007" to MosquePhoto(
             R.drawable.mosque_photo_relation_4827007,
@@ -68,6 +95,11 @@ internal object MosquePhotos {
             author = "Humoyun Mehridinov",
             fileName = "Masjidi Kalon 1.jpg",
         ),
+        "way/1093072077" to MosquePhoto(
+            R.drawable.mosque_photo_way_1093072077,
+            author = "Iaa2023",
+            fileName = "Kokildor ota xonaqosi 01.jpg",
+        ),
         "way/1158817582" to MosquePhoto(
             R.drawable.mosque_photo_way_1158817582,
             author = "Mitti quyoshcha",
@@ -79,6 +111,21 @@ internal object MosquePhotos {
             author = "Wikisurgery94",
             fileName = "Old tomoni ko'rinishi.jpg",
             license = MosquePhotoLicense.Cc0,
+        ),
+        "way/141617154" to MosquePhoto(
+            R.drawable.mosque_photo_way_141617154,
+            author = "St. Christofor",
+            fileName = "Muyi Muborak Madrasah.jpg",
+        ),
+        "way/141617158" to MosquePhoto(
+            R.drawable.mosque_photo_way_141617158,
+            author = "Jamshid Nurkulov",
+            fileName = "Tillashayx masjidining old tomondan koʻrinishi.jpg",
+        ),
+        "way/141624570" to MosquePhoto(
+            R.drawable.mosque_photo_way_141624570,
+            author = "Ymblanter",
+            fileName = "Kaffal Shashi Mausoleum rear view.jpg",
         ),
         "way/143446111" to MosquePhoto(
             R.drawable.mosque_photo_way_143446111,
@@ -127,11 +174,21 @@ internal object MosquePhotos {
             author = "Kraftabbas",
             fileName = "Коканд.Мечеть и медресе Джами.jpg",
         ),
+        "way/185037012" to MosquePhoto(
+            R.drawable.mosque_photo_way_185037012,
+            author = "Carpodacus",
+            fileName = "Bogbonli mosque.jpg",
+        ),
         "way/185051424" to MosquePhoto(
             R.drawable.mosque_photo_way_185051424,
             author = "Bgag",
             fileName = "Juma Mosque (Khiva) 01.jpg",
             license = MosquePhotoLicense.Cc0,
+        ),
+        "way/185230691" to MosquePhoto(
+            R.drawable.mosque_photo_way_185230691,
+            author = "Iaa2023",
+            fileName = "Oq masjid 01.jpg",
         ),
         "way/207933191" to MosquePhoto(
             R.drawable.mosque_photo_way_207933191,
@@ -147,6 +204,17 @@ internal object MosquePhotos {
             R.drawable.mosque_photo_way_33427229,
             author = "Yunus M-D",
             fileName = "Фото мечети \"Новза\".jpg",
+        ),
+        "way/351273147" to MosquePhoto(
+            R.drawable.mosque_photo_way_351273147,
+            author = "4pf3154f7",
+            fileName = "Mausoleum Termez.jpg",
+        ),
+        "way/448234922" to MosquePhoto(
+            R.drawable.mosque_photo_way_448234922,
+            author = "Lechhansl",
+            fileName = "Sultan Saodat Komplex Seit.JPG",
+            license = MosquePhotoLicense.BySa30,
         ),
         "way/449151719" to MosquePhoto(
             R.drawable.mosque_photo_way_449151719,
@@ -179,6 +247,11 @@ internal object MosquePhotos {
             author = "Muzaffar Murodovich",
             fileName = "Mirza Yusuf masjidi, hovlisidan koʻrinishi.jpg",
         ),
+        "way/614044909" to MosquePhoto(
+            R.drawable.mosque_photo_way_614044909,
+            author = "Akhemen",
+            fileName = "Hazrati Hizr Mosque in Samarkand (August 2018).jpg",
+        ),
         "way/790949485" to MosquePhoto(
             R.drawable.mosque_photo_way_790949485,
             author = "Alisa Trebuchina",
@@ -198,4 +271,6 @@ internal object MosquePhotos {
     )
 
     operator fun get(mosqueId: String): MosquePhoto? = photosByMosqueId[mosqueId]
+
+    fun galleryUrl(mosqueId: String): String? = galleriesByMosqueId[mosqueId]
 }

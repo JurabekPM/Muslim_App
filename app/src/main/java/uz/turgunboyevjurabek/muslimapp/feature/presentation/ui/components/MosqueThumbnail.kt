@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
@@ -41,9 +43,19 @@ internal fun MosqueThumbnail(mosqueId: String, name: String, modifier: Modifier 
     val thumbnail = modifier.size(60.dp).clip(RoundedCornerShape(14.dp))
     if (photo == null) {
         val colors = MaterialTheme.colorScheme
+        val galleryUrl = MosquePhotos.galleryUrl(mosqueId)
+        val uriHandler = LocalUriHandler.current
+        val galleryAction = if (galleryUrl != null) {
+            Modifier.clickable(role = Role.Button, onClickLabel = stringResource(R.string.mosque_photo_source)) {
+                uriHandler.openUri(galleryUrl)
+            }
+        } else {
+            Modifier
+        }
         Box(
             modifier = thumbnail.background(lerp(colors.surfaceContainerHigh, colors.tertiaryContainer, 0.28f))
-                .testTag("mosque-photo-placeholder"),
+                .testTag("mosque-photo-placeholder")
+                .then(galleryAction),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
@@ -52,6 +64,18 @@ internal fun MosqueThumbnail(mosqueId: String, name: String, modifier: Modifier 
                 modifier = Modifier.size(32.dp),
                 tint = colors.tertiary,
             )
+            if (galleryUrl != null) {
+                Icon(
+                    painterResource(R.drawable.ic_mosque_gallery),
+                    contentDescription = stringResource(R.string.mosque_photo_source),
+                    modifier = Modifier.align(Alignment.BottomEnd)
+                        .padding(4.dp)
+                        .size(20.dp)
+                        .background(colors.tertiaryContainer, CircleShape)
+                        .padding(4.dp),
+                    tint = colors.onTertiaryContainer,
+                )
+            }
         }
     } else {
         var showCredit by remember(mosqueId) { mutableStateOf(false) }
