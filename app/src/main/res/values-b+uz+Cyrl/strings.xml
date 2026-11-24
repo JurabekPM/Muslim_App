@@ -165,7 +165,7 @@
     <string name="mosque_choose_city">Шаҳар танлаш</string>
     <string name="mosque_search_city">Шаҳар қидириш</string>
     <string name="mosque_no_city">Шаҳар топилмади</string>
-    <string name="mosque_choose_origin">Яқин масжидларни кўриш учун шаҳар танланг.</string>
+    <string name="mosque_location_permission">Яқин масжидларни кўриш учун жойлашувга рухсат беринг.</string>
     <string name="mosque_unnamed">Номи кўрсатилмаган масжид</string>
     <string name="mosque_directions">Йўлни очиш</string>
     <string name="mosque_directions_error">Харита иловаси ёки браузер керак.</string>

@@ -91,9 +91,13 @@ internal fun NearbyMosquesScreen(
     cities: List<MosquePlace>,
     mosques: List<MosquePlace>,
     city: MosquePlace?,
+    lastCityId: String?,
+    origin: MosqueCoordinates?,
     results: List<NearbyMosque>?,
     loadFailed: Boolean,
     onRetry: () -> Unit,
+    @StringRes locationError: Int?,
+    onRetryLocation: () -> Unit,
     onAreaChange: (MosqueArea) -> Unit,
     onShowMapChange: (Boolean) -> Unit,
     onCity: (MosquePlace) -> Unit,
@@ -126,7 +130,6 @@ internal fun NearbyMosquesScreen(
     }
     BackHandler(enabled = searching || focusedId != null, onBack = goBack)
     val isNearby = area == MosqueArea.Nearby
-    val origin = city?.coordinates
     val visiblePlaces = remember(area, mosques, results) {
         area.selectMosques(mosques, results.orEmpty().map(NearbyMosque::place))
     }
@@ -239,11 +242,11 @@ internal fun NearbyMosquesScreen(
                     }
                 }
                 loading -> MosqueStatus(stringResource(R.string.mosque_catalog_loading), loading = true)
-                waitingForOrigin -> MosqueStatus(
-                    stringResource(R.string.mosque_choose_origin),
-                    retry = { showCities = true },
-                    actionLabel = R.string.mosque_choose_city,
-                )
+                waitingForOrigin -> if (locationError == null) {
+                    MosqueStatus(stringResource(R.string.locating), loading = true)
+                } else {
+                    MosqueStatus(stringResource(locationError), retry = onRetryLocation)
+                }
                 visiblePlaces.isEmpty() -> MosqueStatus(
                     if (isNearby) stringResource(R.string.mosque_no_results, nearbyMosqueRadiusKm)
                     else stringResource(R.string.mosque_search_empty)
@@ -337,11 +340,10 @@ internal fun NearbyMosquesScreen(
         ) {
             showAreas = false
             onAreaChange(it)
-            if (it == MosqueArea.Nearby && city == null && cities.isNotEmpty()) showCities = true
         }
     }
     if (showCities) {
-        MosqueCitySheet(cities, city?.id, languageKey, onClose = { showCities = false }) {
+        MosqueCitySheet(cities, lastCityId, languageKey, onClose = { showCities = false }) {
             showCities = false
             onCity(it)
         }
@@ -418,7 +420,6 @@ internal fun MosqueStatus(
     message: String,
     retry: (() -> Unit)? = null,
     loading: Boolean = false,
-    @StringRes actionLabel: Int = R.string.retry,
 ) {
     Column(
         Modifier.fillMaxWidth().padding(24.dp),
@@ -428,7 +429,7 @@ internal fun MosqueStatus(
         if (loading) CircularProgressIndicator()
         Text(message, textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurfaceVariant)
         if (retry != null) {
-            TextButton(onClick = retry) { Text(stringResource(actionLabel)) }
+            TextButton(onClick = retry) { Text(stringResource(R.string.retry)) }
         }
     }
 }

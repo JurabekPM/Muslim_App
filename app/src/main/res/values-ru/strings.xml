@@ -185,7 +185,7 @@
     <string name="mosque_choose_city">Выбрать город</string>
     <string name="mosque_search_city">Поиск города</string>
     <string name="mosque_no_city">Город не найден</string>
-    <string name="mosque_choose_origin">Выберите город, чтобы увидеть ближайшие мечети.</string>
+    <string name="mosque_location_permission">Разрешите доступ к геопозиции, чтобы увидеть ближайшие мечети.</string>
     <string name="mosque_unnamed">Мечеть без названия</string>
     <string name="mosque_directions">Проложить маршрут</string>
     <string name="mosque_directions_error">Нужно приложение с картами или браузер.</string>

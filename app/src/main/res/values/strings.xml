@@ -180,7 +180,7 @@
     <string name="mosque_choose_city">Shahar tanlash</string>
     <string name="mosque_search_city">Shahar qidirish</string>
     <string name="mosque_no_city">Shahar topilmadi</string>
-    <string name="mosque_choose_origin">Yaqin masjidlarni ko‘rish uchun shahar tanlang.</string>
+    <string name="mosque_location_permission">Yaqin masjidlarni ko‘rish uchun joylashuvga ruxsat bering.</string>
     <string name="mosque_unnamed">Nomi ko‘rsatilmagan masjid</string>
     <string name="mosque_directions">Yo‘lni ochish</string>
     <string name="mosque_directions_error">Xarita ilovasi yoki brauzer kerak.</string>
