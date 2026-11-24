@@ -165,7 +165,7 @@
     <string name="mosque_choose_city">Choose a city</string>
     <string name="mosque_search_city">Search cities</string>
     <string name="mosque_no_city">No cities found</string>
-    <string name="mosque_choose_origin">Choose a city to see nearby mosques.</string>
+    <string name="mosque_location_permission">Allow location access to see nearby mosques.</string>
     <string name="mosque_unnamed">Unnamed mosque</string>
     <string name="mosque_directions">Get directions</string>
     <string name="mosque_directions_error">A maps app or browser is needed.</string>
@@ -199,5 +199,7 @@
     <string name="mosque_photo_next">Next photo</string>
     <string name="mosque_sort_distance">By distance</string>
     <string name="mosque_sort_name">By name</string>
+    <string name="mosque_sort">Sort</string>
+    <string name="mosque_sort_location_needed">Location needed for distance</string>
     <string name="mosque_nearest">Closest</string>
 </resources>

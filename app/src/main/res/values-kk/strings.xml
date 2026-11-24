@@ -165,7 +165,7 @@
     <string name="mosque_choose_city">Қала таңдау</string>
     <string name="mosque_search_city">Қала іздеу</string>
     <string name="mosque_no_city">Қала табылмады</string>
-    <string name="mosque_choose_origin">Жақын мешіттерді көру үшін қала таңдаңыз.</string>
+    <string name="mosque_location_permission">Жақын мешіттерді көру үшін орналасқан жерді анықтауға рұқсат беріңіз.</string>
     <string name="mosque_unnamed">Атауы белгісіз мешіт</string>
     <string name="mosque_directions">Бағытты ашу</string>
     <string name="mosque_directions_error">Карта қолданбасы немесе браузер қажет.</string>
@@ -199,5 +199,7 @@
     <string name="mosque_photo_next">Келесі сурет</string>
     <string name="mosque_sort_distance">Қашықтық бойынша</string>
     <string name="mosque_sort_name">Атауы бойынша</string>
+    <string name="mosque_sort">Сұрыптау</string>
+    <string name="mosque_sort_location_needed">Қашықтық үшін орналасқан жер қажет</string>
     <string name="mosque_nearest">Ең жақын</string>
 </resources>
