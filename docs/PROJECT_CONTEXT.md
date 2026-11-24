@@ -92,6 +92,8 @@ Muslim App O‘zbekiston uchun namoz vaqtlari, tasbeh va Qibla funksiyalarini be
 
 - Foydalanuvchi [ikkita dumaloq tabli maketni](designs/nearby-mosques-round-search-tabs.png) ham ko‘rishni so‘radi. Qidiruv chapga yoyilganda «Ro‘yxat» va «Xarita» yozuvlari so‘nadi, ikkala tab yopiq lupa bilan bir xil o‘lchamdagi alohida dumaloq tugmalarga aylanadi. Ikkala tugma qidiruv ochiq turganda ham ishlaydi. Natijalar shu ekranda chiqadi. Chrome’da 320 va 790 px kenglikda animatsiya, tugma o‘lchamlari, qidiruv va tab almashishi tekshirildi. Maket #31 qoralamasiga qo‘shildi.
 
+- Foydalanuvchi «Ro‘yxat» va «Xarita» qidiruv ochilganda [bitta dumaloq tugmaga](designs/nearby-mosques-single-search-toggle.png) yig‘ilishini aniqlashtirdi. Qidiruv o‘ngdan chapga yoyiladi. Dumaloq tugma bosilganda ro‘yxat va xarita shu ekranda almashadi, belgisi keyingi ko‘rinishni bildiradi. Qidiruv yopilganda yozuvli tablar qaytadi. Chrome’da 320 va 790 px kenglikda oraliq animatsiya, tugmaning o‘lchami, qidiruv va almashtirish tekshirildi. Ilovaga qo‘llashdan oldin maket ko‘riladi.
+
 ### Namoz vaqtlari va kesh
 
 - Kunlik, 7 kunlik, oylik jadvallar ishlaydi.
