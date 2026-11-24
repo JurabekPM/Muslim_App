@@ -36,6 +36,7 @@ Muslim App O‘zbekiston uchun namoz vaqtlari, tasbeh va Qibla funksiyalarini be
 - BottomNav ajralib turadigan oval glass shaklda. Kontent uning orqasidan ko‘rinadi. Tanlov silliq siljiydi. Qora temada to‘q ko‘k qoplama va mayinroq yaltirash och kulrang tusni pasaytiradi.
 - Tugmalarda mayin ichkariga bosilish hissi bor. Indikator ustida ham bosilish sezilishi kerak.
 - BottomNav istalgan bo‘limidan bosib sudraganda indikator barmoqqa ergashadi. Belgilar vaqtincha tanlangan joyga mos ajraladi. Ekran barmoq qo‘yib yuborilganda almashadi.
+- BottomNav indikatori bosilganda siqilib yaltiraydi, sudrashda barmoqqa ergashib cho‘ziladi va qo‘yib yuborilganda prujina bilan joyiga qaytadi. Indikatorning fon, aks va qirrasi bitta chizish qatlamida birlashgan. Sudrash harakati indikatorning joylashuvini qayta o‘lchamaydi, matn og‘irligi faqat ajratilgan tab almashganda o‘zgaradi. Samsung SM-S916N’da oq va qora mavzuda Asosiydan 30 Kunlikka sudrash, qo‘yib yuborilganda sahifa almashishi hamda Tasbex va 7 Kunlikni bosib ochish tekshirildi. Debug va test APK’lari yig‘ildi, 45 ta unit test va `lintRelease` (0 xato, 5 ogohlantirish) o‘tdi.
 - Tanlangan ikonlar filled, tanlanmaganlari outlined. Almashish animatsiyali. Mavjud vector drawable tizimidan foydalaning.
 - Matnlar qisqa, tushunarli, iliq va o‘qilishi oson. Holatlar va ekran sarlavhalari mayin almashadi.
 - Ilova ichida ekran chetidan orqaga surilganda sahifalar asl o‘lchamida mayin so‘nib almashadi. Menyu, Tasbex va 7 kunlikdan Asosiyga qaytishda videoda ko‘ringan kichrayish Navigation Compose’ning standart animatsiyasidan kelgan. NavHost’da orqaga surish uchun o‘tishlar aniq berildi. Debug APK va 43 ta unit test o‘tdi. Samsung SM-S916N’da PR #22 va #23 birga yig‘ilgan APK o‘rnatildi. Telefon sozlamalari o‘zgartirilmagan holda 7 kunlik va Menyudan Asosiyga 1,1 soniyalik chet imo-ishorasi bilan qaytish kadrma-kadr ko‘rildi. Chiqayotgan sahifa kichraymadi.
@@ -120,6 +121,8 @@ Muslim App O‘zbekiston uchun namoz vaqtlari, tasbeh va Qibla funksiyalarini be
 - Ro‘yxat surilganda ixcham AppBar fonida status paneli bilan filtrlar orasidagi keskin chegara bartaraf etildi. Orqaga, hudud va saralash tugmalari bitta umumiy fon ustida, ro‘yxat esa uning tagida mayin so‘nadi. Samsung SM-S916N’da oq va qora mavzuda ixcham AppBar, tugmalar joylashuvi va saralash menyusi tekshirildi. Qurilmadagi 10 ta test va 45 ta unit test o‘tdi. Debug va test APK’lari yig‘ildi. `lintRelease` 0 xato va 5 ogohlantirish bilan o‘tdi.
 
 - Pastki shisha boshqaruvlarda tebranish kuchaytirildi. «Ro‘yxat / Xarita» oltin indikatori siljishda cho‘zilib, o‘rniga yetganda mayin qaytadi. Dumaloq tugmalar va qidiruv shishasi bosilganda siqilib, oltin aks bilan javob beradi. Matn, ikonlar va bosish maydonlari qatlam animatsiyasidan mustaqil. Qidiruv kengligi o‘lchash bosqichida yangilanadi, bosish paytida Haze optikasi qayta sozlanmaydi. Debug va test APK’lari yig‘ildi, 45 ta unit test o‘tdi. `lintRelease` 0 xato va 5 ogohlantirish bilan o‘tdi. Samsung SM-S916N’da oq va qora mavzuda ro‘yxat, xarita, lupa va qidiruvni yopish sinovdan o‘tdi. Tinch va bosib turilgan kadrlar solishtirildi. 10 ta qurilma testi o‘tdi va avvalgi tema tiklandi.
+
+- PR #28–#31 masterga qo‘shildi. #28 dan keyin surat litsenziyalari testida bir muallifga tegishli bir nechta yozuv chiqishi hisobga olindi.
 
 ### Namoz vaqtlari va kesh
 

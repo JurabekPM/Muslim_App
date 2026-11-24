@@ -5,7 +5,6 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -26,11 +25,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.drawOutline
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.luminance
@@ -38,7 +40,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.semantics.Role
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.compose.ui.Modifier
@@ -65,6 +66,8 @@ private val dockItems = listOf(
     BottomNavigationItem(R.string.menu, R.drawable.ic_nav_menu, R.drawable.ic_nav_menu_filled, AppRoute.MENU),
 )
 private val dockShape = RoundedCornerShape(30.dp)
+private val dockFollowSpring = spring(dampingRatio = 1f, stiffness = 1800f, visibilityThreshold = 0.002f)
+private val dockSettleSpring = spring(dampingRatio = 0.74f, stiffness = 430f, visibilityThreshold = 0.002f)
 
 internal fun titleForRoute(route: String?): Int = when (route) {
     AppRoute.QIBLA -> R.string.qibla
@@ -83,33 +86,19 @@ fun MyBottomNavigationBar(
     val route = entry?.destination?.route ?: AppRoute.HOME
     val colors = MaterialTheme.colorScheme
     val interactionSources = remember { List(items.size) { MutableInteractionSource() } }
-    val pressScales = interactionSources.map { rememberPressScale(it) }
+    val pressScales = interactionSources.map { rememberPressScale(it, bounce = true) }
     val pressedTabs = interactionSources.map { it.collectIsPressedAsState().value }
     val selectedIndex = items.indexOfFirst { it.route == route }
     val pressedIndex = pressedTabs.indexOfFirst { it }
     val previewIndex = if (pressedIndex >= 0) pressedIndex else selectedIndex
-    var dragPosition by remember { mutableStateOf<Float?>(null) }
-    val dragging = dragPosition != null
-    val position = animateFloatAsState(
-        targetValue = dragPosition ?: previewIndex.coerceAtLeast(0).toFloat(),
-        animationSpec = if (dragging) {
-            spring(dampingRatio = 1f, stiffness = 1800f, visibilityThreshold = 0.002f)
-        } else {
-            spring(dampingRatio = 0.86f, stiffness = 420f, visibilityThreshold = 0.002f)
-        },
-        label = "Tab position",
-    )
-    val dragScale = animateFloatAsState(
-        targetValue = if (dragging) 0.94f else 1f,
-        animationSpec = tween(if (dragging) 85 else 160),
-        label = "Dragged indicator scale",
-    )
+    val dragPosition = remember { mutableStateOf<Float?>(null) }
+    val dragging by remember { derivedStateOf { dragPosition.value != null } }
+    val position = animateDockPosition(dragPosition, previewIndex)
     val dragStretch = animateFloatAsState(
         targetValue = if (dragging) 1f else 0f,
         animationSpec = spring(dampingRatio = 0.78f, stiffness = 470f),
         label = "Liquid indicator stretch",
     )
-    val lensVisible by remember(dragStretch) { derivedStateOf { dragStretch.value > 0.01f } }
     fun openTab(index: Int) {
         val destination = items[index].route
         // Qibla is opened above a tab and must be dismissed before saving that tab.
@@ -131,7 +120,6 @@ fun MyBottomNavigationBar(
             }
         }
     }
-    val indicatorFill = colors.secondaryContainer
     val indicatorOpacity = animateFloatAsState(
         targetValue = if (previewIndex >= 0 || dragging) 1f else 0f,
         animationSpec = tween(150),
@@ -165,24 +153,6 @@ fun MyBottomNavigationBar(
             ambientResponse(if (darkDock) 0.08f else 0.16f)
         }
     }
-    val lensFill = remember(indicatorFill, darkDock) {
-        Brush.verticalGradient(
-            listOf(
-                Color.White.copy(alpha = if (darkDock) 0.16f else 0.34f),
-                indicatorFill.copy(alpha = 0.04f),
-                indicatorFill.copy(alpha = 0.24f),
-            ),
-        )
-    }
-    val lensRim = remember(indicatorFill, darkDock, colors.primary) {
-        Brush.linearGradient(
-            listOf(
-                Color.White.copy(alpha = if (darkDock) 0.48f else 0.88f),
-                indicatorFill.copy(alpha = 0.35f),
-                colors.primary.copy(alpha = if (darkDock) 0.65f else 0.45f),
-            ),
-        )
-    }
     Box(
         modifier = modifier.fillMaxWidth().navigationBarsPadding()
             .padding(horizontal = 14.dp, vertical = 6.dp),
@@ -208,42 +178,27 @@ fun MyBottomNavigationBar(
                 val tabStride = with(LocalDensity.current) { (tabWidth + spacing).toPx() }
                 val dragDirection = if (LocalLayoutDirection.current == LayoutDirection.Rtl) -1f else 1f
                 Box(Modifier.matchParentSize()) {
-                    Box(
-                        Modifier.offset { IntOffset((tabStride * position.value).roundToInt(), 0) }
-                            .width(tabWidth)
-                            .fillMaxHeight()
-                            .graphicsLayer {
-                                val scale = minOf(dragScale.value, indicatorScale?.value ?: 1f)
-                                val currentPosition = position.value
-                                val pull = abs((dragPosition ?: currentPosition) - currentPosition).coerceAtMost(0.45f)
-                                val stretch = dragStretch.value.coerceAtLeast(0f)
-                                val fromStart = (currentPosition / items.lastIndex).coerceIn(0f, 1f)
-                                transformOrigin = TransformOrigin(
-                                    if (dragDirection > 0f) fromStart else 1f - fromStart,
-                                    0.5f,
-                                )
-                                scaleX = scale * (1f + stretch * (0.20f + pull * 0.20f))
-                                scaleY = scale * (1f + stretch * 0.28f)
-                            },
-                    ) {
-                        Box(
-                            Modifier.matchParentSize()
-                                .graphicsLayer {
-                                    alpha = indicatorOpacity.value * (1f - dragStretch.value.coerceIn(0f, 1f) * 0.66f)
-                                }
-                                .background(indicatorFill, dockShape),
-                        )
-                        if (dragging || lensVisible) {
-                            Box(
-                                Modifier.matchParentSize()
-                                    .graphicsLayer {
-                                        alpha = indicatorOpacity.value * dragStretch.value.coerceIn(0f, 1f)
-                                    }
-                                    .background(lensFill, dockShape)
-                                    .border(1.dp, lensRim, dockShape),
+                    DockIndicator(
+                        modifier = Modifier.width(tabWidth).fillMaxHeight().graphicsLayer {
+                            val farEdge = items.lastIndex.toFloat()
+                            val current = position.value.coerceIn(0f, farEdge)
+                            val pull = abs((dragPosition.value ?: current) - current).coerceAtMost(0.45f)
+                            val stretch = dragStretch.value.coerceIn(0f, 1f)
+                            val compression = 1f - (indicatorScale?.value ?: 1f)
+                            val edgeRebound = abs(position.value - current).coerceAtMost(0.18f)
+                            val fromStart = current / farEdge
+                            transformOrigin = TransformOrigin(
+                                if (dragDirection > 0f) fromStart else 1f - fromStart, 0.5f,
                             )
-                        }
-                    }
+                            translationX = tabStride * current * dragDirection
+                            scaleX = 1f + compression * 0.65f + stretch * (0.18f + pull * 0.21f)
+                            scaleY = 1f - compression * 2.05f + stretch * 0.16f + edgeRebound * 0.42f
+                        },
+                        opacity = indicatorOpacity,
+                        dragStretch = dragStretch,
+                        pressScale = indicatorScale,
+                        darkDock = darkDock,
+                    )
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth().selectableGroup()
@@ -256,14 +211,14 @@ fun MyBottomNavigationBar(
                             }
 
                             detectHorizontalDragGestures(
-                                onDragStart = { dragPosition = tabAt(it.x) },
-                                onDragCancel = { dragPosition = null },
+                                onDragStart = { dragPosition.value = tabAt(it.x) },
+                                onDragCancel = { dragPosition.value = null },
                                 onDragEnd = {
-                                    dragPosition?.roundToInt()?.let(::openTab)
-                                    dragPosition = null
+                                    dragPosition.value?.roundToInt()?.let(::openTab)
+                                    dragPosition.value = null
                                 },
                             ) { change, _ ->
-                                dragPosition = tabAt(change.position.x)
+                                dragPosition.value = tabAt(change.position.x)
                             }
                         },
                     horizontalArrangement = Arrangement.spacedBy(spacing),
@@ -289,6 +244,62 @@ fun MyBottomNavigationBar(
 }
 
 @Composable
+private fun animateDockPosition(dragPosition: State<Float?>, previewIndex: Int): State<Float> {
+    val fingerPosition = dragPosition.value
+    return animateFloatAsState(
+        targetValue = fingerPosition ?: previewIndex.coerceAtLeast(0).toFloat(),
+        animationSpec = if (fingerPosition != null) dockFollowSpring else dockSettleSpring,
+        label = "Tab position",
+    )
+}
+
+@Composable
+private fun DockIndicator(
+    modifier: Modifier,
+    opacity: State<Float>,
+    dragStretch: State<Float>,
+    pressScale: State<Float>?,
+    darkDock: Boolean,
+) {
+    val colors = MaterialTheme.colorScheme
+    val fill = colors.secondaryContainer
+    Box(
+        modifier.clip(dockShape).drawWithCache {
+            val lens = Brush.verticalGradient(
+                0f to Color.White.copy(alpha = if (darkDock) 0.26f else 0.48f),
+                0.52f to fill.copy(alpha = 0.04f),
+                1f to fill.copy(alpha = 0.22f),
+            )
+            val rim = Brush.linearGradient(
+                0f to Color.White.copy(alpha = if (darkDock) 0.55f else 0.94f),
+                0.48f to fill.copy(alpha = 0.38f),
+                1f to colors.primary.copy(alpha = if (darkDock) 0.67f else 0.52f),
+            )
+            val sheen = Brush.verticalGradient(
+                0f to Color.White.copy(alpha = 0.78f),
+                0.55f to Color.Transparent,
+            )
+            val outline = dockShape.createOutline(size, layoutDirection, this)
+            val stroke = Stroke(width = 2.dp.toPx())
+            onDrawBehind {
+                val alpha = opacity.value
+                if (alpha <= 0f) return@onDrawBehind
+
+                val stretch = dragStretch.value.coerceIn(0f, 1f)
+                val press = ((1f - (pressScale?.value ?: 1f)) / 0.06f).coerceIn(0f, 1f)
+                val reflect = maxOf(press, stretch * 0.72f) * alpha
+                drawRect(fill, alpha = alpha * (1f - stretch * 0.66f))
+                if (stretch > 0f) drawRect(lens, alpha = alpha * stretch)
+                if (reflect > 0f) {
+                    drawRect(sheen, alpha = reflect)
+                    drawOutline(outline, rim, alpha = reflect, style = stroke)
+                }
+            }
+        },
+    )
+}
+
+@Composable
 private fun DockTab(
     modifier: Modifier,
     item: BottomNavigationItem,
@@ -302,13 +313,14 @@ private fun DockTab(
     onClick: () -> Unit,
 ) {
     val colors = MaterialTheme.colorScheme
-    val emphasis = if (previewVisible) (1f - abs(index - position.value)).coerceIn(0f, 1f) else 0f
-    val selectedTint = lerp(
-        colors.onSecondaryContainer,
-        colors.onSurface,
-        dragStretch.value.coerceIn(0f, 1f),
-    )
-    val tint = lerp(colors.onSurface, selectedTint, emphasis)
+    val emphasis by remember(position, index, previewVisible) {
+        derivedStateOf { if (previewVisible) (1f - abs(index - position.value)).coerceIn(0f, 1f) else 0f }
+    }
+    val emphasized = emphasis > 0.5f
+    val tint = if (emphasis > 0f) {
+        val selectedTint = lerp(colors.onSecondaryContainer, colors.onSurface, dragStretch.value.coerceIn(0f, 1f))
+        lerp(colors.onSurface, selectedTint, emphasis)
+    } else colors.onSurface
     Column(
         modifier = modifier.heightIn(min = 52.dp).clip(dockShape)
             .selectable(selected, interaction, null, role = Role.Tab, onClick = onClick)
@@ -318,7 +330,7 @@ private fun DockTab(
         verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically),
     ) {
         Crossfade(
-            targetState = emphasis > 0.5f,
+            targetState = emphasized,
             modifier = Modifier.size(22.dp),
             animationSpec = tween(160),
             label = "Tab icon fill",
@@ -334,7 +346,7 @@ private fun DockTab(
             stringResource(item.title),
             color = tint,
             style = MaterialTheme.typography.labelMedium,
-            fontWeight = FontWeight((500 + 100 * emphasis).roundToInt()),
+            fontWeight = if (emphasized) FontWeight.SemiBold else FontWeight.Medium,
             textAlign = androidx.compose.ui.text.style.TextAlign.Center,
             maxLines = 2,
             overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,

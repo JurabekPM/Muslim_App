@@ -24,6 +24,7 @@ import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.isEnabled
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -95,7 +96,7 @@ class NearbyMosquesOfflineTest {
         compose.onNodeWithText(context.getString(R.string.mosque_photo_licenses)).performClick()
         val firstPhoto = MosquePhotos.credits.first()
         compose.onNodeWithText(firstPhoto.fileName).assertIsDisplayed()
-        compose.onNodeWithText("${firstPhoto.author} · ${firstPhoto.license.title}").assertIsDisplayed()
+        compose.onAllNodesWithText("${firstPhoto.author} · ${firstPhoto.license.title}")[0].assertIsDisplayed()
         compose.onNodeWithText("${firstPhoto.sourceUrl}\n${firstPhoto.license.url}").assertExists()
     }
 
