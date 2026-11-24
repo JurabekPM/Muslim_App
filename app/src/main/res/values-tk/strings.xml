@@ -190,6 +190,9 @@
     <string name="mosque_catalog_count">Metjitler · %1$s</string>
     <string name="mosque_photo_description">%1$s metjidiniň suraty</string>
     <string name="mosque_photo_source">Suratyň çeşmesi</string>
+    <string name="mosque_photos_open">Suratlary görmek</string>
+    <string name="mosque_photo_previous">Öňki surat</string>
+    <string name="mosque_photo_next">Indiki surat</string>
     <string name="mosque_photo_credit">Suratyň awtory · %1$s</string>
     <string name="mosque_sort_distance">Aralyk boýunça</string>
     <string name="mosque_sort_name">Ady boýunça</string>

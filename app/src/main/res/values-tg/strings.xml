@@ -187,6 +187,9 @@
     <string name="mosque_catalog_count">Масҷидҳо · %1$s</string>
     <string name="mosque_photo_description">Акси масҷиди %1$s</string>
     <string name="mosque_photo_source">Манбаи акс</string>
+    <string name="mosque_photos_open">Дидани аксҳо</string>
+    <string name="mosque_photo_previous">Акси қаблӣ</string>
+    <string name="mosque_photo_next">Акси навбатӣ</string>
     <string name="mosque_photo_credit">Муаллифи акс · %1$s</string>
     <string name="mosque_sort_distance">Аз рӯйи масофа</string>
     <string name="mosque_sort_name">Аз рӯйи ном</string>

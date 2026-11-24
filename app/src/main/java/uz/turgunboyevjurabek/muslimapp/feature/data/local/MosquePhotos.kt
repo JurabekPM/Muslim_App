@@ -29,10 +29,132 @@ internal data class MosquePhoto(
 
 internal object MosquePhotos {
     // The catalog key is the stable OpenStreetMap feature ID, not the display name.
-    private val galleriesByMosqueId = mapOf(
-        "node/10830790244" to "https://www.trip.com/travel-guide/attraction/kokand/avg-onbog-jome-masjidi-142710106",
-        "way/451482572" to "https://yandex.uz/maps/org/zinbardor_masjidi/164390939211/gallery/",
-        "way/451808369" to "https://yandex.uz/maps/org/g_ishtlik_masjidi/60293259308/gallery/",
+    private val extraPhotosByMosqueId = mapOf(
+        "relation/21151698" to listOf(
+            MosquePhoto(
+                R.drawable.mosque_photo_relation_21151698_2,
+                author = "MarjonaKhidirova",
+                fileName = "Xonaqoh masjidi — Oʻzbekiston, Fargʻona viloyati, Margʻilon 1.jpg",
+            ),
+            MosquePhoto(
+                R.drawable.mosque_photo_relation_21151698_3,
+                author = "MarjonaKhidirova",
+                fileName = "Xonaqoh masjidi — Oʻzbekiston, Fargʻona viloyati, Margʻilon 4.jpg",
+            ),
+        ),
+        "relation/4827007" to listOf(
+            MosquePhoto(
+                R.drawable.mosque_photo_relation_4827007_2,
+                author = "Humoyun Mehridinov",
+                fileName = "Minor masjidi 10.jpg",
+            ),
+            MosquePhoto(
+                R.drawable.mosque_photo_relation_4827007_3,
+                author = "Humoyun Mehridinov",
+                fileName = "Minor masjidi 14.jpg",
+            ),
+            MosquePhoto(
+                R.drawable.mosque_photo_relation_4827007_4,
+                author = "Umarxon III",
+                fileName = "Anhor water canal and Minor Mosque night view.jpg",
+            ),
+        ),
+        "way/1093072077" to listOf(
+            MosquePhoto(
+                R.drawable.mosque_photo_way_1093072077_2,
+                author = "Iaa2023",
+                fileName = "Kokildor ota xonaqosi 02.jpg",
+            ),
+        ),
+        "way/144057369" to listOf(
+            MosquePhoto(
+                R.drawable.mosque_photo_way_144057369_2,
+                author = "Jamshid Nurkulov",
+                fileName = "Ukkosha Mosque 01.jpg",
+            ),
+            MosquePhoto(
+                R.drawable.mosque_photo_way_144057369_3,
+                author = "Jamshid Nurkulov",
+                fileName = "Ukkosha Mosque 02.jpg",
+            ),
+        ),
+        "way/174718685" to listOf(
+            MosquePhoto(
+                R.drawable.mosque_photo_way_174718685_2,
+                author = "Dmitriy Tashkent",
+                fileName = "Qoʻqon jome masjidi.jpg",
+            ),
+            MosquePhoto(
+                R.drawable.mosque_photo_way_174718685_3,
+                author = "Nikolai Bulykin",
+                fileName = "Кокандская городская мечеть (1).jpg",
+            ),
+            MosquePhoto(
+                R.drawable.mosque_photo_way_174718685_4,
+                author = "Kraftabbas",
+                fileName = "Коканд.Мечеть Джами 1.jpg",
+            ),
+        ),
+        "way/185230691" to listOf(
+            MosquePhoto(
+                R.drawable.mosque_photo_way_185230691_2,
+                author = "Panpanchik",
+                fileName = "Oq masjid (Xorazm).jpg",
+            ),
+            MosquePhoto(
+                R.drawable.mosque_photo_way_185230691_3,
+                author = "Panpanchik",
+                fileName = "Oq masjid, gumbazi.jpg",
+            ),
+        ),
+        "way/449151719" to listOf(
+            MosquePhoto(
+                R.drawable.mosque_photo_way_449151719_2,
+                author = "Arina Pan",
+                fileName = "Медресе Саид-Ахмад ходжа.jpg",
+            ),
+            MosquePhoto(
+                R.drawable.mosque_photo_way_449151719_3,
+                author = "Arina Pan",
+                fileName = "Медресе Саид-Ахмад ходжа 2.jpg",
+            ),
+        ),
+        "way/451808369" to listOf(
+            MosquePhoto(
+                R.drawable.mosque_photo_way_451808369_2,
+                author = "Mitti quyoshcha",
+                fileName = "Gʻishtli masjid binosi.jpg",
+            ),
+            MosquePhoto(
+                R.drawable.mosque_photo_way_451808369_3,
+                author = "Nikolai Bulykin",
+                fileName = "Коканд, мечеть Гиштлик, потолок (1).jpg",
+            ),
+        ),
+        "way/452168942" to listOf(
+            MosquePhoto(
+                R.drawable.mosque_photo_way_452168942_2,
+                author = "Petar Milošević",
+                fileName = "Minarets and Dome of Devonaboy Jome Mosque, Andijan, Uzbekistan (2025).jpg",
+            ),
+            MosquePhoto(
+                R.drawable.mosque_photo_way_452168942_3,
+                author = "Petar Milošević",
+                fileName = "Iwan of Devonaboy Jome Mosque, Andijan, Uzbekistan (2025).jpg",
+            ),
+        ),
+        "way/614044909" to listOf(
+            MosquePhoto(
+                R.drawable.mosque_photo_way_614044909_2,
+                author = "BeshevI",
+                fileName = "Hazrat Khizr Mosque 909.jpg",
+            ),
+            MosquePhoto(
+                R.drawable.mosque_photo_way_614044909_3,
+                author = "BeshevI",
+                fileName = "Hazrat Khizr Mosque 913.jpg",
+            ),
+        ),
     )
 
     private val photosByMosqueId = mapOf(
@@ -221,6 +343,11 @@ internal object MosquePhotos {
             author = "Arina Pan",
             fileName = "Двор Медресе Саид-Ахмад ходжа.jpg",
         ),
+        "way/451808369" to MosquePhoto(
+            R.drawable.mosque_photo_way_451808369,
+            author = "Nikolai Bulykin",
+            fileName = "Коканд, мечеть Гиштлик.jpg",
+        ),
         "way/452168942" to MosquePhoto(
             R.drawable.mosque_photo_way_452168942,
             author = "Petar Milošević",
@@ -268,9 +395,7 @@ internal object MosquePhotos {
             author = "Thezillat",
             fileName = "Rakat masjidi.png",
         ),
-    )
+    ).mapValues { (mosqueId, cover) -> listOf(cover) + extraPhotosByMosqueId[mosqueId].orEmpty() }
 
-    operator fun get(mosqueId: String): MosquePhoto? = photosByMosqueId[mosqueId]
-
-    fun galleryUrl(mosqueId: String): String? = galleriesByMosqueId[mosqueId]
+    operator fun get(mosqueId: String): List<MosquePhoto> = photosByMosqueId[mosqueId].orEmpty()
 }
