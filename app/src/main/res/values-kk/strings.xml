@@ -199,5 +199,7 @@
     <string name="mosque_photo_next">Келесі сурет</string>
     <string name="mosque_sort_distance">Қашықтық бойынша</string>
     <string name="mosque_sort_name">Атауы бойынша</string>
+    <string name="mosque_sort">Сұрыптау</string>
+    <string name="mosque_sort_location_needed">Қашықтық үшін орналасқан жер қажет</string>
     <string name="mosque_nearest">Ең жақын</string>
 </resources>

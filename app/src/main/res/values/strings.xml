@@ -216,5 +216,7 @@
     <string name="mosque_photo_count" translatable="false">%d</string>
     <string name="mosque_sort_distance">Masofa bo‘yicha</string>
     <string name="mosque_sort_name">Nomi bo‘yicha</string>
+    <string name="mosque_sort">Saralash</string>
+    <string name="mosque_sort_location_needed">Masofa uchun joylashuv kerak</string>
     <string name="mosque_nearest">Eng yaqin</string>
 </resources>

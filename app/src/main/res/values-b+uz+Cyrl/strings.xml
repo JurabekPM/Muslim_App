@@ -199,5 +199,7 @@
     <string name="mosque_photo_next">Кейинги сурат</string>
     <string name="mosque_sort_distance">Масофа бўйича</string>
     <string name="mosque_sort_name">Номи бўйича</string>
+    <string name="mosque_sort">Саралаш</string>
+    <string name="mosque_sort_location_needed">Масофа учун жойлашув керак</string>
     <string name="mosque_nearest">Энг яқин</string>
 </resources>

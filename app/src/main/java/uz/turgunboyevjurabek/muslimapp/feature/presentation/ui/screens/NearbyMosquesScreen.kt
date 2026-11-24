@@ -65,20 +65,24 @@ import uz.turgunboyevjurabek.muslimapp.feature.domain.model.NearbyMosque
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.Regions
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.nearbyMosqueRadiusKm
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.displayName
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueAreaButton
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueBrowseCard
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueBrowseFilters
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueChoiceRow
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueDetailSheet
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueDirectionsDialog
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueOverlayHeader
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueSheet
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueSortButton
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueThumbnail
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueViewSwitcher
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.mosqueDisplayName
 import java.text.Collator
 
 private val mosqueSwitcherSpace = 72.dp
+
+private data class MosqueListOrder(
+    val places: List<MosquePlace>,
+    val distances: Map<String, Double> = emptyMap(),
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -115,7 +119,7 @@ internal fun NearbyMosquesScreen(
     var focusedId by rememberSaveable { mutableStateOf<String?>(null) }
     var focusedFromSearch by rememberSaveable { mutableStateOf(false) }
     var detailId by rememberSaveable { mutableStateOf<String?>(null) }
-    var sortByName by rememberSaveable { mutableStateOf(false) }
+    var preferredSortByName by rememberSaveable { mutableStateOf<Boolean?>(null) }
     val focusedMosque = remember(focusedId, mosques) { focusedId?.let { id -> mosques.firstOrNull { it.id == id } } }
     val detailPlace = remember(detailId, mosques) { detailId?.let { id -> mosques.firstOrNull { it.id == id } } }
     val goBack: () -> Unit = {
@@ -130,17 +134,41 @@ internal fun NearbyMosquesScreen(
     }
     BackHandler(enabled = searching || focusedId != null, onBack = goBack)
     val isNearby = area == MosqueArea.Nearby
+    val canSortByDistance = origin != null
+    val sortByName = !canSortByDistance || (preferredSortByName ?: !isNearby)
     val visiblePlaces = remember(area, mosques, results) {
         area.selectMosques(mosques, results.orEmpty().map(NearbyMosque::place))
     }
-    val distances = remember(isNearby, results) {
-        if (isNearby) results.orEmpty().associate { it.place.id to it.distanceMeters } else emptyMap()
+    val nearbyDistances = remember(results) { results.orEmpty().associate { it.place.id to it.distanceMeters } }
+    val nearest = visiblePlaces.firstOrNull().takeIf { isNearby }
+    val listPlaces = remember(visiblePlaces, nearest) {
+        if (nearest == null) visiblePlaces else visiblePlaces.drop(1)
     }
     val loading = mosques.isEmpty() || (isNearby && origin != null && results == null)
     val waitingForOrigin = isNearby && origin == null
     val mapVisible = canLoadMap && !searching && (focusedMosque != null ||
         (showMap && !loading && !waitingForOrigin && visiblePlaces.isNotEmpty()))
     val browsing = !searching && focusedId == null
+    val showingList = browsing && !showMap && !loading && !waitingForOrigin && !loadFailed
+    var listOrder by remember(listPlaces) { mutableStateOf<MosqueListOrder?>(null) }
+    LaunchedEffect(showingList, listPlaces, sortByName, isNearby, origin, language) {
+        if (showingList && listPlaces.isNotEmpty()) {
+            listOrder = when {
+                sortByName -> withContext(Dispatchers.Default) {
+                    val collator = Collator.getInstance(language.locale)
+                    MosqueListOrder(listPlaces.sortedWith(compareBy(collator) {
+                        it.label(languageKey) ?: it.locality.orEmpty()
+                    }))
+                }
+                !isNearby -> withContext(Dispatchers.Default) {
+                    val distances = listPlaces.associate { it.id to origin.distanceTo(it.coordinates) }
+                    MosqueListOrder(listPlaces.sortedBy { distances.getValue(it.id) }, distances)
+                }
+                else -> MosqueListOrder(listPlaces)
+            }
+        }
+    }
+    val distances = if (isNearby) nearbyDistances else listOrder?.distances.orEmpty()
     var searchIndex by remember(mosques, cities) { mutableStateOf<MosqueSearchIndex?>(null) }
     val needsSearchIndex = searching && query.trim().length >= 2 && mosques.isNotEmpty()
     LaunchedEffect(needsSearchIndex, mosques, cities) {
@@ -180,16 +208,14 @@ internal fun NearbyMosquesScreen(
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 val nearbyCityName = city?.label(languageKey).takeIf { isNearby }
-                Row(
-                    Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    MosqueAreaButton(nearbyCityName ?: mosqueAreaLabel(area), { showAreas = true }, Modifier.weight(0.9f))
-                    if (isNearby && !showMap && origin != null) {
-                        MosqueSortButton(sortByName, { sortByName = it }, Modifier.weight(1f))
-                    }
-                }
+                MosqueBrowseFilters(
+                    label = nearbyCityName ?: mosqueAreaLabel(area),
+                    showSort = !showMap,
+                    sortByName = sortByName,
+                    canSortByDistance = canSortByDistance,
+                    onAreaClick = { showAreas = true },
+                    onSortChange = { preferredSortByName = it },
+                )
                 if (!mapVisible && !loading && !waitingForOrigin && !loadFailed && (!isNearby || showMap)) {
                     val count = remember(language, visiblePlaces.size) {
                         NumberFormat.getIntegerInstance(language.locale).format(visiblePlaces.size)
@@ -267,20 +293,9 @@ internal fun NearbyMosquesScreen(
                         }
                     }
                 }
+                listOrder == null && listPlaces.isNotEmpty() ->
+                    MosqueStatus(stringResource(R.string.mosque_catalog_loading), loading = true)
                 else -> {
-                    val nearest = visiblePlaces.firstOrNull().takeIf { isNearby }
-                    val otherPlaces = remember(visiblePlaces, nearest, sortByName, language) {
-                        val entries = if (nearest != null) visiblePlaces.drop(1) else visiblePlaces
-                        if (nearest != null && sortByName) {
-                            val collator = Collator.getInstance(language.locale)
-                            entries.sortedWith { first, second ->
-                                collator.compare(
-                                    first.label(languageKey) ?: first.locality.orEmpty(),
-                                    second.label(languageKey) ?: second.locality.orEmpty(),
-                                )
-                            }
-                        } else entries
-                    }
                     key(area, if (isNearby) origin else null) {
                         LazyColumn(
                             modifier = Modifier.fillMaxSize().padding(bottom = mosqueSwitcherSpace),
@@ -294,7 +309,7 @@ internal fun NearbyMosquesScreen(
                                     onDetails = { detailId = nearest.id }, featured = true,
                                 )
                             }
-                            items(otherPlaces, key = MosquePlace::id) { mosque ->
+                            items(listOrder?.places.orEmpty(), key = MosquePlace::id) { mosque ->
                                 MosqueBrowseCard(
                                     mosque, distances[mosque.id], languageKey, distanceFormat,
                                     onDirections = { openDirections(mosque.coordinates) },
