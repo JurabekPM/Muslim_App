@@ -162,7 +162,7 @@
     <string name="mosque_choose_city">Интихоби шаҳр</string>
     <string name="mosque_search_city">Ҷустуҷӯи шаҳр</string>
     <string name="mosque_no_city">Шаҳр ёфт нашуд</string>
-    <string name="mosque_choose_origin">Барои дидани масҷидҳои наздик шаҳреро интихоб кунед.</string>
+    <string name="mosque_location_permission">Барои дидани масҷидҳои наздик ба муайян кардани макон иҷозат диҳед.</string>
     <string name="mosque_unnamed">Масҷиди беном</string>
     <string name="mosque_directions">Кушодани масир</string>
     <string name="mosque_directions_error">Барномаи харита ё браузер лозим аст.</string>

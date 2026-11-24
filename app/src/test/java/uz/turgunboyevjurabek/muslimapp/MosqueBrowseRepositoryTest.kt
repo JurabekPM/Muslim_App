@@ -47,7 +47,7 @@ class MosqueBrowseRepositoryTest {
     }
 
     @Test
-    fun unknownAreaFallsBackToUzbekistanAndRetainsMapChoice() = runBlocking {
+    fun unknownAreaFallsBackToNearbyAndRetainsMapChoice() = runBlocking {
         val ioJob = Job()
         try {
             val store = open(File(folder.root, "mosque_browse.preferences_pb"), ioJob)

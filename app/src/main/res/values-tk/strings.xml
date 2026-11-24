@@ -165,7 +165,7 @@
     <string name="mosque_choose_city">Şäher saýlaň</string>
     <string name="mosque_search_city">Şäher gözläň</string>
     <string name="mosque_no_city">Şäher tapylmady</string>
-    <string name="mosque_choose_origin">Golaýdaky metjitleri görmek üçin şäher saýlaň.</string>
+    <string name="mosque_location_permission">Golaýdaky metjitleri görmek üçin ýerleşýän ýeriňize rugsat beriň.</string>
     <string name="mosque_unnamed">Ady görkezilmedik metjit</string>
     <string name="mosque_directions">Ýoly açmak</string>
     <string name="mosque_directions_error">Karta programmasy ýa-da brauzer gerek.</string>

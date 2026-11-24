@@ -153,6 +153,7 @@ internal fun MuslimApp(
                                 bottomPadding = dockPadding,
                                 topPadding = topPadding,
                                 onNearbyMosques = {
+                                    mosqueBrowseViewModel.openNearby()
                                     navController.navigate(AppRoute.MOSQUES) { launchSingleTop = true }
                                 },
                                 onQibla = {
@@ -204,6 +205,7 @@ internal fun MuslimApp(
                             preferences?.let { selection ->
                                 NearbyMosquesRoute(
                                     loadCatalog = mosqueCatalog::load,
+                                    findDeviceLocation = mosqueBrowseViewModel::findDeviceLocation,
                                     language = language,
                                     darkTheme = darkTheme,
                                     canLoadMap = connection == InternetConnection.Online,

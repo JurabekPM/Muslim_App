@@ -27,7 +27,7 @@ internal class DataStoreMosqueBrowseRepository(
         val preferences = store.data.first()
         val savedArea = preferences[areaKey]
         return MosqueBrowsePreferences(
-            area = MosqueArea.entries.firstOrNull { it.storageKey == savedArea } ?: MosqueArea.Uzbekistan,
+            area = MosqueArea.entries.firstOrNull { it.storageKey == savedArea } ?: MosqueArea.Nearby,
             showMap = preferences[showMapKey] == true,
             cityId = preferences[cityIdKey],
         )
