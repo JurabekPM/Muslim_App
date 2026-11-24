@@ -30,6 +30,20 @@ internal data class MosquePhoto(
 internal object MosquePhotos {
     // The catalog key is the stable OpenStreetMap feature ID, not the display name.
     private val extraPhotosByMosqueId = mapOf(
+        "node/7139346065" to listOf(
+            MosquePhoto(
+                R.drawable.mosque_photo_node_7139346065_2,
+                author = "Nikolai Bulykin",
+                fileName = "Китаб, мечеть Шайхон, интерьер (2).jpg",
+            ),
+        ),
+        "node/7579547960" to listOf(
+            MosquePhoto(
+                R.drawable.mosque_photo_node_7579547960_2,
+                author = "ShohjahonSobirov",
+                fileName = "Abu Yusuf jome' masjidi 11.jpg",
+            ),
+        ),
         "relation/21151698" to listOf(
             MosquePhoto(
                 R.drawable.mosque_photo_relation_21151698_2,
@@ -175,10 +189,26 @@ internal object MosquePhotos {
             fileName = "Shayx Muhammad Sodiq Muhammad Yusuf nomidagi jome' masjidi.jpg",
             license = MosquePhotoLicense.By40,
         ),
+        "node/7139346065" to MosquePhoto(
+            R.drawable.mosque_photo_node_7139346065,
+            author = "Nikolai Bulykin",
+            fileName = "Китаб, мечеть Шайхон, интерьер (1).jpg",
+        ),
         "node/7139516193" to MosquePhoto(
             R.drawable.mosque_photo_node_7139516193,
             author = "Bobyrr",
             fileName = "Mosque Khoja Ahrar 4740.JPG",
+        ),
+        "node/7579547960" to MosquePhoto(
+            R.drawable.mosque_photo_node_7579547960,
+            author = "ShohjahonSobirov",
+            fileName = "Abu Yusuf jome' masjidi 01.jpg",
+        ),
+        "node/8538292841" to MosquePhoto(
+            R.drawable.mosque_photo_node_8538292841,
+            author = "Komilkhuja",
+            fileName = "The mosque of Yusufkhan son Qasimkhan.jpg",
+            license = MosquePhotoLicense.By40,
         ),
         "relation/13911901" to MosquePhoto(
             R.drawable.mosque_photo_relation_13911901,
@@ -216,6 +246,12 @@ internal object MosquePhotos {
             R.drawable.mosque_photo_relation_5335620,
             author = "Humoyun Mehridinov",
             fileName = "Masjidi Kalon 1.jpg",
+        ),
+        "way/1088472873" to MosquePhoto(
+            R.drawable.mosque_photo_way_1088472873,
+            author = "Komilkhuja",
+            fileName = "Kurban Ata Jame' Mosque. Norin, Namangan 2024.jpg",
+            license = MosquePhotoLicense.By40,
         ),
         "way/1093072077" to MosquePhoto(
             R.drawable.mosque_photo_way_1093072077,
@@ -332,6 +368,11 @@ internal object MosquePhotos {
             author = "4pf3154f7",
             fileName = "Mausoleum Termez.jpg",
         ),
+        "way/443737094" to MosquePhoto(
+            R.drawable.mosque_photo_way_443737094,
+            author = "Umarxon III",
+            fileName = "Eski Gumbaz Mosque in Andijan city, Uzbekistan.jpg",
+        ),
         "way/448234922" to MosquePhoto(
             R.drawable.mosque_photo_way_448234922,
             author = "Lechhansl",
@@ -383,6 +424,11 @@ internal object MosquePhotos {
             R.drawable.mosque_photo_way_790949485,
             author = "Alisa Trebuchina",
             fileName = "Orifjonboy masjidi 1.jpg",
+        ),
+        "way/891426346" to MosquePhoto(
+            R.drawable.mosque_photo_way_891426346,
+            author = "Yormatov Javohir",
+            fileName = "Aralovul jome masjidi.jpg",
         ),
         "way/95639944" to MosquePhoto(
             R.drawable.mosque_photo_way_95639944,
