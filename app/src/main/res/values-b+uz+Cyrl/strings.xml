@@ -190,6 +190,9 @@
     <string name="mosque_catalog_count">Масжидлар · %1$s</string>
     <string name="mosque_photo_description">%1$s масжиди сурати</string>
     <string name="mosque_photo_source">Сурат манбаси</string>
+    <string name="mosque_photos_open">Суратларни кўриш</string>
+    <string name="mosque_photo_previous">Олдинги сурат</string>
+    <string name="mosque_photo_next">Кейинги сурат</string>
     <string name="mosque_photo_credit">Сурат муаллифи · %1$s</string>
     <string name="mosque_sort_distance">Масофа бўйича</string>
     <string name="mosque_sort_name">Номи бўйича</string>

@@ -205,6 +205,10 @@
     <string name="mosque_catalog_count">Masjidlar · %1$s</string>
     <string name="mosque_photo_description">%1$s masjidi surati</string>
     <string name="mosque_photo_source">Surat manbasi</string>
+    <string name="mosque_photos_open">Suratlarni ko‘rish</string>
+    <string name="mosque_photo_previous">Oldingi surat</string>
+    <string name="mosque_photo_next">Keyingi surat</string>
+    <string name="mosque_photo_position" translatable="false">%1$d / %2$d</string>
     <string name="mosque_photo_credit">Surat muallifi · %1$s</string>
     <string name="mosque_sort_distance">Masofa bo‘yicha</string>
     <string name="mosque_sort_name">Nomi bo‘yicha</string>

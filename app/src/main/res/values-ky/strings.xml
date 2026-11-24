@@ -190,6 +190,9 @@
     <string name="mosque_catalog_count">Мечиттер · %1$s</string>
     <string name="mosque_photo_description">%1$s мечитинин сүрөтү</string>
     <string name="mosque_photo_source">Сүрөттүн булагы</string>
+    <string name="mosque_photos_open">Сүрөттөрдү көрүү</string>
+    <string name="mosque_photo_previous">Мурунку сүрөт</string>
+    <string name="mosque_photo_next">Кийинки сүрөт</string>
     <string name="mosque_photo_credit">Сүрөттүн автору · %1$s</string>
     <string name="mosque_sort_distance">Аралык боюнча</string>
     <string name="mosque_sort_name">Аталышы боюнча</string>

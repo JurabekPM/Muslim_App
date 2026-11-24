@@ -18,6 +18,8 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeLeft
 import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
@@ -36,7 +38,7 @@ class NearbyMosquesOfflineTest {
     val compose = createComposeRule()
 
     @Test
-    fun displaysBundledPhotoAndShowsItsAuthorAndLicense() {
+    fun displaysBundledPhotosAndSwipesBetweenTheirCredits() {
         val context = AppLanguage.Uzbek.localize(InstrumentationRegistry.getInstrumentation().targetContext)
         val catalog = MosqueCatalog(context)
         showMosques(catalog)
@@ -48,7 +50,17 @@ class NearbyMosquesOfflineTest {
         compose.onNodeWithTag("mosque-photo").performClick()
         compose.onNodeWithText(context.getString(R.string.mosque_photo_credit, "Yuriy Pavlovich")).assertIsDisplayed()
         compose.onNodeWithText("CC0 1.0").assertIsDisplayed()
-        compose.onNodeWithText(context.getString(R.string.mosque_photo_source)).assertIsDisplayed()
+        compose.onNodeWithText(context.getString(R.string.mosque_photo_position, 1, 4)).assertIsDisplayed()
+
+        compose.onNodeWithTag("mosque-photo-pager").performTouchInput { swipeLeft() }
+        compose.onNodeWithText(context.getString(R.string.mosque_photo_position, 2, 4)).assertIsDisplayed()
+        compose.onNodeWithText(context.getString(R.string.mosque_photo_credit, "Humoyun Mehridinov")).assertIsDisplayed()
+        compose.onNodeWithText("CC BY-SA 4.0").assertIsDisplayed()
+
+        compose.onNodeWithText(context.getString(R.string.mosque_photo_source)).performClick()
+        compose.onNodeWithText("https://commons.wikimedia.org/", substring = true).assertExists()
+        compose.onNodeWithContentDescription(context.getString(R.string.mosque_photo_previous)).performClick()
+        compose.onNodeWithText(context.getString(R.string.mosque_photo_position, 1, 4)).assertIsDisplayed()
     }
 
     @Test

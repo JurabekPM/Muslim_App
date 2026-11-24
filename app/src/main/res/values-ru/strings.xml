@@ -210,6 +210,9 @@
     <string name="mosque_catalog_count">Мечети · %1$s</string>
     <string name="mosque_photo_description">Фото мечети «%1$s»</string>
     <string name="mosque_photo_source">Источник фото</string>
+    <string name="mosque_photos_open">Посмотреть фото</string>
+    <string name="mosque_photo_previous">Предыдущее фото</string>
+    <string name="mosque_photo_next">Следующее фото</string>
     <string name="mosque_photo_credit">Автор фото · %1$s</string>
     <string name="mosque_sort_distance">По расстоянию</string>
     <string name="mosque_sort_name">По названию</string>

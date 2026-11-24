@@ -4,7 +4,10 @@ import android.icu.text.MeasureFormat
 import android.icu.util.Measure
 import android.icu.util.MeasureUnit
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -27,11 +30,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosquePlace
@@ -141,14 +145,37 @@ internal fun MosqueBrowseCard(
                 onClose != null -> IconButton(onClick = onClose, modifier = Modifier.align(Alignment.Top)) {
                     Icon(Icons.Filled.Close, stringResource(R.string.close), Modifier.size(20.dp))
                 }
-                !featured -> IconButton(onClick = onDirections) {
-                    Icon(
-                        painterResource(R.drawable.ic_mosque_turn),
-                        stringResource(R.string.mosque_directions),
-                        Modifier.size(22.dp),
-                    )
-                }
+                !featured -> MosqueDirectionsIconButton(onDirections)
             }
+        }
+    }
+}
+
+@Composable
+private fun MosqueDirectionsIconButton(onClick: () -> Unit) {
+    val colors = MaterialTheme.colorScheme
+    val isLight = colors.surface.luminance() > 0.5f
+    val background = if (isLight) {
+        lerp(colors.surfaceContainerLow, colors.tertiaryContainer, 0.75f)
+    } else {
+        colors.surfaceContainerHighest
+    }
+    val border = if (isLight) lerp(background, colors.tertiary, 0.20f) else colors.outline.copy(alpha = 0.55f)
+
+    PressIconButton(onClick = onClick) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .background(background, CircleShape)
+                .border(1.dp, border, CircleShape),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                painterResource(R.drawable.ic_mosque_direction),
+                contentDescription = stringResource(R.string.mosque_directions),
+                modifier = Modifier.size(24.dp),
+                tint = if (isLight) colors.tertiary else MosqueActionColor,
+            )
         }
     }
 }
