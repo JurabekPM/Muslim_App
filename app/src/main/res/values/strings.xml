@@ -206,18 +206,17 @@
     <string name="mosque_area_nearby">Yaqin atrof</string>
     <string name="mosque_choose_area">Hudud tanlash</string>
     <string name="mosque_catalog_count">Masjidlar · %1$s</string>
+    <string name="mosque_photo_licenses">Surat litsenziyalari</string>
+    <string name="mosque_photo_resized">Suratlar kichraytirildi.</string>
+    <string name="mosque_map_licenses">Xarita litsenziyalari</string>
     <string name="mosque_photo_description">Surat · %1$s</string>
-    <string name="mosque_photo_source">Surat manbasi</string>
     <string name="mosque_photos_open">Suratlarni ko‘rish</string>
     <string name="mosque_photo_previous">Oldingi surat</string>
     <string name="mosque_photo_next">Keyingi surat</string>
     <string name="mosque_photo_position" translatable="false">%1$d / %2$d</string>
     <string name="mosque_photo_count" translatable="false">%d</string>
-    <string name="mosque_photo_credit">Surat muallifi · %1$s</string>
     <string name="mosque_sort_distance">Masofa bo‘yicha</string>
     <string name="mosque_sort_name">Nomi bo‘yicha</string>
-    <string name="mosque_gps_source">GPS orqali</string>
-    <string name="mosque_city_source">Tanlangan shahar</string>
     <string name="mosque_nearest">Eng yaqin</string>
     <string name="mosque_recenter">Joylashuvga qaytish</string>
 </resources>

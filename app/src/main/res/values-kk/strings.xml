@@ -191,16 +191,15 @@
     <string name="mosque_area_nearby">Жақын маң</string>
     <string name="mosque_choose_area">Аймақ таңдау</string>
     <string name="mosque_catalog_count">Мешіттер · %1$s</string>
+    <string name="mosque_photo_licenses">Сурет лицензиялары</string>
+    <string name="mosque_photo_resized">Суреттер кішірейтілді.</string>
+    <string name="mosque_map_licenses">Карта лицензиялары</string>
     <string name="mosque_photo_description">Сурет · %1$s</string>
-    <string name="mosque_photo_source">Сурет дереккөзі</string>
     <string name="mosque_photos_open">Суреттерді көру</string>
     <string name="mosque_photo_previous">Алдыңғы сурет</string>
     <string name="mosque_photo_next">Келесі сурет</string>
-    <string name="mosque_photo_credit">Сурет авторы · %1$s</string>
     <string name="mosque_sort_distance">Қашықтық бойынша</string>
     <string name="mosque_sort_name">Атауы бойынша</string>
-    <string name="mosque_gps_source">GPS арқылы</string>
-    <string name="mosque_city_source">Таңдалған қала</string>
     <string name="mosque_nearest">Ең жақын</string>
     <string name="mosque_recenter">Орналасқан жерге оралу</string>
 </resources>

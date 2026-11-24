@@ -28,6 +28,7 @@ import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeLeft
+import androidx.compose.ui.unit.dp
 import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
@@ -35,18 +36,21 @@ import org.junit.Test
 import org.junit.Assert.assertEquals
 import uz.turgunboyevjurabek.muslimapp.core.utils.AppLanguage
 import uz.turgunboyevjurabek.muslimapp.feature.data.local.MosqueCatalog
+import uz.turgunboyevjurabek.muslimapp.feature.data.local.MosquePhotos
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosqueArea
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosqueBrowsePreferences
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.nearbyMosques
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.navigation.NearbyMosquesRoute
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.AppThemeMode
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.MuslimAppTheme
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens.MenuScreen
 
 class NearbyMosquesOfflineTest {
     @get:Rule
     val compose = createComposeRule()
 
     @Test
-    fun displaysBundledPhotosAndSwipesBetweenTheirCredits() {
+    fun swipesBundledPhotosWithoutASourcePanel() {
         val context = AppLanguage.Uzbek.localize(InstrumentationRegistry.getInstrumentation().targetContext)
         val catalog = MosqueCatalog(context)
         showMosques(catalog)
@@ -57,19 +61,30 @@ class NearbyMosquesOfflineTest {
         compose.waitUntil(5_000) { compose.onNodeWithTag("mosque-photo").isDisplayed() }
         compose.onNodeWithTag("mosque-photo").performClick()
         compose.onNodeWithTag("mosque-photo-viewer").assertIsDisplayed()
-        compose.onNodeWithText(context.getString(R.string.mosque_photo_source)).performClick()
-        compose.onNodeWithText(context.getString(R.string.mosque_photo_credit, "Yuriy Pavlovich")).assertIsDisplayed()
-        compose.onNodeWithText("CC0 1.0").assertIsDisplayed()
         compose.onNodeWithText(context.getString(R.string.mosque_photo_position, 1, 4)).assertIsDisplayed()
 
         compose.onNodeWithTag("mosque-photo-pager").performTouchInput { swipeLeft() }
         compose.onNodeWithText(context.getString(R.string.mosque_photo_position, 2, 4)).assertIsDisplayed()
-        compose.onNodeWithText(context.getString(R.string.mosque_photo_credit, "Humoyun Mehridinov")).assertIsDisplayed()
-        compose.onNodeWithText("CC BY-SA 4.0").assertIsDisplayed()
-
-        compose.onNodeWithText("https://commons.wikimedia.org/", substring = true).assertExists()
+        compose.onNodeWithText("Surat manbasi").assertDoesNotExist()
+        compose.onNodeWithText("https://commons.wikimedia.org/", substring = true).assertDoesNotExist()
         compose.onNodeWithContentDescription(context.getString(R.string.mosque_photo_previous)).performClick()
         compose.onNodeWithText(context.getString(R.string.mosque_photo_position, 1, 4)).assertIsDisplayed()
+    }
+
+    @Test
+    fun bundledPhotoCreditsAreAvailableInAbout() {
+        val context = AppLanguage.Uzbek.localize(InstrumentationRegistry.getInstrumentation().targetContext)
+        compose.setContent {
+            MuslimAppTheme(darkTheme = false) {
+                MenuScreen(AppThemeMode.Light, {}, AppLanguage.Uzbek, {}, 0.dp, 0.dp)
+            }
+        }
+        compose.onNodeWithText(context.getString(R.string.about_app)).performClick()
+        compose.onNodeWithText(context.getString(R.string.mosque_photo_licenses)).performClick()
+        val firstPhoto = MosquePhotos.credits.first()
+        compose.onNodeWithText(firstPhoto.fileName).assertIsDisplayed()
+        compose.onNodeWithText("${firstPhoto.author} · ${firstPhoto.license.title}").assertIsDisplayed()
+        compose.onNodeWithText("${firstPhoto.sourceUrl}\n${firstPhoto.license.url}").assertExists()
     }
 
     @Test

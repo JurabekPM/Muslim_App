@@ -191,16 +191,15 @@
     <string name="mosque_area_nearby">Golaýdakylar</string>
     <string name="mosque_choose_area">Sebit saýlamak</string>
     <string name="mosque_catalog_count">Metjitler · %1$s</string>
+    <string name="mosque_photo_licenses">Surat ygtyýarnamalary</string>
+    <string name="mosque_photo_resized">Suratlar kiçeldildi.</string>
+    <string name="mosque_map_licenses">Karta ygtyýarnamalary</string>
     <string name="mosque_photo_description">Surat · %1$s</string>
-    <string name="mosque_photo_source">Suratyň çeşmesi</string>
     <string name="mosque_photos_open">Suratlary görmek</string>
     <string name="mosque_photo_previous">Öňki surat</string>
     <string name="mosque_photo_next">Indiki surat</string>
-    <string name="mosque_photo_credit">Suratyň awtory · %1$s</string>
     <string name="mosque_sort_distance">Aralyk boýunça</string>
     <string name="mosque_sort_name">Ady boýunça</string>
-    <string name="mosque_gps_source">GPS arkaly</string>
-    <string name="mosque_city_source">Saýlanan şäher</string>
     <string name="mosque_nearest">Iň ýakyn</string>
     <string name="mosque_recenter">Ýerleşişe dolan</string>
 </resources>

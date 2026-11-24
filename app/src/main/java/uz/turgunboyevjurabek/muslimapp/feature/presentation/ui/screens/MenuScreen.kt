@@ -14,11 +14,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -56,6 +59,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.core.utils.AppLanguage
+import uz.turgunboyevjurabek.muslimapp.feature.data.local.MosquePhotos
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.AppThemeMode
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.pressScale
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.rememberPressScale
@@ -71,6 +75,7 @@ internal fun MenuScreen(
 ) {
     var showLanguage by rememberSaveable { mutableStateOf(false) }
     var showAbout by rememberSaveable { mutableStateOf(false) }
+    var showPhotoLicenses by rememberSaveable { mutableStateOf(false) }
     var showPrivacy by rememberSaveable { mutableStateOf(false) }
 
     Column(
@@ -171,12 +176,53 @@ internal fun MenuScreen(
         AlertDialog(
             onDismissRequest = { showAbout = false },
             title = { Text(stringResource(R.string.app_name)) },
-            text = { Text(stringResource(R.string.about_app_description)) },
+            text = {
+                Column {
+                    Text(stringResource(R.string.about_app_description))
+                    TextButton(onClick = {
+                        showAbout = false
+                        showPhotoLicenses = true
+                    }) { Text(stringResource(R.string.mosque_photo_licenses)) }
+                }
+            },
             confirmButton = {
                 TextButton(onClick = { showAbout = false }) { Text(stringResource(R.string.close)) }
             },
         )
     }
+    if (showPhotoLicenses) MosquePhotoLicensesDialog {
+        showPhotoLicenses = false
+        showAbout = true
+    }
+}
+
+@Composable
+private fun MosquePhotoLicensesDialog(onClose: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onClose,
+        title = { Text(stringResource(R.string.mosque_photo_licenses)) },
+        text = {
+            SelectionContainer {
+                LazyColumn(
+                    Modifier.heightIn(max = 420.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    item { Text(stringResource(R.string.mosque_photo_resized)) }
+                    items(MosquePhotos.credits, key = { it.thumbnail }) { photo ->
+                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Text(photo.fileName, fontWeight = FontWeight.SemiBold)
+                            Text("${photo.author} · ${photo.license.title}")
+                            Text(
+                                "${photo.sourceUrl}\n${photo.license.url}",
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = onClose) { Text(stringResource(R.string.back)) } },
+    )
 }
 
 @Composable

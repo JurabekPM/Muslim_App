@@ -1,6 +1,6 @@
 # Masjid suratlari
 
-Masjid kartalaridagi suratlar Wikimedia Commons’dan olingan. Suratlar kichraytirilib JPEG formatiga saqlandi. Ro‘yxatda birinchi kadr ko‘rinadi. Suratga bosganda ilova ichidagi suratlar oynasi ochiladi. Har bir kadrning muallifi va litsenziyasi ko‘rinadi. «Surat manbasi» asl fayl va litsenziya manzillarini matn sifatida ko‘rsatadi.
+Masjid kartalaridagi suratlar Wikimedia Commons’dan olingan. Suratlar kichraytirilib JPEG formatiga saqlandi. Ro‘yxatda birinchi kadr ko‘rinadi. Suratga bosganda ilova ichidagi suratlar oynasi ochiladi. Mualliflar, asl fayllar va litsenziyalar «Menyu → Ilova haqida → Surat litsenziyalari» oynasida ko‘rsatiladi.
 
 | OpenStreetMap yozuvi | Muallif | Litsenziya | Asl surat |
 | --- | --- | --- | --- |

@@ -157,49 +157,46 @@ internal fun MosqueSortButton(byName: Boolean, onChange: (Boolean) -> Unit, modi
 @Composable
 internal fun MosqueLocationBar(
     title: String,
-    subtitle: String?,
     isGps: Boolean,
     onSelect: () -> Unit,
     selectLabel: String,
     onLocate: (() -> Unit)?,
     locating: Boolean,
-    showChevron: Boolean,
 ) {
     val colors = MaterialTheme.colorScheme
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
-        color = colors.surfaceContainerLow,
-    ) {
+    Box(Modifier.fillMaxWidth().clip(CircleShape)) {
+        Box(
+            Modifier.matchParentSize().padding(vertical = 5.dp)
+                .background(colors.surfaceContainerLow, CircleShape),
+        )
         Row(verticalAlignment = Alignment.CenterVertically) {
             Row(
-                modifier = Modifier.weight(1f).heightIn(min = 50.dp)
+                modifier = Modifier.weight(1f).heightIn(min = 48.dp)
                     .clickable(role = Role.Button, onClickLabel = selectLabel, onClick = onSelect)
-                    .padding(start = 12.dp, end = 8.dp, top = 6.dp, bottom = 6.dp),
+                    .padding(horizontal = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Surface(shape = CircleShape, color = colors.surfaceContainerHigh) {
-                    Icon(
-                        painterResource(R.drawable.ic_mosque_pin),
-                        contentDescription = selectLabel,
-                        modifier = Modifier.padding(6.dp).size(19.dp),
-                        tint = if (isGps) Color(0xFF258BE5) else colors.onSurface,
-                    )
-                }
-                Column(Modifier.weight(1f)) {
-                    Text(title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Medium, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                    if (subtitle != null) {
-                        Text(subtitle, style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant)
-                    }
-                }
-                if (showChevron) Icon(Icons.Filled.KeyboardArrowDown, null, Modifier.size(18.dp))
+                Icon(
+                    painterResource(R.drawable.ic_mosque_pin),
+                    contentDescription = selectLabel,
+                    modifier = Modifier.size(16.dp),
+                    tint = if (isGps) Color(0xFF258BE5) else colors.onSurface,
+                )
+                Text(
+                    title, Modifier.weight(1f),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Icon(Icons.Filled.KeyboardArrowDown, null, Modifier.size(16.dp))
             }
             if (onLocate != null) {
                 IconButton(onClick = onLocate, enabled = !locating) {
                     val description = stringResource(R.string.current_location)
-                    if (isGps) Icon(Icons.Filled.Refresh, description, Modifier.size(22.dp))
-                    else Icon(painterResource(R.drawable.ic_mosque_recenter), description, Modifier.size(22.dp))
+                    if (isGps) Icon(Icons.Filled.Refresh, description, Modifier.size(19.dp))
+                    else Icon(painterResource(R.drawable.ic_mosque_recenter), description, Modifier.size(19.dp))
                 }
             }
         }

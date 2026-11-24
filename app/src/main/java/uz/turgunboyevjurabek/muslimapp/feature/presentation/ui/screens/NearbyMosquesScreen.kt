@@ -193,14 +193,8 @@ internal fun NearbyMosquesScreen(
                         usingGps -> stringResource(R.string.current_location)
                         else -> cityName ?: if (showMap) areaLabel else stringResource(R.string.mosque_choose_city)
                     }
-                    val subtitle = when {
-                        usingGps -> stringResource(R.string.mosque_gps_source)
-                        cityName != null -> stringResource(R.string.mosque_city_source)
-                        else -> null
-                    }
                     MosqueLocationBar(
                         title = title,
-                        subtitle = subtitle,
                         isGps = usingGps,
                         onSelect = {
                             if (showMap) showAreas = true
@@ -209,7 +203,6 @@ internal fun NearbyMosquesScreen(
                         selectLabel = stringResource(if (showMap) R.string.mosque_choose_area else R.string.mosque_choose_city),
                         onLocate = onLocate.takeIf { isNearby },
                         locating = findingLocation,
-                        showChevron = showMap,
                     )
                     val status = if (findingLocation) R.string.finding_location else locationMessage
                     if (isNearby && status != null) {
@@ -338,9 +331,12 @@ internal fun NearbyMosquesScreen(
                                 )
                             }
                             item {
-                                TextButton(onClick = { uriHandler.openUri("https://www.openstreetmap.org/copyright") }) {
-                                    Text("© OpenStreetMap", style = MaterialTheme.typography.labelSmall)
-                                }
+                                Text(
+                                    "© OpenStreetMap",
+                                    modifier = Modifier.padding(vertical = 8.dp),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
                             }
                         }
                     }

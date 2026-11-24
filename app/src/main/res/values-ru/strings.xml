@@ -211,16 +211,15 @@
     <string name="mosque_area_nearby">Поблизости</string>
     <string name="mosque_choose_area">Выбрать регион</string>
     <string name="mosque_catalog_count">Мечети · %1$s</string>
+    <string name="mosque_photo_licenses">Лицензии фотографий</string>
+    <string name="mosque_photo_resized">Размер фотографий уменьшен.</string>
+    <string name="mosque_map_licenses">Лицензии карты</string>
     <string name="mosque_photo_description">Фото · %1$s</string>
-    <string name="mosque_photo_source">Источник фото</string>
     <string name="mosque_photos_open">Посмотреть фото</string>
     <string name="mosque_photo_previous">Предыдущее фото</string>
     <string name="mosque_photo_next">Следующее фото</string>
-    <string name="mosque_photo_credit">Автор фото · %1$s</string>
     <string name="mosque_sort_distance">По расстоянию</string>
     <string name="mosque_sort_name">По названию</string>
-    <string name="mosque_gps_source">По GPS</string>
-    <string name="mosque_city_source">Выбранный город</string>
     <string name="mosque_nearest">Ближайшая</string>
     <string name="mosque_recenter">К моему местоположению</string>
 </resources>

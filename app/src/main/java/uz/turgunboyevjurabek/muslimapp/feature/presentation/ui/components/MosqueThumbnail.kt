@@ -1,6 +1,5 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
@@ -21,16 +19,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -138,8 +131,6 @@ internal fun MosquePhotoViewer(name: String, photos: List<MosquePhoto>, onClose:
     val pager = rememberPagerState { photos.size }
     val scope = rememberCoroutineScope()
     val current = pager.currentPage
-    val photo = photos[current]
-    var showSource by rememberSaveable { mutableStateOf(false) }
     val colors = MaterialTheme.colorScheme
     Dialog(
         onDismissRequest = onClose,
@@ -201,52 +192,6 @@ internal fun MosquePhotoViewer(name: String, photos: List<MosquePhoto>, onClose:
                                 enabled = current < photos.lastIndex,
                                 onClick = { scope.launch { pager.animateScrollToPage(current + 1) } },
                             )
-                        }
-                    }
-                    Surface(
-                        shape = RoundedCornerShape(16.dp),
-                        color = colors.surfaceContainerLow,
-                        border = BorderStroke(1.dp, colors.outline.copy(alpha = 0.36f)),
-                    ) {
-                        Column {
-                            Row(
-                                Modifier.fillMaxWidth().heightIn(min = 50.dp)
-                                    .clickable(role = Role.Button) { showSource = !showSource }
-                                    .padding(horizontal = 12.dp, vertical = 8.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                            ) {
-                                Icon(painterResource(R.drawable.ic_mosque_gallery), null, Modifier.size(20.dp))
-                                Text(
-                                    stringResource(R.string.mosque_photo_source),
-                                    Modifier.weight(1f),
-                                    style = MaterialTheme.typography.titleSmall,
-                                )
-                                Icon(
-                                    if (showSource) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-                                    null, Modifier.size(22.dp),
-                                )
-                            }
-                            AnimatedVisibility(showSource) {
-                                Column(
-                                    Modifier.fillMaxWidth().heightIn(max = 136.dp)
-                                        .verticalScroll(rememberScrollState())
-                                        .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
-                                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                                ) {
-                                    Text(
-                                        stringResource(R.string.mosque_photo_credit, photo.author),
-                                        style = MaterialTheme.typography.bodyMedium,
-                                    )
-                                    Text(photo.license.title, style = MaterialTheme.typography.labelMedium)
-                                    SelectionContainer {
-                                        Text(
-                                            "${photo.sourceUrl}\n${photo.license.url}",
-                                            style = MaterialTheme.typography.bodySmall,
-                                        )
-                                    }
-                                }
-                            }
                         }
                     }
                 }

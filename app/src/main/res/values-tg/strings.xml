@@ -188,16 +188,15 @@
     <string name="mosque_area_nearby">Дар наздикӣ</string>
     <string name="mosque_choose_area">Интихоби минтақа</string>
     <string name="mosque_catalog_count">Масҷидҳо · %1$s</string>
+    <string name="mosque_photo_licenses">Иҷозатномаҳои аксҳо</string>
+    <string name="mosque_photo_resized">Андозаи аксҳо хурд карда шудааст.</string>
+    <string name="mosque_map_licenses">Иҷозатномаҳои харита</string>
     <string name="mosque_photo_description">Акс · %1$s</string>
-    <string name="mosque_photo_source">Манбаи акс</string>
     <string name="mosque_photos_open">Дидани аксҳо</string>
     <string name="mosque_photo_previous">Акси қаблӣ</string>
     <string name="mosque_photo_next">Акси навбатӣ</string>
-    <string name="mosque_photo_credit">Муаллифи акс · %1$s</string>
     <string name="mosque_sort_distance">Аз рӯйи масофа</string>
     <string name="mosque_sort_name">Аз рӯйи ном</string>
-    <string name="mosque_gps_source">Тавассути GPS</string>
-    <string name="mosque_city_source">Шаҳри интихобшуда</string>
     <string name="mosque_nearest">Наздиктарин</string>
     <string name="mosque_recenter">Бозгашт ба ҷойгиршавӣ</string>
 </resources>
