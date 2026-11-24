@@ -28,6 +28,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performScrollToIndex
 import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performSemanticsAction
@@ -65,7 +66,10 @@ class NearbyMosquesOfflineTest {
         val search = context.getString(R.string.mosque_search)
         compose.waitUntil(5_000) { compose.onNode(hasContentDescription(search) and isEnabled()).isDisplayed() }
         compose.onNodeWithContentDescription(search).performClick()
-        compose.onNodeWithTag("mosque-inline-search").performTextInput("Минор")
+        compose.onNodeWithTag("mosque-inline-search").apply {
+            performTextInput("Минор")
+            performImeAction()
+        }
         compose.waitUntil(5_000) { compose.onNodeWithTag("mosque-photo").isDisplayed() }
         compose.onNodeWithTag("mosque-photo").performClick()
         compose.onNodeWithTag("mosque-photo-viewer").assertIsDisplayed()
@@ -161,6 +165,7 @@ class NearbyMosquesOfflineTest {
         compose.waitUntil(5_000) { compose.onNode(hasContentDescription(search) and isEnabled()).isDisplayed() }
         compose.onNodeWithContentDescription(search).performClick()
         field.performTextInput("Faqih Abulays")
+        field.performImeAction()
         compose.waitUntil(5_000) { result.isDisplayed() }
         toggle.assertIsDisplayed().performClick()
         compose.onNodeWithText(context.getString(R.string.mosque_map_offline)).assertIsDisplayed()
@@ -183,7 +188,10 @@ class NearbyMosquesOfflineTest {
         val search = context.getString(R.string.mosque_search)
         compose.waitUntil(5_000) { compose.onNode(hasContentDescription(search) and isEnabled()).isDisplayed() }
         compose.onNodeWithContentDescription(search).performClick()
-        compose.onNodeWithTag("mosque-inline-search").performTextInput("Faqih Abulays")
+        compose.onNodeWithTag("mosque-inline-search").apply {
+            performTextInput("Faqih Abulays")
+            performImeAction()
+        }
         compose.waitUntil(5_000) {
             compose.onNode(hasText("Faqih Abulays") and !hasSetTextAction()).isDisplayed()
         }
@@ -323,7 +331,10 @@ class NearbyMosquesOfflineTest {
         val search = context.getString(R.string.mosque_search)
         compose.waitUntil(5_000) { compose.onNode(hasContentDescription(search) and isEnabled()).isDisplayed() }
         compose.onNodeWithContentDescription(search).performClick()
-        compose.onNodeWithTag("mosque-inline-search").performTextInput("Minor")
+        compose.onNodeWithTag("mosque-inline-search").apply {
+            performTextInput("Minor")
+            performImeAction()
+        }
         val match = hasText(minorName) and hasClickAction() and !hasSetTextAction()
         compose.waitUntil(5_000) { compose.onNode(match).isDisplayed() }
         compose.onNode(match).performSemanticsAction(SemanticsActions.OnClick)
