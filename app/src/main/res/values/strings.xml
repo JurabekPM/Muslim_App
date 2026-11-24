@@ -196,7 +196,6 @@
     <string name="mosque_privacy_summary">Yaqin masjidlarni telefon katalogdan qidiradi. Xarita ochilganda, ko‘rinayotgan hudud uchun OpenFreeMap’ga so‘rov yuboriladi. «Yo‘lni ochish» tanlansa, masjid koordinatalari Google Maps orqali ochiladi.</string>
     <string name="mosque_map_offline">Xaritani ochish uchun internet kerak. Masjidlarni ro‘yxatdan ko‘rishingiz mumkin.</string>
     <string name="mosque_search">Masjid qidirish</string>
-    <string name="mosque_search_hint">Butun O‘zbekiston bo‘ylab masjid nomi yoki hududni kiriting.</string>
     <string name="mosque_search_empty">Bu so‘rov bo‘yicha masjid topilmadi.</string>
     <string name="mosque_show_on_map">Xaritada ko‘rish</string>
     <string name="mosque_generic">Masjid</string>

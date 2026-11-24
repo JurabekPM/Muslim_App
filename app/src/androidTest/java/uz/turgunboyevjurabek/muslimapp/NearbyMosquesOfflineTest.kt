@@ -10,6 +10,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -27,6 +28,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToIndex
 import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTextInput
@@ -123,6 +125,29 @@ class NearbyMosquesOfflineTest {
         compose.onNodeWithContentDescription(context.getString(R.string.mosque_choose_area)).performClick()
         compose.onNodeWithText(context.getString(R.string.mosque_area_country)).performClick()
         compose.onNodeWithText(countLabel(data.mosques.size)).assertIsDisplayed()
+    }
+
+    @Test
+    fun openingSearchKeepsScrolledRegionListAndSearchesOnlyThatRegion() {
+        val context = AppLanguage.Uzbek.localize(InstrumentationRegistry.getInstrumentation().targetContext)
+        showMosques(MosqueCatalog(context), MosqueBrowsePreferences(area = MosqueArea.Andijon))
+        val search = compose.onNode(hasContentDescription(context.getString(R.string.mosque_search)) and isEnabled())
+        val list = compose.onNodeWithTag("mosque-browse-list")
+        compose.waitUntil(5_000) { search.isDisplayed() && list.isDisplayed() }
+        list.performScrollToIndex(5)
+        fun listPosition(): Float = list.fetchSemanticsNode().config[SemanticsProperties.VerticalScrollAxisRange].value()
+        val position = listPosition()
+        search.performClick()
+        val field = compose.onNodeWithTag("mosque-inline-search")
+        field.assertIsDisplayed()
+        list.assertIsDisplayed()
+        assertEquals(position, listPosition(), 0.01f)
+
+        field.performTextInput("Faqih Abulays")
+        val noMatches = compose.onNodeWithText(context.getString(R.string.mosque_search_empty))
+        compose.waitUntil(5_000) { noMatches.isDisplayed() }
+        compose.onNodeWithTag("mosque-close-search").performClick()
+        assertEquals(position, listPosition(), 0.01f)
     }
 
     @Test

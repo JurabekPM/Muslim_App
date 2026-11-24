@@ -164,7 +164,7 @@ internal fun MosqueSearchDock(
                     exit = fadeOut(tween(90)),
                 ) {
                     MosqueSearchInput(
-                        searchText, searching, requestFocus, onFocusRequested, onSearchClose,
+                        searchText, searching, requestFocus && progress == 1f, onFocusRequested, onSearchClose,
                     )
                 }
             }

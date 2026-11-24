@@ -181,7 +181,6 @@
     <string name="mosque_privacy_summary">Яқин масжидларни телефон каталогдан қидиради. Харита очилганда, кўринаётган ҳудуд учун OpenFreeMap’га сўров юборилади. «Йўлни очиш» танланса, масжид координаталари Google Maps орқали очилади.</string>
     <string name="mosque_map_offline">Харитани очиш учун интернет керак. Масжидларни рўйхатдан кўришингиз мумкин.</string>
     <string name="mosque_search">Масжид қидириш</string>
-    <string name="mosque_search_hint">Бутун Ўзбекистон бўйлаб масжид номи ёки ҳудудни киритинг.</string>
     <string name="mosque_search_empty">Бу сўров бўйича масжид топилмади.</string>
     <string name="mosque_show_on_map">Харитада кўриш</string>
     <string name="mosque_generic">Масжид</string>
