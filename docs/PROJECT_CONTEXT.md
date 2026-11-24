@@ -105,7 +105,7 @@ Muslim App O‘zbekiston uchun namoz vaqtlari, tasbeh va Qibla funksiyalarini be
 
 - Yakuniy APK Samsung’ga o‘rnatildi. Qurilmadagi `NearbyMosquesOfflineTest` sinfining 9 testi, jumladan qidiruv matnini ro‘yxat va xarita o‘rtasida saqlash va yozuvli tablarni tiklash sinovi o‘tdi. Jonli sinovda ro‘yxat surilganda sarlavha yig‘ildi, hudud va saralash tugmalari ko‘rinib qoldi.
 
-- Lupa bosilganda ro‘yxat bo‘sh qidiruv ekrani bilan almashtirilishi va klaviatura butun oynani tepaga surishi tuzatildi. Lupa ochilishi ro‘yxatni va surilgan joyni saqlaydi. Maydon yoyilgach klaviatura ochiladi va maydon undan sal tepada turadi. So‘rov yozilganda o‘sha ro‘yxat tanlangan hudud bo‘yicha filtrlanadi. «×» bosilganda ro‘yxat avvalgi joyini tiklaydi. Debug APK, test APK, 45 ta unit test va `lintRelease` o‘tdi (0 xato, mavjud 6 ogohlantirish). Ro‘yxat joyi va hudud doirasi uchun yangi Android testi yig‘ildi. Samsung’dagi yangi yig‘ilish sinovi telefon bo‘shaganda bajariladi.
+- Lupa bosilganda ro‘yxat bo‘sh qidiruv ekrani bilan almashtirilishi va klaviatura butun oynani tepaga surishi tuzatildi. Lupa ochilishi ro‘yxatni va surilgan joyni saqlaydi. Maydon yoyilgach klaviatura ochiladi va maydon undan sal tepada turadi. So‘rov yozilganda o‘sha ro‘yxat tanlangan hudud bo‘yicha filtrlanadi. «×» bosilganda ro‘yxat avvalgi joyini tiklaydi. Debug APK, test APK, 45 ta unit test va `lintRelease` o‘tdi (0 xato, mavjud 6 ogohlantirish). Ro‘yxat joyi va hudud doirasi uchun yangi Android testi yig‘ildi. Yangi APK Samsung’ga ekran o‘chiq paytda o‘rnatildi. Qurilmada klaviatura bilan jonli sinov kutilmoqda.
 
 ### Namoz vaqtlari va kesh
 
