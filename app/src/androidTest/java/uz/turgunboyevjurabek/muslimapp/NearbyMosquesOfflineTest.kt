@@ -1,5 +1,6 @@
 package uz.turgunboyevjurabek.muslimapp
 
+import android.Manifest
 import android.icu.text.NumberFormat
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -29,6 +30,7 @@ import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeLeft
 import androidx.compose.ui.unit.dp
+import androidx.test.filters.SdkSuppress
 import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
@@ -39,6 +41,7 @@ import uz.turgunboyevjurabek.muslimapp.feature.data.local.MosqueCatalog
 import uz.turgunboyevjurabek.muslimapp.feature.data.local.MosquePhotos
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosqueArea
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosqueBrowsePreferences
+import uz.turgunboyevjurabek.muslimapp.feature.domain.model.MosqueCoordinates
 import uz.turgunboyevjurabek.muslimapp.feature.domain.model.nearbyMosques
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.navigation.NearbyMosquesRoute
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.AppThemeMode
@@ -140,8 +143,45 @@ class NearbyMosquesOfflineTest {
     }
 
     @Test
+    @SdkSuppress(minSdkVersion = 28)
+    fun defaultNearbyAndReselectionUseDeviceCoordinatesWithoutACitySheet() {
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val context = AppLanguage.Uzbek.localize(instrumentation.targetContext)
+        instrumentation.uiAutomation.grantRuntimePermission(context.packageName, Manifest.permission.ACCESS_COARSE_LOCATION)
+        val catalog = MosqueCatalog(context)
+        val data = runBlocking { catalog.load() }
+        val minor = data.mosques.first { it.id == "relation/4827007" }
+        val gishtlik = data.mosques.first { it.id == "way/451808369" }
+        var requests = 0
+        showMosques(
+            catalog,
+            MosqueBrowsePreferences(cityId = data.cities.first { it.name == "Samarqand" }.id),
+            findDeviceLocation = { if (requests++ == 0) minor.coordinates else gishtlik.coordinates },
+        )
+
+        val chooseArea = context.getString(R.string.mosque_choose_area)
+        val nearest = context.getString(R.string.mosque_nearest)
+        val nearby = context.getString(R.string.mosque_area_nearby)
+        val citySearch = compose.onNodeWithTag("mosque-city-search")
+        compose.waitUntil(5_000) { compose.onNodeWithText(minor.name.orEmpty()).isDisplayed() }
+        compose.onNodeWithText(nearest).assertIsDisplayed()
+        citySearch.assertDoesNotExist()
+        compose.onNodeWithContentDescription(chooseArea).performClick()
+        compose.onNodeWithText(context.getString(R.string.mosque_area_country)).performClick()
+        compose.onNodeWithContentDescription(chooseArea).performClick()
+        compose.onNodeWithText(nearby).performClick()
+        compose.waitUntil(5_000) { compose.onNodeWithText(gishtlik.name.orEmpty()).isDisplayed() }
+        compose.onNodeWithText(nearest).assertIsDisplayed()
+        citySearch.assertDoesNotExist()
+        compose.runOnIdle { assertEquals(2, requests) }
+    }
+
+    @Test
+    @SdkSuppress(minSdkVersion = 28)
     fun manualCityShowsBundledMosquesAndMapExplainsOfflineState() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val context = instrumentation.targetContext
+        instrumentation.uiAutomation.grantRuntimePermission(context.packageName, Manifest.permission.ACCESS_COARSE_LOCATION)
         val catalog = MosqueCatalog(context)
         val data = runBlocking { catalog.load() }
         val city = data.cities.first { it.name == "Toshkent" }
@@ -153,12 +193,9 @@ class NearbyMosquesOfflineTest {
         compose.onNodeWithContentDescription(context.getString(R.string.mosque_choose_area)).performClick()
         compose.onNodeWithText(context.getString(R.string.mosque_area_nearby)).performClick()
         val searchCity = context.getString(R.string.mosque_search_city)
-        compose.onNodeWithText(searchCity).assertIsDisplayed()
-        compose.onNodeWithContentDescription(context.getString(R.string.close)).performClick()
-        compose.waitUntil(5_000) {
-            compose.onNodeWithText(context.getString(R.string.mosque_choose_origin))
-                .isDisplayed()
-        }
+        compose.waitUntil(5_000) { compose.onNodeWithText(context.getString(R.string.location_unavailable)).isDisplayed() }
+        compose.onNodeWithTag("mosque-city-search").assertDoesNotExist()
+        compose.onNodeWithContentDescription(context.getString(R.string.mosque_choose_area)).performClick()
         compose.onNodeWithText(context.getString(R.string.mosque_choose_city)).performClick()
         compose.onNodeWithText(searchCity).performTextInput(city.name.orEmpty())
         compose.onNode(hasText(city.name.orEmpty()) and hasClickAction() and !hasSetTextAction())
@@ -245,9 +282,10 @@ class NearbyMosquesOfflineTest {
 
     private fun showMosques(
         catalog: MosqueCatalog,
-        initialPreferences: MosqueBrowsePreferences = MosqueBrowsePreferences(),
+        initialPreferences: MosqueBrowsePreferences = MosqueBrowsePreferences(area = MosqueArea.Uzbekistan),
         darkTheme: Boolean = false,
         rejectDirections: Boolean = false,
+        findDeviceLocation: suspend () -> MosqueCoordinates? = { null },
     ) {
         compose.setContent {
             var preferences by remember { mutableStateOf(initialPreferences) }
@@ -260,6 +298,7 @@ class NearbyMosquesOfflineTest {
                 CompositionLocalProvider(LocalUriHandler provides handler) {
                     NearbyMosquesRoute(
                         loadCatalog = catalog::load,
+                        findDeviceLocation = findDeviceLocation,
                         language = AppLanguage.Uzbek,
                         darkTheme = darkTheme,
                         canLoadMap = false,
