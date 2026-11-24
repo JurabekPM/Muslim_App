@@ -21,6 +21,7 @@ import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.isDisplayed
+import androidx.compose.ui.test.isEnabled
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -60,9 +61,9 @@ class NearbyMosquesOfflineTest {
         val catalog = MosqueCatalog(context)
         showMosques(catalog)
         val search = context.getString(R.string.mosque_search)
-        compose.waitUntil(5_000) { compose.onNodeWithContentDescription(search).isDisplayed() }
+        compose.waitUntil(5_000) { compose.onNode(hasContentDescription(search) and isEnabled()).isDisplayed() }
         compose.onNodeWithContentDescription(search).performClick()
-        compose.onNodeWithText(search).performTextInput("Минор")
+        compose.onNodeWithTag("mosque-inline-search").performTextInput("Минор")
         compose.waitUntil(5_000) { compose.onNodeWithTag("mosque-photo").isDisplayed() }
         compose.onNodeWithTag("mosque-photo").performClick()
         compose.onNodeWithTag("mosque-photo-viewer").assertIsDisplayed()
@@ -125,15 +126,39 @@ class NearbyMosquesOfflineTest {
     }
 
     @Test
+    fun inlineSearchKeepsQueryAcrossMapAndListAndRestoresTabs() {
+        val context = AppLanguage.Uzbek.localize(InstrumentationRegistry.getInstrumentation().targetContext)
+        showMosques(MosqueCatalog(context), darkTheme = true)
+        val search = context.getString(R.string.mosque_search)
+        val field = compose.onNodeWithTag("mosque-inline-search")
+        val toggle = compose.onNodeWithTag("mosque-search-view-toggle")
+        val result = compose.onNode(hasText("Faqih Abulays") and hasClickAction() and !hasSetTextAction())
+        compose.waitUntil(5_000) { compose.onNode(hasContentDescription(search) and isEnabled()).isDisplayed() }
+        compose.onNodeWithContentDescription(search).performClick()
+        field.performTextInput("Faqih Abulays")
+        compose.waitUntil(5_000) { result.isDisplayed() }
+        toggle.assertIsDisplayed().performClick()
+        compose.onNodeWithText(context.getString(R.string.mosque_map_offline)).assertIsDisplayed()
+        field.assertIsDisplayed()
+        toggle.performClick()
+        result.assertIsDisplayed()
+        compose.onNodeWithTag("mosque-close-search").performClick()
+        field.assertDoesNotExist()
+        toggle.assertDoesNotExist()
+        compose.onNodeWithText(context.getString(R.string.mosque_list)).assertIsSelected()
+        compose.onNodeWithText(context.getString(R.string.mosque_map)).assertIsDisplayed()
+    }
+
+    @Test
     fun findsVerifiedMosqueAcrossUzbekistanWithoutLocationOrInternet() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val catalog = MosqueCatalog(context)
         showMosques(catalog)
 
         val search = context.getString(R.string.mosque_search)
-        compose.waitUntil(5_000) { compose.onNodeWithContentDescription(search).isDisplayed() }
+        compose.waitUntil(5_000) { compose.onNode(hasContentDescription(search) and isEnabled()).isDisplayed() }
         compose.onNodeWithContentDescription(search).performClick()
-        compose.onNodeWithText(search).performTextInput("Faqih Abulays")
+        compose.onNodeWithTag("mosque-inline-search").performTextInput("Faqih Abulays")
         compose.waitUntil(5_000) {
             compose.onNode(hasText("Faqih Abulays") and !hasSetTextAction()).isDisplayed()
         }
@@ -271,9 +296,9 @@ class NearbyMosquesOfflineTest {
         val minorName = runBlocking { catalog.load() }.mosques.first { it.id == "relation/4827007" }.label("uz").orEmpty()
         showMosques(catalog, darkTheme = true, rejectDirections = true)
         val search = context.getString(R.string.mosque_search)
-        compose.waitUntil(5_000) { compose.onNodeWithContentDescription(search).isDisplayed() }
+        compose.waitUntil(5_000) { compose.onNode(hasContentDescription(search) and isEnabled()).isDisplayed() }
         compose.onNodeWithContentDescription(search).performClick()
-        compose.onNodeWithText(search).performTextInput("Minor")
+        compose.onNodeWithTag("mosque-inline-search").performTextInput("Minor")
         val match = hasText(minorName) and hasClickAction() and !hasSetTextAction()
         compose.waitUntil(5_000) { compose.onNode(match).isDisplayed() }
         compose.onNode(match).performSemanticsAction(SemanticsActions.OnClick)

@@ -96,19 +96,20 @@ internal fun NearbyMosqueMap(
     onSelect: (String?) -> Unit,
     overview: MosqueArea? = null,
     bottomOverlay: Dp = 0.dp,
+    fitResults: Boolean = false,
 ) {
     val mosquePins by produceState<GeoJsonData>(emptyMosquePins, mosques) {
         value = withContext(Dispatchers.Default) {
             featureCollection(mosques.map { pointFeature(it.coordinates, it.id) })
         }
     }
-    val bounds = remember(overview, mosques) {
+    val bounds = remember(overview, fitResults, mosques) {
         when {
             overview == MosqueArea.Uzbekistan -> BoundingBox(
                 Position(longitude = 55.9, latitude = 37.1),
                 Position(longitude = 73.3, latitude = 45.7),
             )
-            overview != null && mosques.size > 1 -> BoundingBox(
+            (overview != null || fitResults) && mosques.size > 1 -> BoundingBox(
                 Position(
                     longitude = mosques.minOf { it.coordinates.longitude } - 0.015,
                     latitude = mosques.minOf { it.coordinates.latitude } - 0.015,
@@ -216,11 +217,15 @@ internal fun NearbyMosqueMap(
             )
         }
 
-        LaunchedEffect(state, bounds, bottomOverlay) {
+        LaunchedEffect(state, bounds, bottomOverlay, if (fitResults) origin else null) {
             if (bounds != null) {
                 state.fitCameraToBounds(
                     bounds,
                     CameraFit(fitPadding = DpPadding(left = 22.dp, top = 24.dp, right = 22.dp, bottom = 36.dp + bottomOverlay)),
+                )
+            } else if (fitResults) {
+                state.animateCamera(
+                    CameraUpdate(center = Position(longitude = origin.longitude, latitude = origin.latitude), zoom = 14.0),
                 )
             }
         }

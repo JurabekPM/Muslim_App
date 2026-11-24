@@ -4,20 +4,28 @@ import android.icu.text.MeasureFormat
 import android.icu.text.NumberFormat
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.input.clearText
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
@@ -33,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -45,6 +54,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -52,6 +62,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.hazeSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -71,9 +83,9 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.Mosque
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueDetailSheet
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueDirectionsDialog
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueOverlayHeader
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueSearchDock
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueSheet
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueThumbnail
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.MosqueViewSwitcher
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components.mosqueDisplayName
 import java.text.Collator
 
@@ -115,20 +127,36 @@ internal fun NearbyMosquesScreen(
     var showAreas by rememberSaveable { mutableStateOf(false) }
     var showCities by rememberSaveable { mutableStateOf(false) }
     var searching by rememberSaveable { mutableStateOf(false) }
-    var query by rememberSaveable { mutableStateOf("") }
+    var searchMap by rememberSaveable { mutableStateOf(false) }
+    var searchSortByName by rememberSaveable { mutableStateOf<Boolean?>(null) }
+    var requestSearchFocus by remember { mutableStateOf(false) }
+    val searchText = rememberTextFieldState()
+    val query = searchText.text.toString()
     var focusedId by rememberSaveable { mutableStateOf<String?>(null) }
     var focusedFromSearch by rememberSaveable { mutableStateOf(false) }
     var detailId by rememberSaveable { mutableStateOf<String?>(null) }
     var preferredSortByName by rememberSaveable { mutableStateOf<Boolean?>(null) }
     val focusedMosque = remember(focusedId, mosques) { focusedId?.let { id -> mosques.firstOrNull { it.id == id } } }
     val detailPlace = remember(detailId, mosques) { detailId?.let { id -> mosques.firstOrNull { it.id == id } } }
+    val focusManager = LocalFocusManager.current
+    val keyboard = LocalSoftwareKeyboardController.current
+    val dismissKeyboard = {
+        requestSearchFocus = false
+        focusManager.clearFocus()
+        keyboard?.hide()
+    }
+    val closeSearch = {
+        dismissKeyboard()
+        searching = false
+        searchText.clearText()
+    }
     val goBack: () -> Unit = {
         when {
             focusedId != null -> {
                 focusedId = null
                 searching = focusedFromSearch
             }
-            searching -> searching = false
+            searching -> closeSearch()
             else -> onClose()
         }
     }
@@ -146,6 +174,7 @@ internal fun NearbyMosquesScreen(
     }
     val loading = mosques.isEmpty() || (isNearby && origin != null && results == null)
     val waitingForOrigin = isNearby && origin == null
+    val activeMap = if (searching) searchMap else showMap
     val mapVisible = canLoadMap && !searching && (focusedMosque != null ||
         (showMap && !loading && !waitingForOrigin && visiblePlaces.isNotEmpty()))
     val browsing = !searching && focusedId == null
@@ -176,6 +205,40 @@ internal fun NearbyMosquesScreen(
             searchIndex = withContext(Dispatchers.Default) { MosqueSearchIndex(mosques, cities) }
         }
     }
+    val searchTerm = query.trim().takeIf { searching && it.length >= 2 }
+    val lookup by produceState<Pair<String, List<MosquePlace>>?>(null, searchIndex, searchTerm) {
+        val index = searchIndex
+        if (index != null && searchTerm != null) {
+            delay(120)
+            value = searchTerm to withContext(Dispatchers.Default) { index.search(searchTerm) }
+        }
+    }
+    val searchPlaces = lookup?.takeIf { it.first == searchTerm }?.second
+    val orderedSearchPlaces by produceState<Pair<List<MosquePlace>, List<MosquePlace>>?>(
+        null, searchPlaces, searchSortByName, origin, language,
+    ) {
+        value = searchPlaces?.let { matches ->
+            val ordered = when {
+                searchSortByName == true -> withContext(Dispatchers.Default) {
+                    val collator = Collator.getInstance(language.locale)
+                    matches.sortedWith(compareBy(collator) { it.label(languageKey) ?: it.locality.orEmpty() })
+                }
+                searchSortByName == false && origin != null -> withContext(Dispatchers.Default) {
+                    matches.map { it to origin.distanceTo(it.coordinates) }.sortedBy { it.second }.map { it.first }
+                }
+                else -> matches
+            }
+            matches to ordered
+        }
+    }
+    val browseList = key(area, if (isNearby) origin else null) { rememberLazyListState() }
+    val searchList = key(searchTerm) { rememberLazyListState() }
+    val activeList = if (searching) searchList else browseList
+    val scrolled by remember(activeList) {
+        derivedStateOf { activeList.firstVisibleItemIndex > 0 || activeList.firstVisibleItemScrollOffset > 96 }
+    }
+    val compactHeader = focusedId == null && !activeMap && scrolled
+    val backdrop = remember { HazeState() }
     var directionsFailed by remember { mutableStateOf(false) }
     val uriHandler = LocalUriHandler.current
     val openDirections: (MosqueCoordinates) -> Unit = { coordinates ->
@@ -186,37 +249,48 @@ internal fun NearbyMosquesScreen(
         }
     }
 
-    Column(Modifier.fillMaxSize().navigationBarsPadding().imePadding()) {
-        TopAppBar(
-            title = { Text(stringResource(R.string.nearby_mosques), maxLines = 1, overflow = TextOverflow.Ellipsis) },
-            navigationIcon = {
-                IconButton(onClick = goBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back))
-                }
-            },
-            actions = {
-                if (!searching && focusedId == null && mosques.isNotEmpty()) {
-                    IconButton(onClick = { searching = true }) {
-                        Icon(Icons.Filled.Search, stringResource(R.string.mosque_search))
+    Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().imePadding()) {
+        AnimatedVisibility(visible = !compactHeader) {
+            TopAppBar(
+                windowInsets = WindowInsets(0, 0, 0, 0),
+                title = { Text(stringResource(R.string.nearby_mosques), maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                navigationIcon = {
+                    IconButton(onClick = goBack, enabled = !compactHeader) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back))
                     }
-                }
-            },
-        )
-        if (browsing) {
+                },
+            )
+        }
+        if (focusedId == null) {
             Column(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 6.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 val nearbyCityName = city?.label(languageKey).takeIf { isNearby }
-                MosqueBrowseFilters(
-                    label = nearbyCityName ?: mosqueAreaLabel(area),
-                    showSort = !showMap,
-                    sortByName = sortByName,
-                    canSortByDistance = canSortByDistance,
-                    onAreaClick = { showAreas = true },
-                    onSortChange = { preferredSortByName = it },
-                )
-                if (!mapVisible && !loading && !waitingForOrigin && !loadFailed && (!isNearby || showMap)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    AnimatedVisibility(
+                        visible = compactHeader,
+                        enter = expandHorizontally(expandFrom = Alignment.Start),
+                        exit = shrinkHorizontally(shrinkTowards = Alignment.Start),
+                    ) {
+                        IconButton(onClick = goBack, enabled = compactHeader) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back))
+                        }
+                    }
+                    MosqueBrowseFilters(
+                        label = nearbyCityName ?: mosqueAreaLabel(area),
+                        showSort = !activeMap,
+                        sortByName = if (searching) searchSortByName ?: sortByName else sortByName,
+                        canSortByDistance = canSortByDistance,
+                        onAreaClick = { dismissKeyboard(); showAreas = true },
+                        onSortChange = {
+                            if (searching) searchSortByName = it else preferredSortByName = it
+                        },
+                    )
+                }
+                if (browsing && !compactHeader && !mapVisible && !loading &&
+                    !waitingForOrigin && !loadFailed && (!isNearby || showMap)
+                ) {
                     val count = remember(language, visiblePlaces.size) {
                         NumberFormat.getIntegerInstance(language.locale).format(visiblePlaces.size)
                     }
@@ -231,75 +305,103 @@ internal fun NearbyMosquesScreen(
         }
 
         Box(Modifier.weight(1f).fillMaxWidth()) {
-            when {
-                loadFailed -> MosqueStatus(stringResource(R.string.mosque_catalog_error), onRetry)
-                searching -> MosqueSearch(
-                    index = searchIndex,
-                    query = query,
-                    onQueryChange = { query = it },
-                    languageKey = languageKey,
-                    openDirections = openDirections,
-                    onDetails = { detailId = it.id },
-                    modifier = Modifier.fillMaxSize(),
-                )
-                focusedMosque != null -> {
-                    Column(Modifier.fillMaxSize()) {
-                        if (canLoadMap) {
-                            Box(Modifier.weight(1f).fillMaxWidth()) {
-                                key(focusedMosque.id) {
-                                    NearbyMosqueMap(
-                                        origin = focusedMosque.coordinates,
-                                        mosques = listOf(focusedMosque),
-                                        selectedMosque = focusedMosque,
-                                        darkTheme = darkTheme,
-                                        onSelect = { detailId = it },
-                                    )
-                                }
-                            }
-                        } else {
-                            MosqueStatus(stringResource(R.string.mosque_map_offline))
-                        }
-                        MosqueBrowseCard(
-                            focusedMosque, distances[focusedMosque.id], languageKey, distanceFormat,
-                            onDirections = { openDirections(focusedMosque.coordinates) },
-                            onDetails = { detailId = focusedMosque.id },
-                            modifier = Modifier.padding(16.dp),
-                        )
-                    }
-                }
-                loading -> MosqueStatus(stringResource(R.string.mosque_catalog_loading), loading = true)
-                waitingForOrigin -> if (locationError == null) {
-                    MosqueStatus(stringResource(R.string.locating), loading = true)
-                } else {
-                    MosqueStatus(stringResource(locationError), retry = onRetryLocation)
-                }
-                visiblePlaces.isEmpty() -> MosqueStatus(
-                    if (isNearby) stringResource(R.string.mosque_no_results, nearbyMosqueRadiusKm)
-                    else stringResource(R.string.mosque_search_empty)
-                )
-                showMap && !canLoadMap -> MosqueStatus(stringResource(R.string.mosque_map_offline))
-                showMap -> {
-                    Box(Modifier.fillMaxSize()) {
-                        key(area, if (isNearby) origin else null) {
-                            NearbyMosqueMap(
-                                origin = if (isNearby) checkNotNull(origin) else visiblePlaces.first().coordinates,
-                                mosques = visiblePlaces,
+            Box(Modifier.matchParentSize().hazeSource(backdrop)) {
+                when {
+                    loadFailed -> MosqueStatus(stringResource(R.string.mosque_catalog_error), onRetry)
+                    searching -> {
+                        val matches = searchPlaces
+                        when {
+                            searchTerm == null -> MosqueStatus(stringResource(R.string.mosque_search_hint))
+                            matches == null -> MosqueStatus(stringResource(R.string.mosque_catalog_loading), loading = true)
+                            matches.isEmpty() -> MosqueStatus(stringResource(R.string.mosque_search_empty))
+                            searchMap && !canLoadMap -> MosqueStatus(stringResource(R.string.mosque_map_offline))
+                            searchMap -> NearbyMosqueMap(
+                                origin = matches.first().coordinates,
+                                mosques = matches,
                                 selectedMosque = detailPlace,
                                 darkTheme = darkTheme,
                                 onSelect = { detailId = it },
-                                overview = if (isNearby) null else area,
+                                fitResults = true,
                                 bottomOverlay = mosqueSwitcherSpace,
+                            )
+                            else -> LazyColumn(
+                                modifier = Modifier.fillMaxSize(),
+                                state = searchList,
+                                contentPadding = PaddingValues(
+                                    start = 16.dp, top = 12.dp, end = 16.dp, bottom = mosqueSwitcherSpace,
+                                ),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                val ordered = orderedSearchPlaces?.takeIf { it.first === matches }?.second ?: matches
+                                items(ordered, key = MosquePlace::id) { place ->
+                                    MosqueSearchRow(place, languageKey, openDirections) {
+                                        dismissKeyboard()
+                                        detailId = place.id
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    focusedMosque != null -> {
+                        Column(Modifier.fillMaxSize()) {
+                            if (canLoadMap) {
+                                Box(Modifier.weight(1f).fillMaxWidth()) {
+                                    key(focusedMosque.id) {
+                                        NearbyMosqueMap(
+                                            origin = focusedMosque.coordinates,
+                                            mosques = listOf(focusedMosque),
+                                            selectedMosque = focusedMosque,
+                                            darkTheme = darkTheme,
+                                            onSelect = { detailId = it },
+                                        )
+                                    }
+                                }
+                            } else {
+                                MosqueStatus(stringResource(R.string.mosque_map_offline))
+                            }
+                            MosqueBrowseCard(
+                                focusedMosque, distances[focusedMosque.id], languageKey, distanceFormat,
+                                onDirections = { openDirections(focusedMosque.coordinates) },
+                                onDetails = { detailId = focusedMosque.id },
+                                modifier = Modifier.padding(16.dp),
                             )
                         }
                     }
-                }
-                listOrder == null && listPlaces.isNotEmpty() ->
-                    MosqueStatus(stringResource(R.string.mosque_catalog_loading), loading = true)
+                    loading -> MosqueStatus(stringResource(R.string.mosque_catalog_loading), loading = true)
+                    waitingForOrigin -> if (locationError == null) {
+                        MosqueStatus(stringResource(R.string.locating), loading = true)
+                    } else {
+                        MosqueStatus(stringResource(locationError), retry = onRetryLocation)
+                    }
+                    visiblePlaces.isEmpty() -> MosqueStatus(
+                        if (isNearby) stringResource(R.string.mosque_no_results, nearbyMosqueRadiusKm)
+                        else stringResource(R.string.mosque_search_empty)
+                    )
+                    showMap && !canLoadMap -> MosqueStatus(stringResource(R.string.mosque_map_offline))
+                    showMap -> {
+                        Box(Modifier.fillMaxSize()) {
+                            key(area, if (isNearby) origin else null) {
+                                NearbyMosqueMap(
+                                    origin = if (isNearby) checkNotNull(origin) else visiblePlaces.first().coordinates,
+                                    mosques = visiblePlaces,
+                                    selectedMosque = detailPlace,
+                                    darkTheme = darkTheme,
+                                    onSelect = { detailId = it },
+                                    overview = if (isNearby) null else area,
+                                    bottomOverlay = mosqueSwitcherSpace,
+                                )
+                            }
+                        }
+                    }
+                    listOrder == null && listPlaces.isNotEmpty() ->
+                        MosqueStatus(stringResource(R.string.mosque_catalog_loading), loading = true)
                 else -> {
-                    key(area, if (isNearby) origin else null) {
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize().padding(bottom = mosqueSwitcherSpace),
-                            contentPadding = PaddingValues(start = 16.dp, top = 12.dp, end = 16.dp, bottom = 8.dp),
+                            modifier = Modifier.fillMaxSize(),
+                            state = browseList,
+                            contentPadding = PaddingValues(
+                                start = 16.dp, top = 12.dp, end = 16.dp, bottom = mosqueSwitcherSpace,
+                            ),
                             verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
                             if (nearest != null) item(key = nearest.id) {
@@ -335,9 +437,24 @@ internal fun NearbyMosquesScreen(
                     }
                 }
             }
-            if (browsing) {
-                MosqueViewSwitcher(
-                    showMap, onShowMapChange,
+            if (focusedId == null) {
+                MosqueSearchDock(
+                    backdrop = backdrop, darkTheme = darkTheme, showMap = activeMap, searching = searching,
+                    searchAvailable = mosques.isNotEmpty(), searchText = searchText, requestFocus = requestSearchFocus,
+                    onFocusRequested = { requestSearchFocus = false },
+                    onSearchOpen = {
+                        searchMap = false
+                        searchSortByName = null
+                        requestSearchFocus = true
+                        searching = true
+                    },
+                    onSearchClose = closeSearch,
+                    onViewChange = {
+                        if (searching) {
+                            dismissKeyboard()
+                            searchMap = it
+                        } else onShowMapChange(it)
+                    },
                     modifier = Modifier.align(Alignment.BottomCenter).padding(horizontal = 16.dp, vertical = 8.dp),
                 )
             }
@@ -354,6 +471,7 @@ internal fun NearbyMosquesScreen(
             }.takeIf { isNearby && cities.isNotEmpty() },
         ) {
             showAreas = false
+            if (searching) closeSearch()
             onAreaChange(it)
         }
     }
@@ -376,7 +494,7 @@ internal fun NearbyMosquesScreen(
                 focusedFromSearch = searching
                 focusedId = detailPlace.id
                 searching = false
-            }.takeIf { focusedId == null && (searching || !showMap) },
+            }.takeIf { focusedId == null && !activeMap },
         )
     }
     if (directionsFailed) {
@@ -483,55 +601,6 @@ private fun MosqueSearchRow(
                 }
                 TextButton(onClick = { openDirections(place.coordinates) }) {
                     Text(stringResource(R.string.mosque_directions))
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun MosqueSearch(
-    index: MosqueSearchIndex?,
-    query: String,
-    onQueryChange: (String) -> Unit,
-    languageKey: String,
-    openDirections: (MosqueCoordinates) -> Unit,
-    onDetails: (MosquePlace) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val matches by produceState<List<MosquePlace>?>(null, index, query) {
-        val current = index ?: return@produceState
-        if (query.trim().length >= 2) {
-            delay(120)
-            value = withContext(Dispatchers.Default) { current.search(query) }
-        } else {
-            value = null
-        }
-    }
-    val focusManager = LocalFocusManager.current
-    Column(modifier.fillMaxWidth()) {
-        OutlinedTextField(
-            value = query,
-            onValueChange = onQueryChange,
-            label = { Text(stringResource(R.string.mosque_search)) },
-            singleLine = true,
-            shape = MaterialTheme.shapes.extraLarge,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-        )
-        val results = matches
-        when {
-            query.trim().length < 2 -> MosqueStatus(stringResource(R.string.mosque_search_hint))
-            results == null -> MosqueStatus(stringResource(R.string.mosque_catalog_loading), loading = true)
-            results.isEmpty() -> MosqueStatus(stringResource(R.string.mosque_search_empty))
-            else -> LazyColumn(
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                items(results, key = MosquePlace::id) { place ->
-                    MosqueSearchRow(place, languageKey, openDirections) {
-                        focusManager.clearFocus()
-                        onDetails(place)
-                    }
                 }
             }
         }

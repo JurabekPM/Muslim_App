@@ -100,6 +100,11 @@ Muslim App O‘zbekiston uchun namoz vaqtlari, tasbeh va Qibla funksiyalarini be
 
 - Foydalanuvchi «Ro‘yxat» va «Xarita» qidiruv ochilganda [bitta dumaloq tugmaga](designs/nearby-mosques-single-search-toggle.png) yig‘ilishini aniqlashtirdi. Qidiruv o‘ngdan chapga yoyiladi. Dumaloq tugma bosilganda ro‘yxat va xarita shu ekranda almashadi, belgisi keyingi ko‘rinishni bildiradi. Qidiruv yopilganda yozuvli tablar qaytadi. Chrome’da 320 va 790 px kenglikda oraliq animatsiya, tugmaning o‘lchami, qidiruv va almashtirish tekshirildi. Ilovaga qo‘llashdan oldin maket ko‘riladi.
 
+- Bitta dumaloq tugmali dizayn PR #31 da ilovaga qo‘llandi. Lupa 320 ms davomida chapga yoyiladi. Xiralashish va yaltiragan qirra yopiq lupa, ochiq qidiruv va dumaloq almashtirgichda chiziladi. Bosilganda tugmalar mayin siqilib, prujina kabi qaytadi. Hudud va saralash paneli ro‘yxat tepaga surilganda AppBar’da qoladi.
+- Qidiruv mavjud oflayn katalogdan shu ekranda ishlaydi. Dumaloq tugma topilgan masjidlarni xaritada ochadi va klaviaturani yopadi. Ro‘yxatga qaytilganda so‘rov saqlanadi. «×» bosilganda yozuvli tablar va avvalgi ko‘rinish tiklanadi. Samsung SM-S916N’da oq va qora mavzularda «Minor» qidiruvi, xarita, ro‘yxatga qaytish va yopish jonli tekshirildi. Avvalgi ilova mavzusi tiklandi. Debug APK, test APK, 45 ta unit test va `lintRelease` o‘tdi. Lintda 0 xato va mavjud 6 ta ogohlantirish bor.
+
+- Yakuniy APK Samsung’ga o‘rnatildi. Qurilmadagi `NearbyMosquesOfflineTest` sinfining 9 testi, jumladan qidiruv matnini ro‘yxat va xarita o‘rtasida saqlash va yozuvli tablarni tiklash sinovi o‘tdi. Jonli sinovda ro‘yxat surilganda sarlavha yig‘ildi, hudud va saralash tugmalari ko‘rinib qoldi.
+
 ### Namoz vaqtlari va kesh
 
 - Kunlik, 7 kunlik, oylik jadvallar ishlaydi.

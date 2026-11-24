@@ -1,24 +1,16 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components
 
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -40,7 +32,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -198,57 +189,5 @@ private fun MosqueSortButton(byName: Boolean, canSortByDistance: Boolean, onChan
                 )
             }
         }
-    }
-}
-
-@Composable
-internal fun MosqueViewSwitcher(showMap: Boolean, onChange: (Boolean) -> Unit, modifier: Modifier = Modifier) {
-    val colors = MaterialTheme.colorScheme
-    val track = if (colors.surface.luminance() < 0.5f) colors.surfaceContainer else colors.surface
-    Surface(
-        modifier = modifier.widthIn(max = 264.dp).fillMaxWidth(),
-        shape = CircleShape,
-        color = track,
-        border = BorderStroke(0.75.dp, colors.outline.copy(alpha = 0.62f)),
-        shadowElevation = 1.dp,
-    ) {
-        BoxWithConstraints(Modifier.fillMaxWidth().padding(3.dp)) {
-            val tabWidth = maxWidth / 2
-            val selectedOffset by animateDpAsState(
-                targetValue = if (showMap) tabWidth else 0.dp,
-                animationSpec = tween(180),
-                label = "Mosque view selection",
-            )
-            Box(Modifier.matchParentSize()) {
-                Box(
-                    Modifier.offset(x = selectedOffset).width(tabWidth).fillMaxHeight()
-                        .background(MosqueActionColor, CircleShape),
-                )
-            }
-            Row(Modifier.fillMaxWidth().selectableGroup()) {
-                MosqueViewTab(R.string.mosque_list, !showMap, { onChange(false) }, Modifier.weight(1f))
-                MosqueViewTab(R.string.mosque_map, showMap, { onChange(true) }, Modifier.weight(1f))
-            }
-        }
-    }
-}
-
-@Composable
-private fun MosqueViewTab(label: Int, selected: Boolean, onClick: () -> Unit, modifier: Modifier) {
-    val colors = MaterialTheme.colorScheme
-    Box(
-        modifier.heightIn(min = 40.dp).clip(CircleShape)
-            .selectable(selected = selected, role = Role.Tab, onClick = onClick)
-            .padding(horizontal = 8.dp, vertical = 8.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            stringResource(label),
-            style = MaterialTheme.typography.labelLarge,
-            fontWeight = FontWeight.SemiBold,
-            color = if (selected) colors.onSecondaryContainer else colors.onSurface,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
     }
 }
