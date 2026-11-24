@@ -219,5 +219,7 @@
     <string name="mosque_photo_next">Следующее фото</string>
     <string name="mosque_sort_distance">По расстоянию</string>
     <string name="mosque_sort_name">По названию</string>
+    <string name="mosque_sort">Сортировка</string>
+    <string name="mosque_sort_location_needed">Для расчёта расстояния нужна геопозиция</string>
     <string name="mosque_nearest">Ближайшая</string>
 </resources>

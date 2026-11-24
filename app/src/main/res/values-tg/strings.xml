@@ -196,5 +196,7 @@
     <string name="mosque_photo_next">Акси навбатӣ</string>
     <string name="mosque_sort_distance">Аз рӯйи масофа</string>
     <string name="mosque_sort_name">Аз рӯйи ном</string>
+    <string name="mosque_sort">Мураттабсозӣ</string>
+    <string name="mosque_sort_location_needed">Барои масофа ҷойгиршавӣ лозим аст</string>
     <string name="mosque_nearest">Наздиктарин</string>
 </resources>

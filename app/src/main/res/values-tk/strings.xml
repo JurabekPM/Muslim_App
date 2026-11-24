@@ -199,5 +199,7 @@
     <string name="mosque_photo_next">Indiki surat</string>
     <string name="mosque_sort_distance">Aralyk boýunça</string>
     <string name="mosque_sort_name">Ady boýunça</string>
+    <string name="mosque_sort">Tertiplemek</string>
+    <string name="mosque_sort_location_needed">Aralyk üçin ýerleşýän ýeriňiz gerek</string>
     <string name="mosque_nearest">Iň ýakyn</string>
 </resources>

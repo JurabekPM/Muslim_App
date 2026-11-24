@@ -67,7 +67,7 @@ internal fun NearbyMosquesRoute(
     val permission = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
     ) { requestingPermission = false }
-    var deviceOrigin by remember(usesDeviceLocation, locationAttempt) { mutableStateOf<MosqueCoordinates?>(null) }
+    var deviceOrigin by remember { mutableStateOf<MosqueCoordinates?>(null) }
     var locationError by remember(usesDeviceLocation, locationAttempt) { mutableStateOf<Int?>(null) }
     LaunchedEffect(usesDeviceLocation, locationAttempt, requestingPermission) {
         if (!usesDeviceLocation || requestingPermission) return@LaunchedEffect
@@ -109,12 +109,16 @@ internal fun NearbyMosquesRoute(
         onRetry = { loadAttempt++ },
         locationError = locationError,
         onRetryLocation = {
+            deviceOrigin = null
             permissionRequested = false
             locationAttempt++
         },
         onAreaChange = { selected ->
             manualCityId = null
-            if (selected == MosqueArea.Nearby) locationAttempt++
+            if (selected == MosqueArea.Nearby) {
+                deviceOrigin = null
+                locationAttempt++
+            }
             onPreferencesChange { it.copy(area = selected) }
         },
         onShowMapChange = { showMap -> onPreferencesChange { it.copy(showMap = showMap) } },

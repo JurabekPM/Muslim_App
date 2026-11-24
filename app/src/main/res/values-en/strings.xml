@@ -199,5 +199,7 @@
     <string name="mosque_photo_next">Next photo</string>
     <string name="mosque_sort_distance">By distance</string>
     <string name="mosque_sort_name">By name</string>
+    <string name="mosque_sort">Sort</string>
+    <string name="mosque_sort_location_needed">Location needed for distance</string>
     <string name="mosque_nearest">Closest</string>
 </resources>
