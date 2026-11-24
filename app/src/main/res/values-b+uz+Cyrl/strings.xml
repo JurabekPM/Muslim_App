@@ -169,7 +169,10 @@
     <string name="mosque_location_permission">Жойлашувга рухсат беринг ёки шаҳар танланг.</string>
     <string name="mosque_unnamed">Номи кўрсатилмаган масжид</string>
     <string name="mosque_directions">Йўлни очиш</string>
-    <string name="mosque_directions_error">Йўлни очиш учун харита иловаси ёки браузер керак.</string>
+    <string name="mosque_directions_error">Харита иловаси ёки браузер керак.</string>
+    <string name="mosque_directions_unavailable">Йўл очилмади</string>
+    <string name="mosque_directions_acknowledge">Тушунарли</string>
+    <string name="mosque_regions">Вилоятлар</string>
     <string name="mosque_no_results">%1$d км ичида масжид топилмади.</string>
     <string name="mosque_distance_hint">Масофа тўғри чизиқ бўйича</string>
     <string name="mosque_catalog_error">Масжидлар рўйхатини очиб бўлмади.</string>
@@ -188,7 +191,7 @@
     <string name="mosque_area_nearby">Яқин атроф</string>
     <string name="mosque_choose_area">Ҳудуд танлаш</string>
     <string name="mosque_catalog_count">Масжидлар · %1$s</string>
-    <string name="mosque_photo_description">%1$s масжиди сурати</string>
+    <string name="mosque_photo_description">Сурат · %1$s</string>
     <string name="mosque_photo_source">Сурат манбаси</string>
     <string name="mosque_photos_open">Суратларни кўриш</string>
     <string name="mosque_photo_previous">Олдинги сурат</string>

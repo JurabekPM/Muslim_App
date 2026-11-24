@@ -24,6 +24,8 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.DropdownMenu
@@ -43,9 +45,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -105,6 +110,7 @@ internal fun MosqueSortButton(byName: Boolean, onChange: (Boolean) -> Unit, modi
     var expanded by remember { mutableStateOf(false) }
     val distance = stringResource(R.string.mosque_sort_distance)
     val name = stringResource(R.string.mosque_sort_name)
+    val colors = MaterialTheme.colorScheme
     Box(modifier) {
         MosqueFilterPill(
             label = if (byName) name else distance,
@@ -113,21 +119,37 @@ internal fun MosqueSortButton(byName: Boolean, onChange: (Boolean) -> Unit, modi
             onClick = { expanded = true },
             modifier = Modifier.fillMaxWidth(),
         )
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            DropdownMenuItem(
-                text = { Text(distance) },
-                onClick = {
-                    expanded = false
-                    onChange(false)
-                },
-            )
-            DropdownMenuItem(
-                text = { Text(name) },
-                onClick = {
-                    expanded = false
-                    onChange(true)
-                },
-            )
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.testTag("mosque-sort-menu"),
+            shape = RoundedCornerShape(16.dp),
+            containerColor = colors.surfaceContainer,
+            shadowElevation = 4.dp,
+            tonalElevation = 0.dp,
+            border = BorderStroke(1.dp, colors.outline.copy(alpha = 0.36f)),
+        ) {
+            listOf(false to distance, true to name).forEach { (option, label) ->
+                val active = byName == option
+                DropdownMenuItem(
+                    text = { Text(label, fontWeight = if (active) FontWeight.SemiBold else FontWeight.Normal) },
+                    leadingIcon = {
+                        if (option) Icon(Icons.AutoMirrored.Filled.List, null, Modifier.size(19.dp))
+                        else Icon(painterResource(R.drawable.ic_mosque_sort), null, Modifier.size(19.dp))
+                    },
+                    trailingIcon = {
+                        if (active) Icon(Icons.Filled.Check, null, Modifier.size(19.dp), tint = colors.tertiary)
+                    },
+                    modifier = Modifier.padding(horizontal = 5.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(if (active) MosqueActionColor.copy(alpha = 0.20f) else Color.Transparent)
+                        .semantics { selected = active },
+                    onClick = {
+                        expanded = false
+                        onChange(option)
+                    },
+                )
+            }
         }
     }
 }

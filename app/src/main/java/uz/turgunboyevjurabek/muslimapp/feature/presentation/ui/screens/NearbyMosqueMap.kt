@@ -95,7 +95,6 @@ internal fun NearbyMosqueMap(
     onSelect: (String?) -> Unit,
     overview: MosqueArea? = null,
     bottomOverlay: Dp = 0.dp,
-    selectionCard: @Composable () -> Unit = {},
 ) {
     val mosquePins by produceState<GeoJsonData>(emptyMosquePins, mosques) {
         value = withContext(Dispatchers.Default) {
@@ -317,7 +316,6 @@ internal fun NearbyMosqueMap(
                     }
                 }
                 MapCredits(Modifier.padding(8.dp))
-                selectionCard()
             }
         }
     }

@@ -169,7 +169,10 @@
     <string name="mosque_location_permission">Жайгашкан жерге уруксат бериңиз же шаар тандаңыз.</string>
     <string name="mosque_unnamed">Аты белгисиз мечит</string>
     <string name="mosque_directions">Багытты ачуу</string>
-    <string name="mosque_directions_error">Багытты ачуу үчүн карта колдонмосу же браузер керек.</string>
+    <string name="mosque_directions_error">Карта колдонмосу же браузер керек.</string>
+    <string name="mosque_directions_unavailable">Багыт ачылган жок</string>
+    <string name="mosque_directions_acknowledge">Түшүнүктүү</string>
+    <string name="mosque_regions">Облустар</string>
     <string name="mosque_no_results">%1$d км радиуста мечит табылган жок.</string>
     <string name="mosque_distance_hint">Түз сызык боюнча аралык</string>
     <string name="mosque_catalog_error">Мечиттердин тизмеси ачылган жок.</string>
@@ -188,7 +191,7 @@
     <string name="mosque_area_nearby">Жакын жерде</string>
     <string name="mosque_choose_area">Аймак тандоо</string>
     <string name="mosque_catalog_count">Мечиттер · %1$s</string>
-    <string name="mosque_photo_description">%1$s мечитинин сүрөтү</string>
+    <string name="mosque_photo_description">Сүрөт · %1$s</string>
     <string name="mosque_photo_source">Сүрөттүн булагы</string>
     <string name="mosque_photos_open">Сүрөттөрдү көрүү</string>
     <string name="mosque_photo_previous">Мурунку сүрөт</string>

@@ -184,7 +184,10 @@
     <string name="mosque_location_permission">Joylashuvga ruxsat bering yoki shahar tanlang.</string>
     <string name="mosque_unnamed">Nomi ko‘rsatilmagan masjid</string>
     <string name="mosque_directions">Yo‘lni ochish</string>
-    <string name="mosque_directions_error">Yo‘lni ochish uchun xarita ilovasi yoki brauzer kerak.</string>
+    <string name="mosque_directions_error">Xarita ilovasi yoki brauzer kerak.</string>
+    <string name="mosque_directions_unavailable">Yo‘l ochilmadi</string>
+    <string name="mosque_directions_acknowledge">Tushunarli</string>
+    <string name="mosque_regions">Viloyatlar</string>
     <string name="mosque_no_results">%1$d km ichida masjid topilmadi.</string>
     <string name="mosque_distance_hint">Masofa to‘g‘ri chiziq bo‘yicha</string>
     <string name="mosque_catalog_error">Masjidlar ro‘yxatini ochib bo‘lmadi.</string>
@@ -203,12 +206,13 @@
     <string name="mosque_area_nearby">Yaqin atrof</string>
     <string name="mosque_choose_area">Hudud tanlash</string>
     <string name="mosque_catalog_count">Masjidlar · %1$s</string>
-    <string name="mosque_photo_description">%1$s masjidi surati</string>
+    <string name="mosque_photo_description">Surat · %1$s</string>
     <string name="mosque_photo_source">Surat manbasi</string>
     <string name="mosque_photos_open">Suratlarni ko‘rish</string>
     <string name="mosque_photo_previous">Oldingi surat</string>
     <string name="mosque_photo_next">Keyingi surat</string>
     <string name="mosque_photo_position" translatable="false">%1$d / %2$d</string>
+    <string name="mosque_photo_count" translatable="false">%d</string>
     <string name="mosque_photo_credit">Surat muallifi · %1$s</string>
     <string name="mosque_sort_distance">Masofa bo‘yicha</string>
     <string name="mosque_sort_name">Nomi bo‘yicha</string>

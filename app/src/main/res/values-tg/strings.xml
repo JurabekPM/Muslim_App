@@ -166,7 +166,10 @@
     <string name="mosque_location_permission">Ба муайян кардани макон иҷозат диҳед ё шаҳреро интихоб кунед.</string>
     <string name="mosque_unnamed">Масҷиди беном</string>
     <string name="mosque_directions">Кушодани масир</string>
-    <string name="mosque_directions_error">Барои кушодани масир барномаи харита ё браузер лозим аст.</string>
+    <string name="mosque_directions_error">Барномаи харита ё браузер лозим аст.</string>
+    <string name="mosque_directions_unavailable">Масир кушода нашуд</string>
+    <string name="mosque_directions_acknowledge">Фаҳмо</string>
+    <string name="mosque_regions">Вилоятҳо</string>
     <string name="mosque_no_results">Дар радиуси %1$d км масҷиде ёфт нашуд.</string>
     <string name="mosque_distance_hint">Масофа аз рӯи хати рост</string>
     <string name="mosque_catalog_error">Рӯйхати масҷидҳо кушода нашуд.</string>
@@ -185,7 +188,7 @@
     <string name="mosque_area_nearby">Дар наздикӣ</string>
     <string name="mosque_choose_area">Интихоби минтақа</string>
     <string name="mosque_catalog_count">Масҷидҳо · %1$s</string>
-    <string name="mosque_photo_description">Акси масҷиди %1$s</string>
+    <string name="mosque_photo_description">Акс · %1$s</string>
     <string name="mosque_photo_source">Манбаи акс</string>
     <string name="mosque_photos_open">Дидани аксҳо</string>
     <string name="mosque_photo_previous">Акси қаблӣ</string>

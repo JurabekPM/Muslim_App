@@ -6,6 +6,7 @@ import android.icu.util.MeasureUnit
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,12 +18,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,10 +28,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -48,9 +48,9 @@ internal fun MosqueBrowseCard(
     languageKey: String,
     format: MeasureFormat,
     onDirections: () -> Unit,
+    onDetails: () -> Unit,
     modifier: Modifier = Modifier,
     featured: Boolean = false,
-    onClose: (() -> Unit)? = null,
 ) {
     val name = mosqueDisplayName(place, languageKey)
     val distance = mosqueDistanceText(distanceMeters, format)
@@ -62,12 +62,12 @@ internal fun MosqueBrowseCard(
         featured && colors.surface.luminance() > 0.5f -> colors.tertiaryContainer.copy(alpha = 0.6f)
         else -> colors.surfaceContainerLow
     }
+    val shape = RoundedCornerShape(if (featured) 16.dp else 14.dp)
     Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(if (featured) 16.dp else 14.dp),
+        modifier = modifier.fillMaxWidth().clip(shape).clickable(role = Role.Button, onClick = onDetails),
+        shape = shape,
         color = background,
         border = BorderStroke(0.75.dp, colors.outline.copy(alpha = 0.30f)),
-        shadowElevation = if (onClose != null) 4.dp else 0.dp,
     ) {
         Row(
             Modifier.padding(start = 8.dp, top = 6.dp, bottom = 6.dp, end = if (featured) 10.dp else 6.dp),
@@ -76,7 +76,6 @@ internal fun MosqueBrowseCard(
         ) {
             val thumbnail = when {
                 featured -> Modifier.weight(0.68f).height(136.dp)
-                onClose != null -> Modifier.size(58.dp)
                 else -> Modifier.size(width = 74.dp, height = 58.dp)
             }
             MosqueThumbnail(place.id, name, thumbnail)
@@ -120,10 +119,10 @@ internal fun MosqueBrowseCard(
                         )
                     }
                 }
-                if (featured || onClose != null) {
+                if (featured) {
                     Button(
                         onClick = onDirections,
-                        modifier = if (featured) Modifier.fillMaxWidth() else Modifier,
+                        modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(14.dp),
                         contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp),
                         colors = ButtonDefaults.buttonColors(
@@ -141,12 +140,7 @@ internal fun MosqueBrowseCard(
                     }
                 }
             }
-            when {
-                onClose != null -> IconButton(onClick = onClose, modifier = Modifier.align(Alignment.Top)) {
-                    Icon(Icons.Filled.Close, stringResource(R.string.close), Modifier.size(20.dp))
-                }
-                !featured -> MosqueDirectionsIconButton(onDirections)
-            }
+            if (!featured) MosqueDirectionsIconButton(onDirections)
         }
     }
 }

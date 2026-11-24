@@ -1,15 +1,22 @@
 package uz.turgunboyevjurabek.muslimapp
 
 import android.icu.text.NumberFormat
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -17,6 +24,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
+import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeLeft
@@ -48,6 +56,8 @@ class NearbyMosquesOfflineTest {
         compose.onNodeWithText(search).performTextInput("Минор")
         compose.waitUntil(5_000) { compose.onNodeWithTag("mosque-photo").isDisplayed() }
         compose.onNodeWithTag("mosque-photo").performClick()
+        compose.onNodeWithTag("mosque-photo-viewer").assertIsDisplayed()
+        compose.onNodeWithText(context.getString(R.string.mosque_photo_source)).performClick()
         compose.onNodeWithText(context.getString(R.string.mosque_photo_credit, "Yuriy Pavlovich")).assertIsDisplayed()
         compose.onNodeWithText("CC0 1.0").assertIsDisplayed()
         compose.onNodeWithText(context.getString(R.string.mosque_photo_position, 1, 4)).assertIsDisplayed()
@@ -57,7 +67,6 @@ class NearbyMosquesOfflineTest {
         compose.onNodeWithText(context.getString(R.string.mosque_photo_credit, "Humoyun Mehridinov")).assertIsDisplayed()
         compose.onNodeWithText("CC BY-SA 4.0").assertIsDisplayed()
 
-        compose.onNodeWithText(context.getString(R.string.mosque_photo_source)).performClick()
         compose.onNodeWithText("https://commons.wikimedia.org/", substring = true).assertExists()
         compose.onNodeWithContentDescription(context.getString(R.string.mosque_photo_previous)).performClick()
         compose.onNodeWithText(context.getString(R.string.mosque_photo_position, 1, 4)).assertIsDisplayed()
@@ -102,7 +111,14 @@ class NearbyMosquesOfflineTest {
         compose.waitUntil(5_000) {
             compose.onNode(hasText("Faqih Abulays") and !hasSetTextAction()).isDisplayed()
         }
-        compose.onNodeWithTag("mosque-photo-placeholder").assertIsDisplayed()
+        compose.onNode(hasText("Faqih Abulays") and hasClickAction() and !hasSetTextAction())
+            .performSemanticsAction(SemanticsActions.OnClick)
+        compose.onNodeWithTag("mosque-detail-sheet").assertIsDisplayed()
+        compose.onNode(
+            hasAnyAncestor(hasTestTag("mosque-detail-sheet")) and hasTestTag("mosque-photo-placeholder"),
+            useUnmergedTree = true,
+        ).assertIsDisplayed()
+        compose.onNodeWithText(context.getString(R.string.mosque_photos_open)).assertDoesNotExist()
         compose.onNodeWithText(context.getString(R.string.mosque_show_on_map)).performClick()
         compose.onNodeWithText(context.getString(R.string.mosque_map_offline)).assertIsDisplayed()
         compose.onNodeWithText("Faqih Abulays").assertIsDisplayed()
@@ -131,10 +147,17 @@ class NearbyMosquesOfflineTest {
             .performClick()
         compose.waitUntil(5_000) { compose.onNodeWithText(firstMosque).isDisplayed() }
         compose.onNodeWithText(context.getString(R.string.mosque_nearest)).assertIsDisplayed()
+        compose.onNodeWithText(firstMosque).performClick()
+        compose.onNodeWithTag("mosque-detail-sheet").assertIsDisplayed()
+        compose.onNodeWithText(context.getString(R.string.mosque_show_on_map)).assertIsDisplayed()
+        compose.onNodeWithContentDescription(context.getString(R.string.close)).performClick()
         val byDistance = context.getString(R.string.mosque_sort_distance)
         val byName = context.getString(R.string.mosque_sort_name)
         compose.onNodeWithText(byDistance).performClick()
         compose.onNodeWithText(byName).performClick()
+        compose.onNodeWithText(byName).performClick()
+        val nameOption = compose.onNode(hasAnyAncestor(hasTestTag("mosque-sort-menu")) and hasText(byName))
+        nameOption.assertIsSelected().performClick()
         compose.onNodeWithText(firstMosque).assertIsDisplayed()
 
         compose.onNodeWithTag("nearby-mosque-map").assertDoesNotExist()
@@ -144,7 +167,7 @@ class NearbyMosquesOfflineTest {
         compose.onNodeWithText(byName).assertDoesNotExist()
         compose.onNodeWithContentDescription(context.getString(R.string.mosque_choose_area)).performClick()
         compose.onNodeWithText(context.getString(R.string.mosque_choose_city)).assertIsDisplayed()
-        compose.onNodeWithText(context.getString(R.string.close)).performClick()
+        compose.onNodeWithContentDescription(context.getString(R.string.close)).performClick()
 
         compose.onNodeWithText(context.getString(R.string.mosque_list)).performClick()
         compose.onNodeWithText(firstMosque).assertIsDisplayed()
@@ -173,23 +196,59 @@ class NearbyMosquesOfflineTest {
         compose.onNodeWithText(countyCount).assertIsDisplayed()
     }
 
+    @Test
+    fun darkDetailOpensInAppGalleryAndDismissibleDirectionsMessage() {
+        val context = AppLanguage.Uzbek.localize(InstrumentationRegistry.getInstrumentation().targetContext)
+        val catalog = MosqueCatalog(context)
+        val minorName = runBlocking { catalog.load() }.mosques.first { it.id == "relation/4827007" }.label("uz").orEmpty()
+        showMosques(catalog, darkTheme = true, rejectDirections = true)
+        val search = context.getString(R.string.mosque_search)
+        compose.waitUntil(5_000) { compose.onNodeWithContentDescription(search).isDisplayed() }
+        compose.onNodeWithContentDescription(search).performClick()
+        compose.onNodeWithText(search).performTextInput("Minor")
+        val match = hasText(minorName) and hasClickAction() and !hasSetTextAction()
+        compose.waitUntil(5_000) { compose.onNode(match).isDisplayed() }
+        compose.onNode(match).performSemanticsAction(SemanticsActions.OnClick)
+        compose.waitUntil(5_000) { compose.onNodeWithTag("mosque-detail-sheet").isDisplayed() }
+        compose.onNodeWithTag("mosque-detail-sheet").assertIsDisplayed()
+        compose.onNode(hasText(context.getString(R.string.mosque_photos_open)) and hasClickAction()).performClick()
+        compose.onNodeWithTag("mosque-photo-viewer").assertIsDisplayed()
+        compose.onNode(hasAnyAncestor(hasTestTag("mosque-photo-viewer"))
+            and hasContentDescription(context.getString(R.string.close))).performClick()
+
+        compose.onNode(hasAnyAncestor(hasTestTag("mosque-detail-sheet"))
+            and hasText(context.getString(R.string.mosque_directions))).performClick()
+        compose.onNodeWithText(context.getString(R.string.mosque_directions_unavailable)).assertIsDisplayed()
+        compose.onNodeWithText(context.getString(R.string.mosque_directions_acknowledge)).performClick()
+        compose.onNodeWithTag("mosque-detail-sheet").assertIsDisplayed()
+    }
+
     private fun showMosques(
         catalog: MosqueCatalog,
         initialPreferences: MosqueBrowsePreferences = MosqueBrowsePreferences(),
+        darkTheme: Boolean = false,
+        rejectDirections: Boolean = false,
     ) {
         compose.setContent {
             var preferences by remember { mutableStateOf(initialPreferences) }
-            MuslimAppTheme {
-                NearbyMosquesRoute(
-                    loadCatalog = catalog::load,
-                    locate = { null },
-                    language = AppLanguage.Uzbek,
-                    darkTheme = false,
-                    canLoadMap = false,
-                    preferences = preferences,
-                    onPreferencesChange = { change -> preferences = change(preferences) },
-                    onClose = {},
-                )
+            MuslimAppTheme(darkTheme = darkTheme) {
+                val handler = if (rejectDirections) remember {
+                    object : UriHandler {
+                        override fun openUri(uri: String) { throw IllegalArgumentException("Test URI handler") }
+                    }
+                } else LocalUriHandler.current
+                CompositionLocalProvider(LocalUriHandler provides handler) {
+                    NearbyMosquesRoute(
+                        loadCatalog = catalog::load,
+                        locate = { null },
+                        language = AppLanguage.Uzbek,
+                        darkTheme = darkTheme,
+                        canLoadMap = false,
+                        preferences = preferences,
+                        onPreferencesChange = { change -> preferences = change(preferences) },
+                        onClose = {},
+                    )
+                }
             }
         }
     }
