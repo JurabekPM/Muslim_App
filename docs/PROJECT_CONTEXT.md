@@ -115,6 +115,8 @@ Muslim App O‘zbekiston uchun namoz vaqtlari, tasbeh va Qibla funksiyalarini be
 
 - Ro‘yxat surilganda ixcham AppBar fonida status paneli bilan filtrlar orasidagi keskin chegara bartaraf etildi. Orqaga, hudud va saralash tugmalari bitta umumiy fon ustida, ro‘yxat esa uning tagida mayin so‘nadi. Samsung SM-S916N’da oq va qora mavzuda ixcham AppBar, tugmalar joylashuvi va saralash menyusi tekshirildi. Qurilmadagi 10 ta test va 45 ta unit test o‘tdi. Debug va test APK’lari yig‘ildi. `lintRelease` 0 xato va 5 ogohlantirish bilan o‘tdi.
 
+- Pastki shisha boshqaruvlarda tebranish kuchaytirildi. «Ro‘yxat / Xarita» oltin indikatori siljishda cho‘zilib, o‘rniga yetganda mayin qaytadi. Dumaloq tugmalar va qidiruv shishasi bosilganda siqilib, oltin aks bilan javob beradi. Matn, ikonlar va bosish maydonlari qatlam animatsiyasidan mustaqil. Qidiruv kengligi o‘lchash bosqichida yangilanadi, bosish paytida Haze optikasi qayta sozlanmaydi. Debug va test APK’lari yig‘ildi, 45 ta unit test o‘tdi. `lintRelease` 0 xato va 5 ogohlantirish bilan o‘tdi. Samsung SM-S916N’da oq va qora mavzuda ro‘yxat, xarita, lupa va qidiruvni yopish sinovdan o‘tdi. Tinch va bosib turilgan kadrlar solishtirildi. 10 ta qurilma testi o‘tdi va avvalgi tema tiklandi.
+
 ### Namoz vaqtlari va kesh
 
 - Kunlik, 7 kunlik, oylik jadvallar ishlaydi.

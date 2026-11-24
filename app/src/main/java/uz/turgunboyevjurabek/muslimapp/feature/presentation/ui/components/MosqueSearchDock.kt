@@ -1,7 +1,6 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components
 
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -10,17 +9,13 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
@@ -38,18 +33,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -60,8 +59,11 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.constrainHeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.lerp
 import uz.turgunboyevjurabek.muslimapp.R
 
 private val dockButtonSize = 48.dp
@@ -81,7 +83,7 @@ internal fun MosqueSearchDock(
     onViewChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val progress by animateFloatAsState(
+    val progress = animateFloatAsState(
         if (searching) 1f else 0f, tween(320, easing = FastOutSlowInEasing),
         label = "Mosque search expansion",
     )
@@ -89,15 +91,15 @@ internal fun MosqueSearchDock(
     val searchInteraction = remember { MutableInteractionSource() }
     val toggleScale = rememberPressScale(toggleInteraction, bounce = true)
     val searchScale = rememberPressScale(searchInteraction, bounce = true)
-    BoxWithConstraints(modifier.widthIn(max = 460.dp).fillMaxWidth()) {
-        val expandedWidth = maxWidth - dockGap - dockButtonSize
-        val travel = (expandedWidth - dockButtonSize).coerceAtLeast(0.dp) * progress
-        val canShowTabs = !searching
-        Row(horizontalArrangement = Arrangement.spacedBy(dockGap)) {
+    val expanded by remember(progress) { derivedStateOf { progress.value == 1f } }
+    val canShowTabs = !searching
+    Layout(
+        modifier = modifier.widthIn(max = 460.dp).fillMaxWidth(),
+        content = {
             MosqueGlassPill(
-                glass,
-                Modifier.size(expandedWidth - travel, dockButtonSize).mosqueLiquidPress(toggleScale),
-                interactionSource = toggleInteraction,
+                glass = glass,
+                pressScale = toggleScale,
+                morphProgress = progress,
             ) {
                 androidx.compose.animation.AnimatedVisibility(
                     visible = canShowTabs,
@@ -131,9 +133,10 @@ internal fun MosqueSearchDock(
                 }
             }
             MosqueGlassPill(
-                glass,
-                Modifier.size(dockButtonSize + travel, dockButtonSize).mosqueLiquidPress(searchScale),
-                interactionSource = searchInteraction,
+                glass = glass,
+                pressScale = searchScale,
+                morphProgress = progress,
+                highlightAtEnd = true,
             ) {
                 androidx.compose.animation.AnimatedVisibility(
                     visible = canShowTabs,
@@ -158,11 +161,24 @@ internal fun MosqueSearchDock(
                     exit = fadeOut(tween(90)),
                 ) {
                     MosqueSearchInput(
-                        searchText, searching, requestFocus && progress == 1f,
+                        searchText, searching, requestFocus && expanded,
                         onFocusRequested, onSearchClose, searchInteraction,
                     )
                 }
             }
+        },
+    ) { measurables, constraints ->
+        val height = constraints.constrainHeight(dockButtonSize.roundToPx())
+        val gap = dockGap.roundToPx().coerceAtMost(constraints.maxWidth)
+        val availableWidth = constraints.maxWidth - gap
+        val buttonWidth = minOf(height, availableWidth / 2)
+        // Width changes are applied in measurement so the search and tabs retain their composition.
+        val toggleWidth = lerp(availableWidth - buttonWidth, buttonWidth, progress.value)
+        val toggle = measurables[0].measure(Constraints.fixed(toggleWidth, height))
+        val search = measurables[1].measure(Constraints.fixed(availableWidth - toggleWidth, height))
+        layout(constraints.maxWidth, height) {
+            toggle.placeRelative(0, 0)
+            search.placeRelative(toggleWidth + gap, 0)
         }
     }
 }
@@ -170,6 +186,7 @@ internal fun MosqueSearchDock(
 @Composable
 private fun MosqueViewTabs(showMap: Boolean, enabled: Boolean, onChange: (Boolean) -> Unit) {
     val colors = MaterialTheme.colorScheme
+    val direction = if (LocalLayoutDirection.current == LayoutDirection.Rtl) -1f else 1f
     val listInteraction = remember { MutableInteractionSource() }
     val mapInteraction = remember { MutableInteractionSource() }
     val listScale = rememberPressScale(listInteraction, bounce = true)
@@ -179,21 +196,38 @@ private fun MosqueViewTabs(showMap: Boolean, enabled: Boolean, onChange: (Boolea
             0f to Color(0xFFFFE8AF), 0.35f to MosqueActionColor, 1f to Color(0xFFE3A849),
         )
     }
-    BoxWithConstraints(Modifier.fillMaxSize().padding(3.dp)) {
-        val tabWidth = maxWidth / 2
-        val offset by animateDpAsState(
-            if (showMap) tabWidth else 0.dp, spring(dampingRatio = 0.76f, stiffness = 450f),
-            label = "Mosque view selection",
-        )
+    val selection by animateFloatAsState(
+        if (showMap) 1f else 0f, spring(dampingRatio = 0.69f, stiffness = 350f),
+        label = "Mosque view selection",
+    )
+    Box(Modifier.fillMaxSize().padding(3.dp)) {
         Box(
-            Modifier.offset { IntOffset(offset.roundToPx(), 0) }.width(tabWidth).fillMaxHeight()
-                .mosqueLiquidPress(if (showMap) mapScale else listScale)
+            Modifier.fillMaxWidth(0.5f).fillMaxHeight()
                 .graphicsLayer {
-                    val travel = if (tabWidth > 0.dp) (offset / tabWidth).coerceIn(0f, 1f) else 0f
+                    val travel = selection.coerceIn(0f, 1f)
                     val stretch = 4f * travel * (1f - travel)
-                    scaleX = 1f + stretch * 0.13f
-                    scaleY = 1f - stretch * 0.13f
-                }.background(lens, CircleShape),
+                    val compression = 1f - minOf(listScale.value, mapScale.value)
+                    translationX = size.width * (travel * direction)
+                    scaleX = 1f + stretch * 0.19f + compression * 0.55f
+                    val rebound = (selection - travel) * if (showMap) 1f else -1f
+                    scaleY = 1f - stretch * 0.16f - compression * 2f + rebound * 2f
+                }
+                .clip(CircleShape)
+                .background(lens)
+                .drawWithCache {
+                    val glint = Brush.verticalGradient(
+                        0f to Color.White.copy(alpha = 0.74f),
+                        0.48f to Color.Transparent,
+                    )
+                    onDrawWithContent {
+                        drawContent()
+                        val travel = selection.coerceIn(0f, 1f)
+                        val stretch = 4f * travel * (1f - travel)
+                        val press = ((1f - minOf(listScale.value, mapScale.value)) / 0.06f).coerceIn(0f, 1f)
+                        val glow = maxOf(stretch * 0.72f, press)
+                        if (glow > 0f) drawRect(glint, alpha = glow)
+                    }
+                },
         )
         Row(Modifier.fillMaxSize().selectableGroup()) {
             listOf(false, true).forEach { map ->
@@ -204,7 +238,7 @@ private fun MosqueViewTabs(showMap: Boolean, enabled: Boolean, onChange: (Boolea
                             selected = selected, enabled = enabled, role = Role.Tab,
                             interactionSource = if (map) mapInteraction else listInteraction, indication = null,
                             onClick = { onChange(map) },
-                        ).mosqueLiquidPress(if (map) mapScale else listScale),
+                        ),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
