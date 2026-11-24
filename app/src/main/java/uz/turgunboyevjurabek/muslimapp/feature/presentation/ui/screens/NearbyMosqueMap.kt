@@ -1,14 +1,12 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,7 +35,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.UiComposable
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -63,6 +60,8 @@ import org.maplibre.compose.interaction.ClickResult
 import org.maplibre.compose.interaction.MapInteractions
 import org.maplibre.compose.layers.CircleLayer
 import org.maplibre.compose.layers.SymbolLayer
+import org.maplibre.compose.map.AndroidRenderMode
+import org.maplibre.compose.map.MapUiOptions
 import org.maplibre.compose.map.MaplibreMap
 import org.maplibre.compose.map.StyleLoadState
 import org.maplibre.compose.map.rememberMapState
@@ -96,6 +95,7 @@ internal fun NearbyMosqueMap(
     onSelect: (String?) -> Unit,
     overview: MosqueArea? = null,
     bottomOverlay: Dp = 0.dp,
+    topOverlay: Dp = 0.dp,
     fitResults: Boolean = false,
 ) {
     val mosquePins by produceState<GeoJsonData>(emptyMosquePins, mosques) {
@@ -139,6 +139,11 @@ internal fun NearbyMosqueMap(
         MosqueMarkerPainter(mosqueGlyph, Color(0xFFF4CF75), Color(0xFF233748))
     }
     val style = if (darkTheme) "dark" else "liberty"
+    val drawsBehindGlass = topOverlay > 0.dp
+    val uiOptions = remember(drawsBehindGlass) {
+        if (drawsBehindGlass) MapUiOptions { renderMode = AndroidRenderMode.Texture }
+        else MapUiOptions.Standard
+    }
     var attempt by remember { mutableIntStateOf(0) }
 
     key(attempt) {
@@ -217,11 +222,15 @@ internal fun NearbyMosqueMap(
             )
         }
 
-        LaunchedEffect(state, bounds, bottomOverlay, if (fitResults) origin else null) {
+        LaunchedEffect(state, bounds, topOverlay, bottomOverlay, if (fitResults) origin else null) {
             if (bounds != null) {
                 state.fitCameraToBounds(
                     bounds,
-                    CameraFit(fitPadding = DpPadding(left = 22.dp, top = 24.dp, right = 22.dp, bottom = 36.dp + bottomOverlay)),
+                    CameraFit(
+                        fitPadding = DpPadding(
+                            left = 22.dp, top = 24.dp + topOverlay, right = 22.dp, bottom = 36.dp + bottomOverlay,
+                        ),
+                    ),
                 )
             } else if (fitResults) {
                 state.animateCamera(
@@ -246,6 +255,7 @@ internal fun NearbyMosqueMap(
         Box(Modifier.fillMaxSize()) {
             MaplibreMap(
                 state = state,
+                uiOptions = uiOptions,
                 modifier = Modifier.fillMaxSize().testTag("nearby-mosque-map"),
                 interactions = MapInteractions {
                     callbacks {
@@ -270,14 +280,10 @@ internal fun NearbyMosqueMap(
                     MosqueStatus(stringResource(R.string.mosque_map_loading), loading = true)
                 }
             }
-            if (bottomOverlay > 0.dp) {
-                Box(
-                    Modifier.fillMaxWidth().height(24.dp)
-                        .background(Brush.verticalGradient(listOf(surface, Color.Transparent))),
-                )
-            }
             if (loadState == StyleLoadState.Ready) {
-                MapCredits(Modifier.align(Alignment.TopEnd).padding(horizontal = 8.dp, vertical = 6.dp))
+                MapCredits(
+                    Modifier.align(Alignment.TopEnd).padding(start = 8.dp, end = 8.dp, top = topOverlay + 6.dp),
+                )
             }
         }
     }

@@ -3,16 +3,15 @@ package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -44,12 +43,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
@@ -63,11 +62,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import dev.chrisbanes.haze.HazeInput
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.glass.GlassStyle
-import dev.chrisbanes.haze.glass.OpticalSizeValue
-import dev.chrisbanes.haze.glass.hazeGlass
 import uz.turgunboyevjurabek.muslimapp.R
 
 private val dockButtonSize = 48.dp
@@ -75,8 +69,7 @@ private val dockGap = 8.dp
 
 @Composable
 internal fun MosqueSearchDock(
-    backdrop: HazeState,
-    darkTheme: Boolean,
+    glass: MosqueGlass,
     showMap: Boolean,
     searching: Boolean,
     searchAvailable: Boolean,
@@ -92,7 +85,6 @@ internal fun MosqueSearchDock(
         if (searching) 1f else 0f, tween(320, easing = FastOutSlowInEasing),
         label = "Mosque search expansion",
     )
-    val input = remember(backdrop) { HazeInput.Sources(backdrop) }
     val toggleInteraction = remember { MutableInteractionSource() }
     val searchInteraction = remember { MutableInteractionSource() }
     val toggleScale = rememberPressScale(toggleInteraction, bounce = true)
@@ -103,8 +95,9 @@ internal fun MosqueSearchDock(
         val canShowTabs = !searching
         Row(horizontalArrangement = Arrangement.spacedBy(dockGap)) {
             MosqueGlassPill(
-                input, darkTheme,
-                Modifier.size(expandedWidth - travel, dockButtonSize).pressScale(toggleScale),
+                glass,
+                Modifier.size(expandedWidth - travel, dockButtonSize).mosqueLiquidPress(toggleScale),
+                interactionSource = toggleInteraction,
             ) {
                 androidx.compose.animation.AnimatedVisibility(
                     visible = canShowTabs,
@@ -138,8 +131,9 @@ internal fun MosqueSearchDock(
                 }
             }
             MosqueGlassPill(
-                input, darkTheme,
-                Modifier.size(dockButtonSize + travel, dockButtonSize).pressScale(searchScale),
+                glass,
+                Modifier.size(dockButtonSize + travel, dockButtonSize).mosqueLiquidPress(searchScale),
+                interactionSource = searchInteraction,
             ) {
                 androidx.compose.animation.AnimatedVisibility(
                     visible = canShowTabs,
@@ -164,50 +158,12 @@ internal fun MosqueSearchDock(
                     exit = fadeOut(tween(90)),
                 ) {
                     MosqueSearchInput(
-                        searchText, searching, requestFocus && progress == 1f, onFocusRequested, onSearchClose,
+                        searchText, searching, requestFocus && progress == 1f,
+                        onFocusRequested, onSearchClose, searchInteraction,
                     )
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun MosqueGlassPill(
-    input: HazeInput,
-    darkTheme: Boolean,
-    modifier: Modifier,
-    content: @Composable BoxScope.() -> Unit,
-) {
-    val colors = MaterialTheme.colorScheme
-    val fill = if (darkTheme) colors.surfaceContainerHigh else colors.surface
-    val style = remember(fill, darkTheme) {
-        GlassStyle.regular.then {
-            shape(CircleShape)
-            backgroundColor(fill.copy(alpha = 0.62f))
-            tint(fill.copy(alpha = if (darkTheme) 0.49f else 0.36f))
-            optics {
-                copy(blurRadius = OpticalSizeValue.Fixed(6.dp), refractionDisplacement = 7.dp)
-            }
-            edgeSoftness(1.dp)
-            specularIntensity(if (darkTheme) 0.27f else 0.43f)
-        }
-    }
-    val sheen = Brush.verticalGradient(
-        listOf(Color.White.copy(alpha = if (darkTheme) 0.12f else 0.38f), Color.Transparent),
-    )
-    val rim = Brush.verticalGradient(
-        listOf(Color.White.copy(alpha = if (darkTheme) 0.34f else 0.96f), colors.outline.copy(alpha = 0.45f)),
-    )
-    Box(
-        modifier.shadow(3.dp, CircleShape, clip = false).clip(CircleShape),
-        contentAlignment = Alignment.Center,
-    ) {
-        Box(
-            Modifier.matchParentSize().border(1.dp, rim, CircleShape).background(sheen)
-                .hazeGlass(input = input, style = style),
-        )
-        content()
     }
 }
 
@@ -218,12 +174,26 @@ private fun MosqueViewTabs(showMap: Boolean, enabled: Boolean, onChange: (Boolea
     val mapInteraction = remember { MutableInteractionSource() }
     val listScale = rememberPressScale(listInteraction, bounce = true)
     val mapScale = rememberPressScale(mapInteraction, bounce = true)
+    val lens = remember {
+        Brush.verticalGradient(
+            0f to Color(0xFFFFE8AF), 0.35f to MosqueActionColor, 1f to Color(0xFFE3A849),
+        )
+    }
     BoxWithConstraints(Modifier.fillMaxSize().padding(3.dp)) {
         val tabWidth = maxWidth / 2
-        val offset by animateDpAsState(if (showMap) tabWidth else 0.dp, tween(220), label = "Mosque view selection")
+        val offset by animateDpAsState(
+            if (showMap) tabWidth else 0.dp, spring(dampingRatio = 0.76f, stiffness = 450f),
+            label = "Mosque view selection",
+        )
         Box(
             Modifier.offset { IntOffset(offset.roundToPx(), 0) }.width(tabWidth).fillMaxHeight()
-                .pressScale(if (showMap) mapScale else listScale).background(MosqueActionColor, CircleShape),
+                .mosqueLiquidPress(if (showMap) mapScale else listScale)
+                .graphicsLayer {
+                    val travel = if (tabWidth > 0.dp) (offset / tabWidth).coerceIn(0f, 1f) else 0f
+                    val stretch = 4f * travel * (1f - travel)
+                    scaleX = 1f + stretch * 0.13f
+                    scaleY = 1f - stretch * 0.13f
+                }.background(lens, CircleShape),
         )
         Row(Modifier.fillMaxSize().selectableGroup()) {
             listOf(false, true).forEach { map ->
@@ -234,7 +204,7 @@ private fun MosqueViewTabs(showMap: Boolean, enabled: Boolean, onChange: (Boolea
                             selected = selected, enabled = enabled, role = Role.Tab,
                             interactionSource = if (map) mapInteraction else listInteraction, indication = null,
                             onClick = { onChange(map) },
-                        ).pressScale(if (map) mapScale else listScale),
+                        ).mosqueLiquidPress(if (map) mapScale else listScale),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
@@ -258,13 +228,13 @@ private fun MosqueSearchInput(
     requestFocus: Boolean,
     onFocusRequested: () -> Unit,
     onClose: () -> Unit,
+    interactionSource: MutableInteractionSource,
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     val keyboard = LocalSoftwareKeyboardController.current
     val label = stringResource(R.string.mosque_search)
     val colors = MaterialTheme.colorScheme
-    val closeInteraction = remember { MutableInteractionSource() }
     LaunchedEffect(requestFocus) {
         if (requestFocus) {
             focusRequester.requestFocus()
@@ -281,6 +251,7 @@ private fun MosqueSearchInput(
         BasicTextField(
             state = searchText,
             enabled = enabled,
+            interactionSource = interactionSource,
             modifier = Modifier.weight(1f).focusRequester(focusRequester).testTag("mosque-inline-search")
                 .semantics { contentDescription = label },
             lineLimits = TextFieldLineLimits.SingleLine,
@@ -304,9 +275,9 @@ private fun MosqueSearchInput(
         Box(
             Modifier.size(44.dp).clip(CircleShape).testTag("mosque-close-search")
                 .clickable(
-                    interactionSource = closeInteraction, indication = null, enabled = enabled,
+                    interactionSource = interactionSource, indication = null, enabled = enabled,
                     role = Role.Button, onClick = onClose,
-                ).pressScale(rememberPressScale(closeInteraction, bounce = true)),
+                ),
             contentAlignment = Alignment.Center,
         ) {
             Icon(Icons.Filled.Close, stringResource(R.string.close), Modifier.size(19.dp))
