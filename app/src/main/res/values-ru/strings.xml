@@ -201,7 +201,6 @@
     <string name="mosque_privacy_summary">Телефон ищет ближайшие мечети во встроенном каталоге. При открытии карты приложение запрашивает у OpenFreeMap данные для видимой области. При выборе маршрута координаты мечети открываются в Google Maps.</string>
     <string name="mosque_map_offline">Для карты нужен интернет. Список мечетей доступен.</string>
     <string name="mosque_search">Поиск мечетей</string>
-    <string name="mosque_search_hint">Введите название мечети или населённого пункта в Узбекистане.</string>
     <string name="mosque_search_empty">По вашему запросу мечети не найдены.</string>
     <string name="mosque_show_on_map">Показать на карте</string>
     <string name="mosque_generic">Мечеть</string>

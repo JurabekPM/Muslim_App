@@ -93,59 +93,10 @@ fun MyTopBar(
 ) {
     val onQiblaScreen = route == AppRoute.QIBLA
     val colors = MaterialTheme.colorScheme
-    val glassColor = colors.surface
-    val darkGlass = glassColor.luminance() < 0.35f
-    val input = remember(backdrop) { HazeInput.Sources(backdrop) }
-    val glass = remember(glassColor, darkGlass) {
-        GlassStyle.regular.then {
-            shape(RoundedCornerShape(0.dp))
-            backgroundColor(glassColor.copy(alpha = 0.76f))
-            tint(glassColor.copy(alpha = if (darkGlass) 0.69f else 0.63f))
-            optics {
-                copy(
-                    blurRadius = OpticalSizeValue.Fixed(if (darkGlass) 10.dp else 16.dp),
-                    refractionDisplacement = 0.dp,
-                )
-            }
-            specularIntensity(0f)
-            ambientResponse(0f)
-            edgeShadow(Color.Transparent)
-        }
-    }
+    val darkGlass = colors.surface.luminance() < 0.35f
 
     Box(modifier.fillMaxWidth().zIndex(1f)) {
-        Box(
-            Modifier.matchParentSize()
-                .layout { measurable, constraints ->
-                    // Extend the glass over the content without adding to the AppBar height.
-                    val glassHeight = constraints.maxHeight + glassFadeOverlap.roundToPx()
-                    val layer = measurable.measure(constraints.copy(minHeight = glassHeight, maxHeight = glassHeight))
-                    layout(constraints.maxWidth, constraints.maxHeight) {
-                        layer.place(0, 0)
-                    }
-                }
-                .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
-                .drawWithCache {
-                    val fadeStart = (size.height - (glassFadeAboveEdge + glassFadeOverlap).toPx())
-                        .coerceAtLeast(0f)
-                    val fadeStops = Array(21) { index ->
-                        val progress = index / 20f
-                        val eased = progress * progress * (3f - 2f * progress)
-                        progress to Color.Black.copy(alpha = 1f - eased)
-                    }
-                    val fade = Brush.verticalGradient(
-                        *fadeStops,
-                        startY = fadeStart,
-                        endY = size.height,
-                    )
-                    onDrawWithContent {
-                        drawContent()
-                        if (darkGlass) drawRect(glassColor.copy(alpha = 0.80f))
-                        drawRect(fade, blendMode = BlendMode.DstIn)
-                    }
-                }
-                .hazeGlass(input = input, style = glass, performanceMode = HazePerformanceMode.Performance),
-        )
+        AppBarGlassBackground(Modifier.matchParentSize(), backdrop)
 
         TopAppBar(
             expandedHeight = 58.dp,
@@ -177,6 +128,62 @@ fun MyTopBar(
             },
         )
     }
+}
+
+@Composable
+internal fun AppBarGlassBackground(modifier: Modifier, backdrop: HazeState) {
+    val glassColor = MaterialTheme.colorScheme.surface
+    val darkGlass = glassColor.luminance() < 0.35f
+    val input = remember(backdrop) { HazeInput.Sources(backdrop) }
+    val glass = remember(glassColor, darkGlass) {
+        GlassStyle.regular.then {
+            shape(RoundedCornerShape(0.dp))
+            backgroundColor(glassColor.copy(alpha = 0.76f))
+            tint(glassColor.copy(alpha = if (darkGlass) 0.69f else 0.63f))
+            optics {
+                copy(
+                    blurRadius = OpticalSizeValue.Fixed(if (darkGlass) 10.dp else 16.dp),
+                    refractionDisplacement = 0.dp,
+                )
+            }
+            specularIntensity(0f)
+            ambientResponse(0f)
+            edgeShadow(Color.Transparent)
+        }
+    }
+
+    Box(
+        modifier
+            .layout { measurable, constraints ->
+                // Extend the glass over the content without adding to the AppBar height.
+                val glassHeight = constraints.maxHeight + glassFadeOverlap.roundToPx()
+                val layer = measurable.measure(constraints.copy(minHeight = glassHeight, maxHeight = glassHeight))
+                layout(constraints.maxWidth, constraints.maxHeight) {
+                    layer.place(0, 0)
+                }
+            }
+            .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
+            .drawWithCache {
+                val fadeStart = (size.height - (glassFadeAboveEdge + glassFadeOverlap).toPx())
+                    .coerceAtLeast(0f)
+                val fadeStops = Array(21) { index ->
+                    val progress = index / 20f
+                    val eased = progress * progress * (3f - 2f * progress)
+                    progress to Color.Black.copy(alpha = 1f - eased)
+                }
+                val fade = Brush.verticalGradient(
+                    *fadeStops,
+                    startY = fadeStart,
+                    endY = size.height,
+                )
+                onDrawWithContent {
+                    drawContent()
+                    if (darkGlass) drawRect(glassColor.copy(alpha = 0.80f))
+                    drawRect(fade, blendMode = BlendMode.DstIn)
+                }
+            }
+            .hazeGlass(input = input, style = glass, performanceMode = HazePerformanceMode.Performance),
+    )
 }
 
 @Composable

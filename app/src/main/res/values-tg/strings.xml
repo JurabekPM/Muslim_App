@@ -178,7 +178,6 @@
     <string name="mosque_privacy_summary">Телефон масҷидҳои наздикро аз феҳристи дохилӣ меёбад. Ҳангоми кушодани харита маълумоти минтақаи намоён аз OpenFreeMap дархост мешавад. Ҳангоми кушодани масир координатаҳои масҷид дар Google Maps кушода мешаванд.</string>
     <string name="mosque_map_offline">Барои кушодани харита интернет лозим аст. Масҷидҳоро дар рӯйхат дида метавонед.</string>
     <string name="mosque_search">Ҷустуҷӯи масҷидҳо</string>
-    <string name="mosque_search_hint">Номи масҷид ё маҳалро дар Ӯзбекистон ворид кунед.</string>
     <string name="mosque_search_empty">Бо ин дархост масҷиде ёфт нашуд.</string>
     <string name="mosque_show_on_map">Дидан дар харита</string>
     <string name="mosque_generic">Масҷид</string>

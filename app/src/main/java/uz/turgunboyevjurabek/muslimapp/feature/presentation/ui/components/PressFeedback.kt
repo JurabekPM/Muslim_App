@@ -1,6 +1,8 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -16,16 +18,20 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 
 @Composable
-internal fun rememberPressScale(interactionSource: InteractionSource): State<Float> {
+internal fun rememberPressScale(interactionSource: InteractionSource, bounce: Boolean = false): State<Float> {
     val scale = remember(interactionSource) { Animatable(1f) }
-    LaunchedEffect(interactionSource) {
+    LaunchedEffect(interactionSource, bounce) {
         interactionSource.interactions.filter { it is PressInteraction }.collectLatest { press ->
             when (press) {
                 is PressInteraction.Press -> scale.animateTo(0.94f, tween(85))
                 is PressInteraction.Release -> {
                     // A quick tap can release before the first animation frame.
                     if (scale.value > 0.98f) scale.animateTo(0.94f, tween(65))
-                    scale.animateTo(1f, tween(160))
+                    scale.animateTo(
+                        1f,
+                        if (bounce) spring(dampingRatio = 0.56f, stiffness = Spring.StiffnessMedium)
+                        else tween(160),
+                    )
                 }
                 is PressInteraction.Cancel -> scale.animateTo(1f, tween(160))
                 else -> Unit

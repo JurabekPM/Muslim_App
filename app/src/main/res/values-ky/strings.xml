@@ -181,7 +181,6 @@
     <string name="mosque_privacy_summary">Телефон жакынкы мечиттерди камтылган каталогдон издейт. Карта ачылганда көрүнгөн аймактын маалыматы OpenFreeMap кызматынан суралат. Багытты ачканда мечиттин координаттары Google Maps кызматында ачылат.</string>
     <string name="mosque_map_offline">Картаны ачуу үчүн интернет керек. Мечиттерди тизмеден көрө аласыз.</string>
     <string name="mosque_search">Мечит издөө</string>
-    <string name="mosque_search_hint">Өзбекстан боюнча мечиттин атын же аймакты жазыңыз.</string>
     <string name="mosque_search_empty">Бул сурам боюнча мечит табылган жок.</string>
     <string name="mosque_show_on_map">Картадан көрүү</string>
     <string name="mosque_generic">Мечит</string>
