@@ -1,7 +1,5 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.navigation
 
-import android.location.Location
-
 import uz.turgunboyevjurabek.muslimapp.core.utils.AppLanguage
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -62,7 +60,6 @@ internal fun MuslimApp(
     regionLocationLookup: RegionLocationLookup,
     mosqueCatalog: MosqueCatalog,
     mosqueBrowseViewModel: MosqueBrowseViewModel,
-    locateForMosques: suspend () -> Location?,
     qiblaSensors: QiblaSensors,
     permissionsManager: PermissionsManager,
     displayRotation: () -> Int,
@@ -207,7 +204,6 @@ internal fun MuslimApp(
                             preferences?.let { selection ->
                                 NearbyMosquesRoute(
                                     loadCatalog = mosqueCatalog::load,
-                                    locate = locateForMosques,
                                     language = language,
                                     darkTheme = darkTheme,
                                     canLoadMap = connection == InternetConnection.Online,

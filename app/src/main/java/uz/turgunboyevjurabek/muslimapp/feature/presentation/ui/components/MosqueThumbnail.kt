@@ -1,34 +1,36 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -38,19 +40,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.DialogWindowProvider
+import androidx.core.view.WindowCompat
 import kotlinx.coroutines.launch
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.feature.data.local.MosquePhoto
 import uz.turgunboyevjurabek.muslimapp.feature.data.local.MosquePhotos
 
 @Composable
-internal fun MosqueThumbnail(mosqueId: String, name: String, modifier: Modifier = Modifier) {
+internal fun MosqueThumbnail(
+    mosqueId: String,
+    name: String,
+    modifier: Modifier = Modifier,
+    showPhotoCount: Boolean = false,
+    onOpen: (() -> Unit)? = null,
+) {
     val photos = MosquePhotos[mosqueId]
     val cover = photos.firstOrNull()
     val thumbnail = modifier.size(60.dp).clip(RoundedCornerShape(14.dp))
@@ -76,7 +90,7 @@ internal fun MosqueThumbnail(mosqueId: String, name: String, modifier: Modifier 
         modifier = thumbnail.testTag("mosque-photo").clickable(
             role = Role.Button,
             onClickLabel = stringResource(R.string.mosque_photos_open),
-            onClick = { showPhotos = true },
+            onClick = onOpen ?: { showPhotos = true },
         ),
     ) {
         Image(
@@ -86,89 +100,119 @@ internal fun MosqueThumbnail(mosqueId: String, name: String, modifier: Modifier 
             contentScale = ContentScale.Crop,
         )
         if (photos.size > 1) {
-            Icon(
-                painterResource(R.drawable.ic_mosque_gallery),
-                contentDescription = null,
+            Row(
                 modifier = Modifier.align(Alignment.BottomEnd)
                     .padding(4.dp)
-                    .size(20.dp)
                     .background(colors.tertiaryContainer, CircleShape)
-                    .padding(4.dp),
-                tint = colors.onTertiaryContainer,
-            )
+                    .padding(horizontal = 5.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(3.dp),
+            ) {
+                Icon(
+                    painterResource(R.drawable.ic_mosque_gallery), null,
+                    Modifier.size(if (showPhotoCount) 14.dp else 12.dp),
+                    tint = colors.onTertiaryContainer,
+                )
+                if (showPhotoCount) {
+                    Text(
+                        stringResource(R.string.mosque_photo_count, photos.size),
+                        color = colors.onTertiaryContainer,
+                        style = MaterialTheme.typography.labelMedium,
+                    )
+                }
+            }
         }
     }
     if (showPhotos) MosquePhotoViewer(name, photos, onClose = { showPhotos = false })
 }
 
 @Composable
-private fun MosquePhotoViewer(name: String, photos: List<MosquePhoto>, onClose: () -> Unit) {
+internal fun MosquePhotoViewer(name: String, photos: List<MosquePhoto>, onClose: () -> Unit) {
     val pager = rememberPagerState { photos.size }
     val scope = rememberCoroutineScope()
     val current = pager.currentPage
-    val photo = photos[current]
-    var showSource by rememberSaveable { mutableStateOf(false) }
-    AlertDialog(
+    val colors = MaterialTheme.colorScheme
+    Dialog(
         onDismissRequest = onClose,
-        title = { Text(name) },
-        text = {
-            Column(
-                Modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(6.dp),
-            ) {
-                HorizontalPager(
-                    state = pager,
-                    modifier = Modifier.fillMaxWidth().aspectRatio(4f / 3f)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-                        .testTag("mosque-photo-pager"),
-                    userScrollEnabled = photos.size > 1,
-                ) { page ->
-                    Image(
-                        painterResource(photos[page].thumbnail),
-                        contentDescription = stringResource(R.string.mosque_photo_description, name),
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Fit,
-                    )
-                }
-                if (photos.size > 1) {
-                    Row(
-                        Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        IconButton(
-                            onClick = { scope.launch { pager.animateScrollToPage(current - 1) } },
-                            enabled = current > 0,
-                        ) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.mosque_photo_previous))
-                        }
-                        Text(stringResource(R.string.mosque_photo_position, current + 1, photos.size))
-                        IconButton(
-                            onClick = { scope.launch { pager.animateScrollToPage(current + 1) } },
-                            enabled = current < photos.lastIndex,
-                        ) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowForward, stringResource(R.string.mosque_photo_next))
+        properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false),
+    ) {
+        val view = LocalView.current
+        SideEffect {
+            val window = (view.parent as? DialogWindowProvider)?.window
+            if (window != null) {
+                val lightSurface = colors.surface.luminance() > 0.5f
+                val insets = WindowCompat.getInsetsController(window, view)
+                insets.isAppearanceLightStatusBars = lightSurface
+                insets.isAppearanceLightNavigationBars = lightSurface
+            }
+        }
+        Surface(Modifier.fillMaxSize(), color = colors.surface, contentColor = colors.onSurface) {
+            Box(Modifier.fillMaxSize().safeDrawingPadding(), contentAlignment = Alignment.Center) {
+                Column(
+                    Modifier.widthIn(max = 640.dp).fillMaxSize().padding(16.dp)
+                        .testTag("mosque-photo-viewer"),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    MosqueOverlayHeader(name, onClose)
+                    HorizontalPager(
+                        state = pager,
+                        modifier = Modifier.weight(1f).fillMaxWidth().testTag("mosque-photo-pager"),
+                        userScrollEnabled = photos.size > 1,
+                    ) { page ->
+                        BoxWithConstraints(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            val painter = painterResource(photos[page].thumbnail)
+                            val ratio = painter.intrinsicSize.width / painter.intrinsicSize.height
+                            Image(
+                                painter,
+                                contentDescription = stringResource(R.string.mosque_photo_description, name),
+                                modifier = Modifier.width(minOf(maxWidth, maxHeight * ratio))
+                                    .aspectRatio(ratio)
+                                    .clip(RoundedCornerShape(18.dp)),
+                                contentScale = ContentScale.Fit,
+                            )
                         }
                     }
-                }
-                Text(stringResource(R.string.mosque_photo_credit, photo.author))
-                Text(photo.license.title, style = MaterialTheme.typography.labelMedium)
-                if (showSource) {
-                    SelectionContainer {
-                        Text(
-                            "${photo.sourceUrl}\n${photo.license.url}",
-                            style = MaterialTheme.typography.bodySmall,
-                        )
+                    if (photos.size > 1) {
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            GalleryArrow(
+                                previous = true,
+                                enabled = current > 0,
+                                onClick = { scope.launch { pager.animateScrollToPage(current - 1) } },
+                            )
+                            Text(
+                                stringResource(R.string.mosque_photo_position, current + 1, photos.size),
+                                style = MaterialTheme.typography.titleMedium,
+                            )
+                            GalleryArrow(
+                                previous = false,
+                                enabled = current < photos.lastIndex,
+                                onClick = { scope.launch { pager.animateScrollToPage(current + 1) } },
+                            )
+                        }
                     }
                 }
             }
-        },
-        confirmButton = {
-            TextButton(onClick = onClose) { Text(stringResource(R.string.close)) }
-        },
-        dismissButton = {
-            TextButton(onClick = { showSource = !showSource }) { Text(stringResource(R.string.mosque_photo_source)) }
-        },
-    )
+        }
+    }
+}
+
+@Composable
+private fun GalleryArrow(previous: Boolean, enabled: Boolean, onClick: () -> Unit) {
+    val colors = MaterialTheme.colorScheme
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        color = colors.surfaceContainerLow,
+        border = BorderStroke(1.dp, colors.outline.copy(alpha = if (enabled) 0.62f else 0.22f)),
+    ) {
+        IconButton(onClick = onClick, enabled = enabled) {
+            Icon(
+                if (previous) Icons.AutoMirrored.Filled.KeyboardArrowLeft else Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                stringResource(if (previous) R.string.mosque_photo_previous else R.string.mosque_photo_next),
+            )
+        }
+    }
 }

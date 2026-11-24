@@ -398,4 +398,6 @@ internal object MosquePhotos {
     ).mapValues { (mosqueId, cover) -> listOf(cover) + extraPhotosByMosqueId[mosqueId].orEmpty() }
 
     operator fun get(mosqueId: String): List<MosquePhoto> = photosByMosqueId[mosqueId].orEmpty()
+
+    val credits: List<MosquePhoto> by lazy { photosByMosqueId.values.flatten().sortedBy(MosquePhoto::fileName) }
 }
