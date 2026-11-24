@@ -165,8 +165,7 @@
     <string name="mosque_choose_city">Choose a city</string>
     <string name="mosque_search_city">Search cities</string>
     <string name="mosque_no_city">No cities found</string>
-    <string name="mosque_choose_origin">Use your location or choose a city to see nearby mosques.</string>
-    <string name="mosque_location_permission">Allow location access or choose a city.</string>
+    <string name="mosque_choose_origin">Choose a city to see nearby mosques.</string>
     <string name="mosque_unnamed">Unnamed mosque</string>
     <string name="mosque_directions">Get directions</string>
     <string name="mosque_directions_error">A maps app or browser is needed.</string>
@@ -174,7 +173,7 @@
     <string name="mosque_directions_acknowledge">Got it</string>
     <string name="mosque_regions">Regions</string>
     <string name="mosque_no_results">No mosques found within %1$d km.</string>
-    <string name="mosque_distance_hint">Straight-line distance</string>
+    <string name="mosque_distance_hint">Straight-line distance from the city center</string>
     <string name="mosque_catalog_error">Couldn’t open the mosque list.</string>
     <string name="mosque_catalog_loading">Loading mosques…</string>
     <string name="mosque_map_error">Couldn’t load the map. Check your connection and try again.</string>
@@ -201,5 +200,4 @@
     <string name="mosque_sort_distance">By distance</string>
     <string name="mosque_sort_name">By name</string>
     <string name="mosque_nearest">Closest</string>
-    <string name="mosque_recenter">Return to my location</string>
 </resources>

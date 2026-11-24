@@ -165,8 +165,7 @@
     <string name="mosque_choose_city">Шаҳар танлаш</string>
     <string name="mosque_search_city">Шаҳар қидириш</string>
     <string name="mosque_no_city">Шаҳар топилмади</string>
-    <string name="mosque_choose_origin">Яқин масжидларни кўриш учун жойлашувингизни аниқланг ёки шаҳар танланг.</string>
-    <string name="mosque_location_permission">Жойлашувга рухсат беринг ёки шаҳар танланг.</string>
+    <string name="mosque_choose_origin">Яқин масжидларни кўриш учун шаҳар танланг.</string>
     <string name="mosque_unnamed">Номи кўрсатилмаган масжид</string>
     <string name="mosque_directions">Йўлни очиш</string>
     <string name="mosque_directions_error">Харита иловаси ёки браузер керак.</string>
@@ -174,7 +173,7 @@
     <string name="mosque_directions_acknowledge">Тушунарли</string>
     <string name="mosque_regions">Вилоятлар</string>
     <string name="mosque_no_results">%1$d км ичида масжид топилмади.</string>
-    <string name="mosque_distance_hint">Масофа тўғри чизиқ бўйича</string>
+    <string name="mosque_distance_hint">Масофа шаҳар марказидан тўғри чизиқ бўйича</string>
     <string name="mosque_catalog_error">Масжидлар рўйхатини очиб бўлмади.</string>
     <string name="mosque_catalog_loading">Масжидлар юкланмоқда…</string>
     <string name="mosque_map_error">Харита юкланмади. Интернетни текшириб, қайта уриниб кўринг.</string>
@@ -201,5 +200,4 @@
     <string name="mosque_sort_distance">Масофа бўйича</string>
     <string name="mosque_sort_name">Номи бўйича</string>
     <string name="mosque_nearest">Энг яқин</string>
-    <string name="mosque_recenter">Жойлашувга қайтиш</string>
 </resources>

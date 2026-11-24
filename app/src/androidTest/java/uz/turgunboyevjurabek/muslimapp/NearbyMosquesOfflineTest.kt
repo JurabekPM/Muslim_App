@@ -152,16 +152,21 @@ class NearbyMosquesOfflineTest {
 
         compose.onNodeWithContentDescription(context.getString(R.string.mosque_choose_area)).performClick()
         compose.onNodeWithText(context.getString(R.string.mosque_area_nearby)).performClick()
+        val searchCity = context.getString(R.string.mosque_search_city)
+        compose.onNodeWithText(searchCity).assertIsDisplayed()
+        compose.onNodeWithContentDescription(context.getString(R.string.close)).performClick()
         compose.waitUntil(5_000) {
             compose.onNodeWithText(context.getString(R.string.mosque_choose_origin))
                 .isDisplayed()
         }
         compose.onNodeWithText(context.getString(R.string.mosque_choose_city)).performClick()
-        compose.onNodeWithText(context.getString(R.string.mosque_search_city)).performTextInput(city.name.orEmpty())
+        compose.onNodeWithText(searchCity).performTextInput(city.name.orEmpty())
         compose.onNode(hasText(city.name.orEmpty()) and hasClickAction() and !hasSetTextAction())
             .performClick()
         compose.waitUntil(5_000) { compose.onNodeWithText(firstMosque).isDisplayed() }
         compose.onNodeWithText(context.getString(R.string.mosque_nearest)).assertIsDisplayed()
+        compose.onNodeWithText(city.name.orEmpty()).assertIsDisplayed()
+        compose.onNodeWithContentDescription(context.getString(R.string.current_location)).assertDoesNotExist()
         compose.onNodeWithText(firstMosque).performClick()
         compose.onNodeWithTag("mosque-detail-sheet").assertIsDisplayed()
         compose.onNodeWithText(context.getString(R.string.mosque_show_on_map)).assertIsDisplayed()
@@ -255,7 +260,6 @@ class NearbyMosquesOfflineTest {
                 CompositionLocalProvider(LocalUriHandler provides handler) {
                     NearbyMosquesRoute(
                         loadCatalog = catalog::load,
-                        locate = { null },
                         language = AppLanguage.Uzbek,
                         darkTheme = darkTheme,
                         canLoadMap = false,

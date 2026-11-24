@@ -5,11 +5,9 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,11 +25,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -149,55 +145,6 @@ internal fun MosqueSortButton(byName: Boolean, onChange: (Boolean) -> Unit, modi
                         onChange(option)
                     },
                 )
-            }
-        }
-    }
-}
-
-@Composable
-internal fun MosqueLocationBar(
-    title: String,
-    isGps: Boolean,
-    onSelect: () -> Unit,
-    selectLabel: String,
-    onLocate: (() -> Unit)?,
-    locating: Boolean,
-) {
-    val colors = MaterialTheme.colorScheme
-    Box(Modifier.fillMaxWidth().clip(CircleShape)) {
-        Box(
-            Modifier.matchParentSize().padding(vertical = 5.dp)
-                .background(colors.surfaceContainerLow, CircleShape),
-        )
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Row(
-                modifier = Modifier.weight(1f).heightIn(min = 48.dp)
-                    .clickable(role = Role.Button, onClickLabel = selectLabel, onClick = onSelect)
-                    .padding(horizontal = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                Icon(
-                    painterResource(R.drawable.ic_mosque_pin),
-                    contentDescription = selectLabel,
-                    modifier = Modifier.size(16.dp),
-                    tint = if (isGps) Color(0xFF258BE5) else colors.onSurface,
-                )
-                Text(
-                    title, Modifier.weight(1f),
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Medium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                Icon(Icons.Filled.KeyboardArrowDown, null, Modifier.size(16.dp))
-            }
-            if (onLocate != null) {
-                IconButton(onClick = onLocate, enabled = !locating) {
-                    val description = stringResource(R.string.current_location)
-                    if (isGps) Icon(Icons.Filled.Refresh, description, Modifier.size(19.dp))
-                    else Icon(painterResource(R.drawable.ic_mosque_recenter), description, Modifier.size(19.dp))
-                }
             }
         }
     }

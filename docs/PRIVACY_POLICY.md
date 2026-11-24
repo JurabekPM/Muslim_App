@@ -12,7 +12,7 @@ Muslim App namoz vaqtlarini ko‘rsatadi, Qibla yo‘nalishini aniqlaydi va Tasb
 
 ## Yaqin masjidlar
 
-- Yaqin masjidlar telefonning o‘zida, ilovaga qo‘shilgan OpenStreetMap katalogidan qidiriladi. Qidiruv markazi uchun shaharni qo‘lda tanlash yoki joylashuvga ruxsat berish mumkin.
+- Yaqin masjidlar telefonning o‘zida, ilovaga qo‘shilgan OpenStreetMap katalogidan qidiriladi. «Yaqin atrof» qidiruvi foydalanuvchi tanlagan shahar markazidan hisoblanadi.
 - Xarita ochilganda MapLibre ko‘rinayotgan hudud uchun OpenFreeMap’dan xarita ma’lumotlarini HTTPS orqali oladi. Xizmat IP manzili va so‘ralgan xarita hududlarini ko‘rishi mumkin. [OpenFreeMap](https://openfreemap.org/).
 - «Yo‘lni ochish» tanlansa, masjid koordinatalari Google Maps’ga uzatiladi. Yo‘nalish ochilgach, Google Maps o‘z maxfiylik siyosati va qurilmadagi ruxsatlar asosida ishlaydi. [Google maxfiylik siyosati](https://policies.google.com/privacy).
 

@@ -165,8 +165,7 @@
     <string name="mosque_choose_city">Şäher saýlaň</string>
     <string name="mosque_search_city">Şäher gözläň</string>
     <string name="mosque_no_city">Şäher tapylmady</string>
-    <string name="mosque_choose_origin">Golaýdaky metjitleri görmek üçin ýerleşýän ýeriňizi anyklaň ýa-da şäher saýlaň.</string>
-    <string name="mosque_location_permission">Ýerleşýän ýeriňize rugsat beriň ýa-da şäher saýlaň.</string>
+    <string name="mosque_choose_origin">Golaýdaky metjitleri görmek üçin şäher saýlaň.</string>
     <string name="mosque_unnamed">Ady görkezilmedik metjit</string>
     <string name="mosque_directions">Ýoly açmak</string>
     <string name="mosque_directions_error">Karta programmasy ýa-da brauzer gerek.</string>
@@ -174,7 +173,7 @@
     <string name="mosque_directions_acknowledge">Düşnükli</string>
     <string name="mosque_regions">Welaýatlar</string>
     <string name="mosque_no_results">%1$d km radiusda metjit tapylmady.</string>
-    <string name="mosque_distance_hint">Göni çyzyk boýunça aralyk</string>
+    <string name="mosque_distance_hint">Şäheriň merkezinden göni çyzyk boýunça aralyk</string>
     <string name="mosque_catalog_error">Metjitleriň sanawyny açyp bolmady.</string>
     <string name="mosque_catalog_loading">Metjitler ýüklenýär…</string>
     <string name="mosque_map_error">Karta ýüklenmedi. Internedi barlap, gaýtadan synanyşyň.</string>
@@ -201,5 +200,4 @@
     <string name="mosque_sort_distance">Aralyk boýunça</string>
     <string name="mosque_sort_name">Ady boýunça</string>
     <string name="mosque_nearest">Iň ýakyn</string>
-    <string name="mosque_recenter">Ýerleşişe dolan</string>
 </resources>

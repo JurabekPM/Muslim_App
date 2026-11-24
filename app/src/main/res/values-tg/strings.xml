@@ -162,8 +162,7 @@
     <string name="mosque_choose_city">Интихоби шаҳр</string>
     <string name="mosque_search_city">Ҷустуҷӯи шаҳр</string>
     <string name="mosque_no_city">Шаҳр ёфт нашуд</string>
-    <string name="mosque_choose_origin">Барои дидани масҷидҳои наздик маконро муайян кунед ё шаҳреро интихоб кунед.</string>
-    <string name="mosque_location_permission">Ба муайян кардани макон иҷозат диҳед ё шаҳреро интихоб кунед.</string>
+    <string name="mosque_choose_origin">Барои дидани масҷидҳои наздик шаҳреро интихоб кунед.</string>
     <string name="mosque_unnamed">Масҷиди беном</string>
     <string name="mosque_directions">Кушодани масир</string>
     <string name="mosque_directions_error">Барномаи харита ё браузер лозим аст.</string>
@@ -171,7 +170,7 @@
     <string name="mosque_directions_acknowledge">Фаҳмо</string>
     <string name="mosque_regions">Вилоятҳо</string>
     <string name="mosque_no_results">Дар радиуси %1$d км масҷиде ёфт нашуд.</string>
-    <string name="mosque_distance_hint">Масофа аз рӯи хати рост</string>
+    <string name="mosque_distance_hint">Масофа аз маркази шаҳр бо хати рост</string>
     <string name="mosque_catalog_error">Рӯйхати масҷидҳо кушода нашуд.</string>
     <string name="mosque_catalog_loading">Масҷидҳо бор мешаванд…</string>
     <string name="mosque_map_error">Харита бор нашуд. Интернетро санҷед ва дубора кӯшиш кунед.</string>
@@ -198,5 +197,4 @@
     <string name="mosque_sort_distance">Аз рӯйи масофа</string>
     <string name="mosque_sort_name">Аз рӯйи ном</string>
     <string name="mosque_nearest">Наздиктарин</string>
-    <string name="mosque_recenter">Бозгашт ба ҷойгиршавӣ</string>
 </resources>

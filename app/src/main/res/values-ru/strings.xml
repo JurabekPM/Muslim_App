@@ -185,8 +185,7 @@
     <string name="mosque_choose_city">Выбрать город</string>
     <string name="mosque_search_city">Поиск города</string>
     <string name="mosque_no_city">Город не найден</string>
-    <string name="mosque_choose_origin">Определите своё местоположение или выберите город, чтобы найти мечети поблизости.</string>
-    <string name="mosque_location_permission">Разрешите доступ к местоположению или выберите город.</string>
+    <string name="mosque_choose_origin">Выберите город, чтобы увидеть ближайшие мечети.</string>
     <string name="mosque_unnamed">Мечеть без названия</string>
     <string name="mosque_directions">Проложить маршрут</string>
     <string name="mosque_directions_error">Нужно приложение с картами или браузер.</string>
@@ -194,7 +193,7 @@
     <string name="mosque_directions_acknowledge">Понятно</string>
     <string name="mosque_regions">Регионы</string>
     <string name="mosque_no_results">В радиусе %1$d км мечети не найдены.</string>
-    <string name="mosque_distance_hint">Расстояние по прямой</string>
+    <string name="mosque_distance_hint">Расстояние по прямой от центра города</string>
     <string name="mosque_catalog_error">Не удалось открыть список мечетей.</string>
     <string name="mosque_catalog_loading">Загрузка списка мечетей…</string>
     <string name="mosque_map_error">Не удалось загрузить карту. Проверьте интернет-соединение и повторите попытку.</string>
@@ -221,5 +220,4 @@
     <string name="mosque_sort_distance">По расстоянию</string>
     <string name="mosque_sort_name">По названию</string>
     <string name="mosque_nearest">Ближайшая</string>
-    <string name="mosque_recenter">К моему местоположению</string>
 </resources>
